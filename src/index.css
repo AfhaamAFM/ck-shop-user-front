@@ -4,13 +4,12 @@ min-height: 85vh;
 }
 .login-Container{
 
-  min-width: 500px;
-  position: absolute;
-  border-radius: 2rem;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1rem
+  display: flex;
+  margin: auto;
+margin-top: 6rem;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 35%;
 }
 @media (max-width: 500px) {
   .login-Container {
@@ -36,3 +35,54 @@ background-color: black;
 .login-Container h4{
   color: red;
 }
+/* Home screen swipper start */
+
+#app { height: 100% }
+html,
+body {
+  position: relative;
+  height: 100%;
+}
+
+body {
+  background: #eee;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #000;
+  margin: 0;
+  padding: 0;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Home screen swipper end */

@@ -4,14 +4,20 @@ import {Link,useNavigate} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux'
 import axios from 'axios'
 import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
+import {Spinner} from 'react-bootstrap'
+
+
 
 function Signin() {
  const dispatch = useDispatch()
-const {error,users,userActive}=useSelector(state=>state)
+const {error,users,userActive,loading}=useSelector(state=>state)
 const navigate= useNavigate()
 
 const[email,setEmail]=useState('')
 const[password,setPassword]=useState('')
+const[warning,setWarning]=useState('')
+
+
 
  function submitHandler(event){
  event.preventDefault();
@@ -25,8 +31,13 @@ dispatch(fetchUserRequest())
 
 axios.post("http://localhost:5000/user/signin/",userData).then((res)=>{
  console.log(res);
- dispatch(userlogged())
- navigate("/")
+ if(res.data.response){
+  setWarning(res.data.response)
+}else{
+  setWarning('')
+  dispatch(userlogged())
+  navigate('/')
+}
 }).catch(err=>{
     
     dispatch(fetchUserError(err))
@@ -44,6 +55,10 @@ console.log('All is wll   '+ users);
         <div className='login-Container '>
             <div className='login-header p-3 my-3 bg-light' variant='dark'><h2 > Hello User ! 
             </h2></div>
+            <h4>{warning}</h4>
+        {  loading&&<Spinner animation="border" role="status">
+  <span className="visually-hidden"></span>
+</Spinner> }
       <Form onSubmit={submitHandler}>
   <Form.Group className="mb-3 input-container" controlId="formBasicEmail">
     <Form.Label>Enter your user name</Form.Label>

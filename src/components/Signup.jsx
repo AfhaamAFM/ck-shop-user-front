@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form,Button } from 'react-bootstrap';
+import { Form,Button ,Spinner} from 'react-bootstrap';
  import {Link,useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
@@ -51,6 +51,9 @@ axios.post("http://localhost:5000/user/signup/",users).then((res)=>{
             </h2></div>
       <Form onSubmit={submitHandler}>
           <h4>{warning}</h4>
+          {  loading&&<Spinner animation="border" role="status">
+  <span className="visually-hidden"></span>
+</Spinner> }
       <Form.Group className="mb-3 input-container" controlId="formBasicName">
          
     <Form.Label>Name</Form.Label>
