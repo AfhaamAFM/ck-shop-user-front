@@ -1,22 +1,53 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form,Button } from 'react-bootstrap';
-import {Link} from 'react-router-dom'
+import {Link,useNavigate} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux'
+import axios from 'axios'
+import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
 
 function Signin() {
  const dispatch = useDispatch()
-const {error}=useSelector(state=>state)
+const {error,users,userActive}=useSelector(state=>state)
+const navigate= useNavigate()
 
-console.log(error);
+const[email,setEmail]=useState('')
+const[password,setPassword]=useState('')
+
+ function submitHandler(event){
+ event.preventDefault();
+
+
+
+const userData={
+ email,password
+}
+dispatch(fetchUserRequest())
+
+axios.post("http://localhost:5000/user/signin/",userData).then((res)=>{
+ console.log(res);
+ dispatch(userlogged())
+ navigate("/")
+}).catch(err=>{
+    
+    dispatch(fetchUserError(err))
+})
+
+}
+console.log('All is wll   '+ users);
+
+
+
+
+
 
     return (
         <div className='login-Container '>
             <div className='login-header p-3 my-3 bg-light' variant='dark'><h2 > Hello User ! 
             </h2></div>
-      <Form>
+      <Form onSubmit={submitHandler}>
   <Form.Group className="mb-3 input-container" controlId="formBasicEmail">
-    <Form.Label>Email address</Form.Label>
-    <Form.Control type="email" placeholder="Enter email" />
+    <Form.Label>Enter your user name</Form.Label>
+    <Form.Control type="email" placeholder="Enter username" required onChange={(e)=>setEmail(e.target.value)} />
     <Form.Text className="text-muted">
       We'll never share your email with anyone else.
     </Form.Text>
@@ -24,7 +55,7 @@ console.log(error);
 
   <Form.Group className="mb-3" controlId="formBasicPassword">
     <Form.Label>Password</Form.Label>
-    <Form.Control type="password" placeholder="Password" />
+    <Form.Control type="password" placeholder="Password"  required onChange={(e)=>setPassword(e.target.value)} />
   </Form.Group>
   {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
     <Form.Check type="checkbox" label="Check me out" />

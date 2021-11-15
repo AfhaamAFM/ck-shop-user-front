@@ -3,9 +3,9 @@ import { USER_FETCH_ERROR, USER_FETCH_REQUEST, USER_FETCH_SUCCESS, USER_FETCH_VE
 
 const initialState = {
     loading: true,
-    users: [],
-    error: 'fuck',
-    response: []
+    users: '',
+    error: '',
+    userActive: false
 }
 const userReducer = (state = initialState, action) => {
 
@@ -30,7 +30,6 @@ const userReducer = (state = initialState, action) => {
         case USER_FETCH_ERROR:
             return {
 
-
                 loading: false,
                 users: [],
                 error: action.payload,
@@ -40,15 +39,14 @@ const userReducer = (state = initialState, action) => {
         case USER_FETCH_VERIFY:
             return {
 
-
+                ...state,
                 loading: false,
-                error:'',
-                response:action.payload
-
+                userActive: action.payload,
+                error: ''
 
             }
-            default:
-                return state
+        default:
+            return state
 
     }
 

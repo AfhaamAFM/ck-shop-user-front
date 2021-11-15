@@ -1,10 +1,27 @@
 import React from 'react'
+import axios from 'axios'
 import {Navbar,Container,Nav,NavDropdown} from 'react-bootstrap'
 import {Link } from 'react-router-dom';
+import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
 
-
+import {useDispatch,useSelector} from 'react-redux'
 
 function Header() {
+const dispatch = useDispatch()
+const {userActive,users} = useSelector(state => state)
+
+function logoutHandler(){
+dispatch(fetchUserRequest())
+axios.get('http://localhost:5000/user/logout').then(res=>{
+dispatch(userlogged())
+}).catch(err=>{
+dispatch(fetchUserError(err))
+
+})
+
+
+}
+
     return (
         <div>
             <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect>
@@ -16,11 +33,13 @@ function Header() {
         <Nav.Link href="#home"><i className="fas fa-shopping-bag"></i> Bag</Nav.Link>
         <Nav.Link href="#link">Link</Nav.Link>
         <NavDropdown title="Accounts" id="basic-nav-dropdown">
-          <NavDropdown.Item as={Link} to='/signin'>Sign in</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.2">Logout</NavDropdown.Item>
+
+{userActive?<><NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.4">My profile</NavDropdown.Item></>:<NavDropdown.Item as={Link} to='/signin'>Sign in</NavDropdown.Item>}
+         
           {/* <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item> */}
           <NavDropdown.Divider />
-          <NavDropdown.Item href="#action/3.4">My profile</NavDropdown.Item>
+          
         </NavDropdown>
       </Nav>
     </Navbar.Collapse>
