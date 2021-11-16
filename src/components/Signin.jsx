@@ -33,6 +33,8 @@ axios.post("http://localhost:5000/user/signin/",userData).then((res)=>{
  console.log(res);
  if(res.data.response){
   setWarning(res.data.response)
+  dispatch(userlogged())
+  
 }else{
   setWarning('')
   dispatch(userlogged())
