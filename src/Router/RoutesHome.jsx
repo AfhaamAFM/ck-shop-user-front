@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link,useNavigate, Navigate } from 'react-router-dom';
 import reactDom from 'react-dom'
 import HomeScreen from '../components/HomeScreen';
 import Signin from '../components/Signin';
@@ -25,13 +25,10 @@ dispatch(userlogged())
             <Routes>
 
                 <Route path="/"  element={<HomeScreen/>}/>
-                {
-                    !userActive&&
-                    <>
-                    <Route path="/signin"  element={<Signin/>}/>
-                    <Route path="/signup"  element={<Signup/>}/>
-                    </>
-                }
+    
+                    <Route path="/signin"  element={userActive?<Navigate to="/" />:<Signin/>}/>
+                    <Route path="/signup"  element={userActive?<Navigate to="/" />:<Signup/>}/>
+                
                 
             </Routes>
                 </main>

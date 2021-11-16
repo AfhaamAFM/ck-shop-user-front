@@ -1,22 +1,22 @@
+import React, { useRef, useState } from "react";
 import Loader from "react-loader-spinner";
 import { useSelector } from 'react-redux';
 
-import React, { useRef, useState } from "react";
-// Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react";
-import 'swiper/swiper.scss'
-// Import Swiper styles
-import "swiper/scss";
-import "swiper/css/pagination"
-import "swiper/css/navigation"
+// // Import Swiper React components
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import 'swiper/swiper.scss'
+// // Import Swiper styles
+// import "swiper/scss";
+// import "swiper/css/pagination"
+// import "swiper/css/navigation"
 
-// import Swiper core and required modules
-import SwiperCore, {
-  Autoplay,Pagination,Navigation
-} from 'swiper';
+// // import Swiper core and required modules
+// import SwiperCore, {
+//   Autoplay,Pagination,Navigation
+// } from 'swiper';
 
-// install Swiper modules
-SwiperCore.use([Autoplay,Pagination,Navigation]);
+// // install Swiper modules
+// SwiperCore.use([Autoplay,Pagination,Navigation]);
 
 
 

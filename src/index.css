@@ -2,6 +2,7 @@ main{
 min-height: 85vh;
 
 }
+/* from start */
 .login-Container{
 
   display: flex;
@@ -35,6 +36,7 @@ background-color: black;
 .login-Container h4{
   color: red;
 }
+/* form end */
 /* Home screen swipper start */
 
 #app { height: 100% }
