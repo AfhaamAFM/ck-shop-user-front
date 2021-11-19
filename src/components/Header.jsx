@@ -10,7 +10,7 @@ import {useDispatch,useSelector} from 'react-redux'
 
 function Header() {
 const dispatch = useDispatch()
-const {userActive,users} = useSelector(state => state)
+const {userActive,users} = useSelector(state => state.user)
 
 function logoutHandler(){
 dispatch(fetchUserRequest())

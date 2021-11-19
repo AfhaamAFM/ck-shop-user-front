@@ -7,7 +7,6 @@ import axios from 'axios'
 axios.defaults.withCredentials =true
 
 function App() {
-  console.log(store);
   return (
     <>
     <Provider store={store}>

@@ -10,7 +10,7 @@ import {Spinner} from 'react-bootstrap'
 
 function Signin() {
  const dispatch = useDispatch()
-const {error,users,userActive,loading}=useSelector(state=>state)
+const {error,users,userActive,loading}=useSelector(state=>state.user)
 const navigate= useNavigate()
 
 const[email,setEmail]=useState('')

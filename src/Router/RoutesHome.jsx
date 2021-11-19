@@ -8,10 +8,12 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {useSelector,useDispatch} from 'react-redux'
 import { userlogged } from '../redux/userStore/userAction';
+import CategoryNav from '../components/CategoryNav';
+import ProductDetailsScreen from '../components/Products.jsx/ProductDetailsScreen';
 
 function RoutesHome() {
     
-    const {userActive} = useSelector(state => state)
+    const {userActive} = useSelector(state => state.user)
     const dispatch = useDispatch()
     useEffect(()=>{
 dispatch(userlogged())
@@ -21,11 +23,12 @@ dispatch(userlogged())
         <div>
         <Router>
             <Header/>
+            <CategoryNav/>
                 <main>
             <Routes>
 
                 <Route path="/"  element={<HomeScreen/>}/>
-    
+    <Route path='/product/:id' element={<ProductDetailsScreen/>}/>
                     <Route path="/signin"  element={userActive?<Navigate to="/" />:<Signin/>}/>
                     <Route path="/signup"  element={userActive?<Navigate to="/" />:<Signup/>}/>
                 

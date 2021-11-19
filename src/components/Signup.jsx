@@ -10,7 +10,7 @@ import {useSelector,useDispatch} from 'react-redux'
 
 function Signup() {
     const dispatch = useDispatch()
-    const {users,error,loading,response}=useSelector(state=>state)
+    const {users,error,loading,response}=useSelector(state=>state.user)
     const navigate =useNavigate()
     const[name,setName]=useState('')
     const[email,setEmail]=useState('')

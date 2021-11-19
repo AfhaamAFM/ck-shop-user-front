@@ -39,10 +39,8 @@ return (dispatch)=>{
      dispatch(fetchUserRequest())
     axios.get('http://localhost:5000/user/loggedIn').then(res=>{
 
-        console.log('dsdsds',res);
 
         const {status,userDetails}=res.data
-        console.log('here' ,status);
         dispatch(fetchUserSuccess(userDetails))
         dispatch(userVerify(status))
 
