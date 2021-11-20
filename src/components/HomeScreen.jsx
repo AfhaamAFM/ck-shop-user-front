@@ -27,10 +27,10 @@ function HomeScreen() {
 
   return (
     <>
-<Container>
+
 
 <ProductScreen/>
-</Container>
+
     </>
 
 

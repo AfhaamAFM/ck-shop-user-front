@@ -31,7 +31,7 @@ dispatch(fetchUserError(err))
         <div>
             <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect>
   <Container >
-    <Navbar.Brand href="#home"><strong>CK SHOP</strong></Navbar.Brand>
+    <Navbar.Brand as={Link} to='/'><strong>CK SHOP</strong></Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="d-flex ml-auto">

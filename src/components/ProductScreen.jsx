@@ -1,44 +1,52 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FreeMode } from 'swiper'
-import {Row,Col,Image,ListGroup,Card,Button} from 'react-bootstrap'
+import {Row,Col,Image,ListGroup,Card,Button, Container} from 'react-bootstrap'
 import { useSelector,useDispatch } from 'react-redux'
 import { fetchProduct } from '../redux/PRODUCTS/productAction'
 import ProductCard from './Map component/ProductCard'
-
+import { Link, useParams } from "react-router-dom";
 
 function ProductScreen() {
 
-
+const[listProducts,setListProducts]=useState('')
 const dispatch = useDispatch()
 const {product} =useSelector(state=>state.product)
-
-
+const { category } = useParams();
+const[showProducts,setShowProduct]=useState('')
+const[see,setSee]=useState()
 
 
 
 useEffect(()=>{
 dispatch(fetchProduct())
+const check = product.find((p) => p.category === category);
+// if(check){
 
-
+//     setShowProduct(check)
+    
+//     }
+//     else{
+//         setShowProduct(product)
+//     }
+// setSee(check)
+// console.log('dasdsad',category);
 },[])
-
-
-
-
-
 
 
     return (
         <>
+        <Container>
+
             <h1>Latest Products</h1>
             <Row>
-                {product.map((values)=>{
-               return  <Col sm={12} md={6} lg={4} xl={3}>
+                {product&&product.map((values,i)=>{
+               return  <Col sm={12} md={6} lg={4} xl={3} key={i}>
             
                 <ProductCard product={values} key={product._id}/>
                 </Col>
-})}
+                        })}
             </Row>
+            </Container>
         </>
     )
 }

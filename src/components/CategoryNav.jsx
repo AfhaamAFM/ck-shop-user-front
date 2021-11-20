@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Container, Nav, Navbar, Offcanvas,Button,NavDropdown,Form,FormControl } from 'react-bootstrap'
 import {useSelector,useDispatch} from 'react-redux'
+import { Link } from 'react-router-dom'
 import { fetchCategory } from '../redux/category/categoryAction'
 
 
@@ -40,13 +41,13 @@ dispatch(fetchCategory())
          {category.map((value)=>{
 
     
-       
        return   <NavDropdown key={value._id} title={value.category} id="offcanvasNavbarDropdown">
+<NavDropdown.Item as={Link} to={`/catProduct/${value.category}/`}  >All</NavDropdown.Item>
            { value&&value.subCat.map((array,i)=>{
 
            
        
-         return     <NavDropdown.Item key={i} >{array}</NavDropdown.Item>
+         return     <NavDropdown.Item as={Link} to={`/seePRoduct?main=${value.category}&sub=${array}`} key={i} >{array}</NavDropdown.Item>
             
         })  }
           </NavDropdown>

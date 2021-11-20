@@ -5,7 +5,7 @@ import Rating from './Rating';
 function ProductCard({product}) {
   
 
-console.log('tjkrwkjbrw',product.name);
+
 
     return (
         <Card className='my-3 p-3 rounded'>

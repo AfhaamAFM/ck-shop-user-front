@@ -31,9 +31,24 @@ function ProductDetailsScreen() {
         {showProducts && (
           <Row>
             <Col md={6}>
-              <Image src={showProducts.imageUrl[0].img} fluid />
+              <Image src={showProducts.imageUrl[0].img} fluid className='mb-5'/>
+              <Row>
+              <Col md={3} >
+                <Image src={showProducts.imageUrl[0].img} fluid />
+                </Col>
+                <Col md={3} >
+                <Image src={showProducts.imageUrl[1].img} fluid />
+                </Col>
+                <Col md={3} >
+                <Image src={showProducts.imageUrl[2].img} fluid />
+                </Col>
+                <Col md={3} >
+                <Image src={showProducts.imageUrl[3].img} fluid />
+                </Col>
+             
+              </Row>
             </Col>
-
+          
             <Col md={3}>
               <ListGroup>
                 <ListGroup.Item>
@@ -69,7 +84,7 @@ function ProductDetailsScreen() {
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
-                   <Button className='btn-block' type='button' disabled={showProducts.quantity===0}>
+                   <Button className='btn-block' type='button' disabled={showProducts.quantity===0 }>
                        Add to cart
                    </Button>
                   </ListGroup.Item>
