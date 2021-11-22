@@ -31,7 +31,7 @@ export const fetchProductError = (error) => {
 export const fetchProduct = () => {
     return (dispatch) => {
         dispatch(fetchProductRequest())
-        axios.get('http://localhost:5000/admin/product/').then(res => {
+        axios.get('/admin/product/').then(res => {
 
             dispatch(fetchProductSuccess(res.data))
 

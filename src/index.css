@@ -88,3 +88,28 @@ body {
 }
 
 /* Home screen swipper end */
+.carousel-container img{
+
+
+  max-height: 60vh;
+}
+.box-container{
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: auto;
+}
+.box-container img{
+border-radius: 50%;
+ height: 15rem;
+ border-bottom: 2px rgb(155, 155, 155);
+ width: 15rem;
+}
+.image-container{
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}

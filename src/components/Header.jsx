@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
-import {Navbar,Container,Nav,NavDropdown} from 'react-bootstrap'
+import {Navbar,Container,Nav,NavDropdown,Form,FormControl,Button,InputGroup} from 'react-bootstrap'
 import {Link } from 'react-router-dom';
 import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
 import swal from 'sweetalert';
@@ -11,10 +11,13 @@ import {useDispatch,useSelector} from 'react-redux'
 function Header() {
 const dispatch = useDispatch()
 const {userActive,users} = useSelector(state => state.user)
+const[keyword,setKeyword]=useState('')
+
+
 
 function logoutHandler(){
 dispatch(fetchUserRequest())
-axios.get('http://localhost:5000/user/logout').then(res=>{
+axios.get('/user/logout').then(res=>{
 dispatch(userlogged())
 swal("Logout successfully");
 
@@ -34,7 +37,23 @@ dispatch(fetchUserError(err))
     <Navbar.Brand as={Link} to='/'><strong>CK SHOP</strong></Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
+  
+
       <Nav className="d-flex ml-auto">
+      <Form className="d-flex">
+<InputGroup>
+        <FormControl
+          type="search"
+          placeholder="Search"
+          className="me-2"
+          aria-label="Search"
+          onChange={(e)=>{setKeyword(e.target.value)}}
+        >
+        </FormControl>
+        <Button as={Link} to={`/searchProduct/${keyword}`} variant="outline-success"  >Search</Button>
+        </InputGroup>
+      </Form>
+
         <Nav.Link href="#home" variant='danger'><i className="fas fa-shopping-bag"></i> Bag</Nav.Link>
         <Nav.Link href="#link">Link</Nav.Link>
         <NavDropdown title={userActive?users.name:"Accounts"} id="basic-nav-dropdown">

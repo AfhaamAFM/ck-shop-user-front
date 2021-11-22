@@ -37,7 +37,7 @@ export const userVerify = (response) => {
 export const userlogged=()=>{
 return (dispatch)=>{
      dispatch(fetchUserRequest())
-    axios.get('http://localhost:5000/user/loggedIn').then(res=>{
+    axios.get('/user/loggedIn').then(res=>{
 
 
         const {status,userDetails}=res.data

@@ -12,6 +12,8 @@ import CategoryNav from '../components/CategoryNav';
 import ProductDetailsScreen from '../components/Products.jsx/ProductDetailsScreen';
 import ProductScreen from '../components/ProductScreen';
 import CategoryProductScreen from '../components/Products.jsx/CategoryProductScreen';
+import SubcategoryProductScreen from '../components/Products.jsx/SubcategoryProductScreen';
+import SearchProductScreen from '../components/Products.jsx/SearchProductScreen';
 
 function RoutesHome() {
 
@@ -33,6 +35,8 @@ function RoutesHome() {
                         <Route path='/product/:id' element={<ProductDetailsScreen />} />
 
                         <Route path='/catProduct/:category/' element={<CategoryProductScreen />} />
+                        <Route path='/catProduct/:category/:subCat' element={<SubcategoryProductScreen/>} />
+                        <Route path='/searchProduct/:word' element={<SearchProductScreen/>} />
                         <Route path="/signin" element={userActive ? <Navigate to="/" /> : <Signin />} />
                         <Route path="/signup" element={userActive ? <Navigate to="/" /> : <Signup />} />
 

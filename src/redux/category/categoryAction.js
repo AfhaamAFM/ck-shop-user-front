@@ -31,7 +31,7 @@ export const fetchCategoryError = (error) => {
 export const fetchCategory = () => {
     return (dispatch) => {
         dispatch(fetchCategoryRequest())
-        axios.get('http://localhost:5000/admin/category').then(res => {
+        axios.get('/admin/category').then(res => {
 
 
 

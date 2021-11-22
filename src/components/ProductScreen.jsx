@@ -20,16 +20,6 @@ const[see,setSee]=useState()
 useEffect(()=>{
 dispatch(fetchProduct())
 const check = product.find((p) => p.category === category);
-// if(check){
-
-//     setShowProduct(check)
-    
-//     }
-//     else{
-//         setShowProduct(product)
-//     }
-// setSee(check)
-// console.log('dasdsad',category);
 },[])
 
 

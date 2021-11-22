@@ -47,22 +47,14 @@ dispatch(fetchCategory())
 
            
        
-         return     <NavDropdown.Item as={Link} to={`/seePRoduct?main=${value.category}&sub=${array}`} key={i} >{array}</NavDropdown.Item>
+         return     <NavDropdown.Item as={Link} to={`/catProduct/${value.category}/${array}`} key={i} >{array}</NavDropdown.Item>
             
         })  }
           </NavDropdown>
 
            })}
         </Nav>
-        <Form className="d-flex">
-          <FormControl
-            type="search"
-            placeholder="Search"
-            className="me-2"
-            aria-label="Search"
-          />
-          <Button variant="outline-success">Search</Button>
-        </Form>
+       
       </Offcanvas.Body>
     </Navbar.Offcanvas>
   </Container>

@@ -38,7 +38,7 @@ if(phone.length<10){
     }
     console.log(users);
     dispatch(fetchUserRequest())
-    axios.post("http://localhost:5000/user/signup/", users).then((res) => {
+    axios.post("/user/signup/", users).then((res) => {
       console.log(res.data);
       if (res.data.response) {
         setWarning(res.data.response)

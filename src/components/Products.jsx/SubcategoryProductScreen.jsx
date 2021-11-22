@@ -5,19 +5,19 @@ import { useSelector,useDispatch } from 'react-redux'
 
 import ProductCard from '../Map component/ProductCard'
 import { Link, useParams } from "react-router-dom";
-import { filterProductBycategory } from '../../redux/filterProducts/filterProductAction'
+import { filterProductBySubCategory } from '../../redux/filterProducts/filterProductAction'
 
 
-function CategoryProductScreen() {
+function SubcategoryProductScreen() {
 
     const dispatch = useDispatch()
     const {products,error} =useSelector(state=>state.filterProduct)
-    const { category } = useParams();
+    const { category,subCat } = useParams();
     const[warning,setWarning] =useState('')
 
-
+console.log(category,subCat);
     useEffect(()=>{
-        dispatch(filterProductBycategory(category))
+        dispatch(filterProductBySubCategory(category,subCat))
        if(!products){
 setWarning(`No items  in ${category}`)
 
@@ -30,7 +30,7 @@ console.log(products);
         <>
                <Container>
 
-{<h1 className='my-5'>Products for {category}</h1>}
+{<h4 className='my-5'>Products for {category}'s {subCat}</h4>}
 <h1 className='my-2'>{warning}</h1>
 <Row>
     {products&&products.map((values,i)=>{
@@ -45,4 +45,4 @@ console.log(products);
     )
 }
 
-export default CategoryProductScreen
+export default SubcategoryProductScreen

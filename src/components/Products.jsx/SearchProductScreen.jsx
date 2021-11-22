@@ -8,7 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import { filterProductBycategory } from '../../redux/filterProducts/filterProductAction'
 
 
-function CategoryProductScreen() {
+function SearchProductScreen() {
 
     const dispatch = useDispatch()
     const {products,error} =useSelector(state=>state.filterProduct)
@@ -45,4 +45,4 @@ console.log(products);
     )
 }
 
-export default CategoryProductScreen
+export default SearchProductScreen
