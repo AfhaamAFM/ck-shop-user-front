@@ -23,15 +23,15 @@ function ProductDetailsScreen() {
   const showProducts = product.find((p) => p._id === id);
 
   return (
-    <Container>
+    <Container fluid>
       <>
         <Link className="btn btn-light my-3" to="/">
           Go back
         </Link>
         {showProducts && (
-          <Row>
+          <Row className='mx-4'>
             <Col md={6}>
-              <Image src={showProducts.imageUrl[0].img} fluid className='mb-5'/>
+              <Image height='200px' src={showProducts.imageUrl[0].img} fluid className='mb-5'/>
               <Row>
               <Col md={3} >
                 <Image src={showProducts.imageUrl[0].img} fluid />

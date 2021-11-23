@@ -74,5 +74,28 @@ export const filterProductBycategory = (category) => {
 
     }
 
+    export const searchProduct = (word) => {
+        return (dispatch) => {
+            dispatch(fetchFilterProductRequest())
+            axios.get(`/admin/product/Searchfilter/${word}`).then(res => {
+    
+    
+                if(res.data.response){
+                    dispatch(fetchFilterProductError(res.data.response))
+    
+    
+                }else {
+                dispatch(fetchFilterProductSuccess(res.data))
+    
+                }
+            }).catch(err => {
+                dispatch(fetchFilterProductError(err))
+    
+            })
+    
+        }
+
+
+    }
 
     

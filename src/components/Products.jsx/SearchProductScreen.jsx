@@ -5,24 +5,24 @@ import { useSelector,useDispatch } from 'react-redux'
 
 import ProductCard from '../Map component/ProductCard'
 import { Link, useParams } from "react-router-dom";
-import { filterProductBycategory } from '../../redux/filterProducts/filterProductAction'
+import { filterProductBycategory, searchProduct } from '../../redux/filterProducts/filterProductAction'
 
 
 function SearchProductScreen() {
 
     const dispatch = useDispatch()
     const {products,error} =useSelector(state=>state.filterProduct)
-    const { category } = useParams();
+    const { word } = useParams();
     const[warning,setWarning] =useState('')
 
 
     useEffect(()=>{
-        dispatch(filterProductBycategory(category))
+        dispatch(searchProduct(word))
        if(!products){
-setWarning(`No items  in ${category}`)
+setWarning(`No items  in ${word}`)
 
        }
-    },[category,dispatch])
+    },[word,dispatch])
   
 console.log(products);
 
@@ -30,7 +30,7 @@ console.log(products);
         <>
                <Container>
 
-{<h1 className='my-5'>Products for {category}</h1>}
+{<h1 className='my-5'>Products for {word}</h1>}
 <h1 className='my-2'>{warning}</h1>
 <Row>
     {products&&products.map((values,i)=>{

@@ -54,7 +54,7 @@ dispatch(fetchUserError(err))
         </InputGroup>
       </Form>
 
-        <Nav.Link href="#home" variant='danger'><i className="fas fa-shopping-bag"></i> Bag</Nav.Link>
+        <Nav.Link as={Link} to='/cart' variant='danger'><i className="fas fa-shopping-bag"></i> Bag</Nav.Link>
         <Nav.Link href="#link">Link</Nav.Link>
         <NavDropdown title={userActive?users.name:"Accounts"} id="basic-nav-dropdown">
 
