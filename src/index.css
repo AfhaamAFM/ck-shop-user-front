@@ -113,3 +113,8 @@ border-radius: 50%;
   align-items: center;
   justify-content: space-around;
 }
+.short-image:hover{
+cursor: pointer !important;
+border: 2px solid red;
+}
+

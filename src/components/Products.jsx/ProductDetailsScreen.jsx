@@ -31,7 +31,7 @@ function ProductDetailsScreen() {
         {showProducts && (
           <Row className='mx-4'>
             <Col md={6}>
-              <Image height='200px' src={showProducts.imageUrl[0].img} fluid className='mb-5'/>
+              {/* <Image height='200px' src={showProducts.imageUrl[0].img} fluid className='mb-5'/> */}
               <Row>
               <Col md={3} >
                 <Image src={showProducts.imageUrl[0].img} fluid />

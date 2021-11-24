@@ -25,6 +25,7 @@ dispatch(fetchCategory())
             <Navbar bg="light" expand={false}>
   <Container fluid>
     <Navbar.Brand href="#">Let shop with category</Navbar.Brand>
+  
     <Navbar.Toggle aria-controls="offcanvasNavbar" />
     <Navbar.Offcanvas
       id="offcanvasNavbar"
