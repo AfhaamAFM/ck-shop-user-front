@@ -25,7 +25,51 @@ dispatch(fetchCategory())
             <Navbar bg="light" expand={false}>
   <Container fluid>
     <Navbar.Brand href="#">Let shop with category</Navbar.Brand>
-  
+
+
+
+
+    {/* <NavDropdown title={userActive?users.name:"Accounts"} id="basic-nav-dropdown">
+
+{userActive?<><NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.4">My profile</NavDropdown.Item></>:<NavDropdown.Item as={Link} to='/signin'>Sign in</NavDropdown.Item>}
+         
+        
+            <NavDropdown.Divider />
+          
+        </NavDropdown> */}
+
+
+
+
+
+
+
+    <Nav className="d-flex pe-3 ">
+          {/* <Nav.Link href="#action1">Home</Nav.Link>
+          <Nav.Link href="#action2">Link</Nav.Link> */}
+         {category.map((value)=>{
+
+    
+       return   <NavDropdown key={value._id} title={value.category} id="basic-nav-dropdown">
+<NavDropdown.Item as={Link} to={`/catProduct/${value.category}/`}  >All</NavDropdown.Item>
+           { value&&value.subCat.map((array,i)=>{
+
+           
+       
+         return     <NavDropdown.Item as={Link} to={`/catProduct/${value.category}/${array}`} key={i} >{array}</NavDropdown.Item>
+            
+        })  }
+          </NavDropdown>
+
+           })}
+        </Nav>
+
+
+
+
+
+
     <Navbar.Toggle aria-controls="offcanvasNavbar" />
     <Navbar.Offcanvas
       id="offcanvasNavbar"

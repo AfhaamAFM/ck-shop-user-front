@@ -16,6 +16,7 @@ import SubcategoryProductScreen from '../components/Products.jsx/SubcategoryProd
 import SearchProductScreen from '../components/Products.jsx/SearchProductScreen';
 import CartScreen from '../components/Cart/CartScreen';
 import ProductVIewPage from '../components/Products.jsx/ProductVIewPage';
+import CategoryHeader from '../components/CategoryHeader';
 
 function RoutesHome() {
 
@@ -29,7 +30,8 @@ function RoutesHome() {
         <div>
             <Router>
                 <Header />
-                <CategoryNav />
+                <CategoryHeader/>
+                {/* <CategoryNav /> */}
                 <main>
                     <Routes>
 

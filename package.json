@@ -20,6 +20,7 @@
     "react-bootstrap": "^2.0.2",
     "react-data-table-component": "^7.4.5",
     "react-dom": "^17.0.2",
+    "react-image-magnifiers": "^1.4.0",
     "react-loader-spinner": "^4.0.0",
     "react-redux": "^7.2.6",
     "react-router-bootstrap": "^0.25.0",

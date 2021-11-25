@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
 import   {Select,Typography} from 'antd'
+import AdressModal from "./CartModal/AdressModal";
 const { Option } = Select;
 const { Text, Link,Title } = Typography;
 
@@ -34,6 +35,7 @@ const sizeHandler =()=>{
   return (
     <div>
       <Container>
+        <AdressModal/>
         <Row className="mt-5">
             <Title>Shopping Bag <i className="fas fa-shopping-bag"></i> </Title>
           {/* Delivary address start */}

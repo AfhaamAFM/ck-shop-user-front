@@ -29,8 +29,8 @@ console.log(products);
     return (
         <>
                <Container>
+{products.length===0?<h1 className='my-5'>No seach result for {word}</h1>:<h1 className='my-5'>Products for {word}</h1>}
 
-{<h1 className='my-5'>Products for {word}</h1>}
 <h1 className='my-2'>{warning}</h1>
 <Row>
     {products&&products.map((values,i)=>{

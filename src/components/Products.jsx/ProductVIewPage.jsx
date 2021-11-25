@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Typography,Space } from 'antd';
-
+import { Typography, Space } from 'antd';
+import { GlassMagnifier } from 'react-image-magnifiers'
 import { fetchProduct } from "../../redux/PRODUCTS/productAction";
 import {
     Row,
@@ -15,6 +15,7 @@ import {
     ButtonGroup,
 
 } from "react-bootstrap";
+import ProductCard from "../Map component/ProductCard";
 
 function ProductVIewPage() {
     const [previewSource, sestPreviewSource] = useState(
@@ -22,12 +23,12 @@ function ProductVIewPage() {
     );
     const { id } = useParams();
 
-const { Text } = Typography;
+    const { Text } = Typography;
     const dispatch = useDispatch();
     const { product } = useSelector((state) => state.product);
     useEffect(() => {
         dispatch(fetchProduct());
-        showProducts && sestPreviewSource(showProducts.ImageUrl[0]);
+        // showProducts && sestPreviewSource(showProducts?.ImageUrl[0].img);
     }, [dispatch, id]);
 
     const showProducts = product.find((p) => p._id === id);
@@ -52,6 +53,12 @@ const { Text } = Typography;
                                             alt="small product imge"
                                             fluid
                                         />
+
+
+
+
+
+
                                         <Image
                                             className="short-image"
                                             onMouseOver={(e) => {
@@ -87,57 +94,81 @@ const { Text } = Typography;
                                     </Row>
                                 </Col>
                                 <Col md={10}>
-                                    <Card className="p-1" style={{ height: "30rem" }}>
+                                    <Card className="p-1" style={{ height: "inherit" }}>
                                         {/* <i className="fas fa-heart ml-auto "></i> */}{" "}
-                                        <Image
+                                        {/* <Image
                                             style={{ height: "100%", width: "100%" }}
                                             src={previewSource}
                                             alt="small product imge"
                                             fluid
-                                        />
+                                        /> */}
+
+
+                                        <div  style={{ height: "100%", width: "100%",objectFit:'contain' }}>
+
+
+
+                                            <GlassMagnifier
+                                                imageSrc={previewSource}
+                                                imageAlt={'show product'}
+                                                magnifierBorderSize={1}
+                                                magnifierSize={'50%'}
+                                                square={true}
+                                            />
+
+                                        </div>
                                     </Card>
-                                        <Row className='m-3 d-flex'>
+                                    <Row className='m-3 d-flex'>
 
-                                            <ButtonGroup >
+                                        <ButtonGroup >
 
-                                                <Button disabled={showProducts.quantity===0 } variant='danger' className='mx-1'><i className="fas fa-running  mx-2"></i> Buy Now</Button>
+                                            <Button disabled={showProducts.quantity === 0} variant='danger' className='mx-1'><i className="fas fa-running  mx-2"></i> Buy Now</Button>
 
 
-                                                <Button disabled={showProducts.quantity===0 } variant='warning' className='mx-1'> <i className="fas fa-shopping-bag mx-2"></i>  Add To Bag</Button>
-                                            </ButtonGroup>
+                                            <Button disabled={showProducts.quantity === 0} variant='warning' className='mx-1'> <i className="fas fa-shopping-bag mx-2"></i>  Add To Bag</Button>
+                                        </ButtonGroup>
 
-                                        </Row>
+                                    </Row>
                                 </Col>
                             </Row>
 
                         </Col>
                         <Col md={7}>
-<ListGroup>
-<h3 as={Col}  >
-    {showProducts.name}
-</h3>
-<h6 className="mb-2 text-muted">{showProducts.category} <small> {showProducts.subCat}</small> </h6>
-<Col className='d-flex'>
-<Space direction="horizontal">
-    <h2>₹ {showProducts.price}</h2>
-    <Text delete className=' ms-1'><b>₹ 1299 </b> </Text>
-    <Text type="success" className=' ms-1'><b>80% </b></Text>
-    </Space>
-</Col>
-<ListGroup.Item>
-<h5>Product Description</h5>
-<p>{showProducts.description}</p>
-</ListGroup.Item>
+                            <ListGroup>
+                                <h3 as={Col}  >
+                                    {showProducts.name}
+                                </h3>
+                                <h6 className="mb-2 text-muted">{showProducts.category} <small> {showProducts.subCat}</small> </h6>
+                                <Col className='d-flex'>
+                                    <Space direction="horizontal">
+                                        <h2>₹ {showProducts.price}</h2>
+                                        <Text delete className=' ms-1'><b>₹ 1299 </b> </Text>
+                                        <Text type="success" className=' ms-1'><b>80% </b></Text>
+                                    </Space>
+                                </Col>
+                                <ListGroup.Item>
+                                    <h5>Product Description</h5>
+                                    <p>{showProducts.description}</p>
+                                </ListGroup.Item>
 
-{showProducts.quantity>0? <h4  className=' ms-1 my-3'><b>{`Only ${showProducts.quantity} left, Please hurry!`}</b></h4> : <Text type="danger" className=' ms-1'><b>sorry,No stocks left</b></Text> }
-</ListGroup>
+                                {showProducts.quantity > 0 ? <h4 className=' ms-1 my-3'><b>{`Only ${showProducts.quantity} left, Please hurry!`}</b></h4> : <Text type="danger" className=' ms-1'><b>sorry,No stocks left</b></Text>}
+                            </ListGroup>
 
 
                         </Col>
                     </Row>
+                   
+
                 )}
 
+{/* <Row>
+    {product&&product.map((values,i)=>{
+   return  <Col sm={12} md={6} lg={4} xl={3} key={i}>
 
+    <ProductCard product={values} key={product._id}/>
+    </Col>
+            })}
+</Row> */}
 
 
             </Container>
