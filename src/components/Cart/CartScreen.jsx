@@ -57,10 +57,10 @@ function CartScreen() {
   const modalAddButtonHandler = () => {
 
     addressHandleClose()
-    setTimeout(() => {
+   
 
       addAddressHandleShow()
-    }, 300)
+
   }
 
 
@@ -129,7 +129,8 @@ function CartScreen() {
           setLandmark={setLandmark}
 
 
-
+          addAddressShow={addAddressShow}
+          addAddressHandleClose={addAddressHandleClose}
         />
 
         {/* Modals end */}
