@@ -4,16 +4,19 @@ import   {Typography,space, Space} from 'antd'
 
 
 
-function AdressModal({changeAddressShow, addressHandleClose,address,setSelectedAddressID}) {
+function AdressModal({changeAddressShow, addressHandleClose,address,setSelectedAddressID,addAddressHandleShow,modalAddButtonHandler}) {
   const { Text,Title } = Typography;
   
-    // const handleShow = () => setShow(true);
+
+
+
+
+
+    
  
     return (
       <>
-        {/* <Button variant="primary" onClick={handleShow}>
-          Launch static backdrop modal
-        </Button> */}
+    
   
         <Modal
           show={changeAddressShow}
@@ -40,7 +43,10 @@ function AdressModal({changeAddressShow, addressHandleClose,address,setSelectedA
           name="addresses"
           id={value._id}
 
-          onChange={(e)=>{setSelectedAddressID(e.target.id)}}
+          onChange={(e)=>{setSelectedAddressID(e.target.id)
+            addressHandleClose()
+          
+          }}
         />
        
        </Col>
@@ -68,7 +74,7 @@ function AdressModal({changeAddressShow, addressHandleClose,address,setSelectedA
             <Button variant="secondary" onClick={addressHandleClose}>
               Close
             </Button>
-            <Button variant="primary">Save</Button>
+            <Button variant="primary" onClick={modalAddButtonHandler} >Add new Address</Button>
           </Modal.Footer>
         </Modal>
       </>
