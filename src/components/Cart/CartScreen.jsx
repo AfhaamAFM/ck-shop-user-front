@@ -15,16 +15,19 @@ function CartScreen() {
 // UseStates
   const [changeAddressShow,setChangeAddressShow] = useState(false);
   const[allAddress,setAllAddress]=useState()
-  
+  const[selectedAddressID,setSelectedAddressID]=useState('')
+const[defaultAddress,setDefualtAddress]=useState('')
+
+
   // Redux function
   const {userActive,users} =useSelector(state=>state.user)
   const dispatch = useDispatch()
 
 
-  console.log('THis is normal ',userActive);
+  // console.log('THis is normal ',userActive);
   // Modal controller start
 
-console.log(users);
+
     const addressHandleClose = () => setChangeAddressShow(false);
     const addressHandleShow = () => setChangeAddressShow(true);
 
@@ -49,8 +52,13 @@ setAllAddress(users.address)
 
 },[dispatch,allAddress])
 
+ useEffect(()=>{
 
+users&&setDefualtAddress(users.find(value=>value.address._id===selectedAddressID))
 
+ },[selectedAddressID])
+
+console.log(defaultAddress);
 
 
 
@@ -61,7 +69,13 @@ setAllAddress(users.address)
         {/* Modalss start */}
        
        
-        <AdressModal changeAddressShow={changeAddressShow} addressHandleClose={addressHandleClose} setChangeAddressShow={setChangeAddressShow} address={users.address}/>
+        <AdressModal
+         changeAddressShow={changeAddressShow}
+          addressHandleClose={addressHandleClose}
+           setChangeAddressShow={setChangeAddressShow} 
+           address={users.address}
+           setSelectedAddressID={setSelectedAddressID}
+         />
 
 
         {/* Modals end */}

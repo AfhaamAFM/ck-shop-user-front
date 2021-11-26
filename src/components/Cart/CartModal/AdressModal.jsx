@@ -4,11 +4,11 @@ import   {Typography,space, Space} from 'antd'
 
 
 
-function AdressModal({changeAddressShow, addressHandleClose,address}) {
+function AdressModal({changeAddressShow, addressHandleClose,address,setSelectedAddressID}) {
   const { Text,Title } = Typography;
   
     // const handleShow = () => setShow(true);
- address&&console.log(address);
+ 
     return (
       <>
         {/* <Button variant="primary" onClick={handleShow}>
@@ -32,15 +32,15 @@ function AdressModal({changeAddressShow, addressHandleClose,address}) {
 
           <fieldset>
     <Form.Group as={Row} className="mb-3">
-     
-      <Col className='ms-3 d-flex'>
+   {address&&address.map((value)=>{ 
+   return   <Col className='ms-3 d-flex' sm={12} key={value._id}>
        <Col sm={1}>
-
-
         <Form.Check
           type="radio"
-          name="formHorizontalRadios"
-          id="formHorizontalRadios1"
+          name="addresses"
+          id={value._id}
+
+          onChange={(e)=>{setSelectedAddressID(e.target.id)}}
         />
        
        </Col>
@@ -48,16 +48,13 @@ function AdressModal({changeAddressShow, addressHandleClose,address}) {
 
     
          <Space direction='vertical'>
-<Text strong>Afhaam k</Text>
-<Text type="secondary">Lexus villa,Kakknad,kakknad west p.o,Cochin,Ernakululam,Kerala,676303</Text>
+<Text strong>{value.name}</Text>
+<Text>{value.flatNo} ,{value.landmark} ,{value.street} ,{value.district} dist ,{value.state} ,{value.pincode} ,<b>Ph:</b>{value.number}</Text>
          </Space>
-       
-
        </Col>
-       
+      </Col>  })} 
 
-      
-      </Col>
+
     </Form.Group>
   </fieldset>
 
