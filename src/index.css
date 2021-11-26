@@ -118,3 +118,19 @@ cursor: pointer !important;
 border: 2px solid red;
 }
 
+.cartPLace{
+
+display: flex;
+border: 1px solid rgb(143, 143, 143);
+border-radius: 2rem;
+padding: 3rem;
+justify-content: space-around;
+flex-direction: column;
+
+}
+
+.flipkartImage {
+
+  height: 15rem;
+ margin: auto;
+}

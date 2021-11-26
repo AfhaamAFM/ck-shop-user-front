@@ -1,13 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
 import   {Select,Typography} from 'antd'
 import AdressModal from "./CartModal/AdressModal";
+import {useSelector,useDispatch} from 'react-redux'
+import { userlogged } from "../../redux/userStore/userAction";
+
+import {Link} from 'react-router-dom'
+
+
 const { Option } = Select;
-const { Text, Link,Title } = Typography;
-
-
+const { Text,Title } = Typography;
 
 function CartScreen() {
+// UseStates
+  const [changeAddressShow,setChangeAddressShow] = useState(false);
+  const[allAddress,setAllAddress]=useState()
+  
+  // Redux function
+  const {userActive,users} =useSelector(state=>state.user)
+  const dispatch = useDispatch()
+
+
+  console.log('THis is normal ',userActive);
+  // Modal controller start
+
+console.log(users);
+    const addressHandleClose = () => setChangeAddressShow(false);
+    const addressHandleShow = () => setChangeAddressShow(true);
+
+
+    // modal controller end
 
 // QUANTITY HANDLER START
 const quantityHandler =()=>{
@@ -17,14 +39,15 @@ const sizeHandler =()=>{
 
 }
 
-
-
-
 // Quantity handler end
 
 
 
+useEffect(()=>{
+dispatch(userlogged())
+setAllAddress(users.address)
 
+},[dispatch,allAddress])
 
 
 
@@ -35,10 +58,20 @@ const sizeHandler =()=>{
   return (
     <div>
       <Container>
-        <AdressModal/>
+        {/* Modalss start */}
+       
+       
+        <AdressModal changeAddressShow={changeAddressShow} addressHandleClose={addressHandleClose} setChangeAddressShow={setChangeAddressShow} address={users.address}/>
+
+
+        {/* Modals end */}
+
+
+
         <Row className="mt-5">
             <Title>Shopping Bag <i className="fas fa-shopping-bag"></i> </Title>
-          {/* Delivary address start */}
+
+{userActive? <>
           <Col sm={12} md={8}>
             <Card className="mb-3">
               <Col sm={12} className="mb-3">
@@ -50,8 +83,8 @@ const sizeHandler =()=>{
                   <Card.Text>
                     Carnival infopark,Cochin,Kakkanad,Kerala,676303
                   </Card.Text>
-                  <Button variant="outline-danger" size="sm">
-                    Add new Address
+                  <Button variant="outline-danger" size="sm" onClick={addressHandleShow}>
+                    Change Address
                   </Button>
                 </Card.Body>
               </Col>
@@ -106,7 +139,7 @@ const sizeHandler =()=>{
                   </Col>
                   <Col md={1}>
                   <span style={{fontSize: '2em', color: 'Tomato'}}>
-                    <i class="far fa-times-circle"></i> 
+                    <i className="far fa-times-circle"></i> 
                     </span>
                   </Col>
                 </Row>
@@ -154,6 +187,18 @@ const sizeHandler =()=>{
 
 <Button className='m-3' variant="success">Proceed To Checkout</Button>
           </Col>
+          </>    :<Row>
+  <Col className='cartPLace' >
+    <h4>Please sign in &#128517;</h4>
+    <img className='flipkartImage'src='https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90' alt='signin'/>
+ <Button className='mx-auto px-3 my-3' as={Link} to='/signin'  variant='danger'>Sign in</Button>
+  </Col>
+</Row>}
+
+
+
+{/* Delivary address start */}
+
         </Row>
       </Container>
     </div>
