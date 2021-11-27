@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Typography, Space } from 'antd';
 import { GlassMagnifier } from 'react-image-magnifiers'
@@ -16,16 +16,41 @@ import {
 
 } from "react-bootstrap";
 import ProductCard from "../Map component/ProductCard";
+import { Axios } from "axios";
 
 function ProductVIewPage() {
     const [previewSource, sestPreviewSource] = useState(
         "https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png"
     );
+const[selectedSize,setSelectedSize]=useState('')
+const[selectedSizeWarning,setSelectedSizeWarning]=useState(false)
     const { id } = useParams();
+const navigate =useNavigate()
+
+
 
     const { Text } = Typography;
     const dispatch = useDispatch();
     const { product } = useSelector((state) => state.product);
+
+
+
+
+    // Add to bag handler
+    function addToBagHandler(){
+console.log('reacdssdsa');
+if(!selectedSize){
+    console.log('radsadDADDsdsa');
+return setSelectedSizeWarning(true)
+
+}
+setSelectedSizeWarning()
+
+
+
+    }
+
+
     useEffect(() => {
         dispatch(fetchProduct());
         // showProducts && sestPreviewSource(showProducts?.ImageUrl[0].img);
@@ -120,13 +145,13 @@ function ProductVIewPage() {
                                     </Card>
                                     <Row className='m-3 d-flex'>
 
-                                        <ButtonGroup >
+                                        <Col className='d-flex' >
 
-                                            <Button disabled={showProducts.quantity === 0} variant='danger' className='mx-1'><i className="fas fa-running  mx-2"></i> Buy Now</Button>
+                                            <Button disabled={showProducts.quantity === 0} variant='danger' className='mx-1' ><i className="fas fa-running  mx-2" ></i> Buy Now</Button>
 
 
-                                            <Button disabled={showProducts.quantity === 0} variant='warning' className='mx-1'> <i className="fas fa-shopping-bag mx-2"></i>  Add To Bag</Button>
-                                        </ButtonGroup>
+                                            <Button disabled={showProducts.quantity === 0} variant='warning' className='mx-1' onClick={addToBagHandler}> <i className="fas fa-shopping-bag mx-2" ></i>  Add To Bag</Button>
+                                        </Col >
 
                                     </Row>
                                 </Col>
@@ -153,7 +178,22 @@ function ProductVIewPage() {
 
                                 {showProducts.quantity > 0 ? <h4 className=' ms-1 my-3'><b>{`Only ${showProducts.quantity} left, Please hurry!`}</b></h4> : <Text type="danger" className=' ms-1'><b>sorry,No stocks left</b></Text>}
                             </ListGroup>
+<ListGroup>
 
+    <ListGroup.Item  >
+<h4 >Select size </h4>
+
+<ButtonGroup aria-label="Basic example">
+  <Button variant="outline-warning" value='small' onClick={(e)=>{setSelectedSize(e.target.value)}}>small</Button>
+  <Button variant="outline-danger" value='medium' onClick={(e)=>{setSelectedSize(e.target.value)}}>medium</Button>
+  <Button variant="outline-info" value='large'   onClick={(e)=>{setSelectedSize(e.target.value)}}>large</Button>
+</ButtonGroup>
+  
+{selectedSize&&<h6 className='m-3' style={{color:'pink'}}>selected {selectedSize}</h6>}
+{selectedSizeWarning&&<h5 className='m-3' style={{color:'red'}}>Select a size</h5>}
+   
+    </ListGroup.Item>
+</ListGroup>
 
                         </Col>
                     </Row>
@@ -161,14 +201,6 @@ function ProductVIewPage() {
 
                 )}
 
-{/* <Row>
-    {product&&product.map((values,i)=>{
-   return  <Col sm={12} md={6} lg={4} xl={3} key={i}>
-
-    <ProductCard product={values} key={product._id}/>
-    </Col>
-            })}
-</Row> */}
 
 
             </Container>

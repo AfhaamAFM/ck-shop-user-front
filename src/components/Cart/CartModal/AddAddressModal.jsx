@@ -249,7 +249,7 @@ function AddAddressModal({
                     <Button variant="secondary" onClick={addAddressHandleClose}>
                         Close
                     </Button>
-                  {loading?<div class="spinner-border" role="status">
+                  {loading?<div className="spinner-border" role="status">
   <span class="sr-only">Loading...</span>
 </div>
                     :<Button onClick={addAddressHandler} variant="primary" disabled={flatNOError ||
