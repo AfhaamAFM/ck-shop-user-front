@@ -83,13 +83,13 @@ const validator = {
         phoneError('Phone number does not have 10 digits')
       } else if (phone.length > 10) {
         phoneError('Phone number has more than 10 digits')
-      } else {
-        return null
+      }  else {
+        phoneError('')
       }
     },
   
     phoneInputChangeHandler(phone, phoneError) {
-      if (!phone.match(/^\d{10}$/) && phone !== '') {
+      if (!phone.match(/^\d{10}$/)) {
         phoneError('Enter numbers only!')
       } else if (phone.length > 10) {
         phoneError('Phone number has more than 10 digits')
@@ -99,8 +99,8 @@ const validator = {
       //   phoneError == 'Enter numbers only!' ||
       //   phoneError == 'Phone number has more than 10 digits'
       // )
-      else {
-        return null
+      else   {
+        phoneError('')
       }
     },
   

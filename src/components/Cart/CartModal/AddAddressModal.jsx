@@ -16,8 +16,9 @@ function AddAddressModal({
     setDistrict,
     setState,
     setLandmark,
-
-
+    warning,
+   loading,
+    addAddressHandler
 
     // states 
 
@@ -93,7 +94,7 @@ function AddAddressModal({
                             <Form.Group as={Col} md="12" className="mb-2" controlId="validationCustom02">
                                 <Form.Label>Mobile Number</Form.Label>
                                 <Form.Control
-                                    
+
                                     type="text"
                                     placeholder="Last name"
 
@@ -120,13 +121,13 @@ function AddAddressModal({
                                 <Form.Label>Pincode</Form.Label>
                                 <Form.Control type="text" placeholder="pincode"
 
-                                onChange={(e) => {
-                                    setPincode(e.target.value)
-                                    validator.postalCodeInputChangeHandler(e.target.value, setPincodeError)
+                                    onChange={(e) => {
+                                        setPincode(e.target.value)
+                                        validator.postalCodeInputChangeHandler(e.target.value, setPincodeError)
                                     }}
 
                                     onBlur={(e) => {
-                                    validator.postalCodeInputBlurHandler(e.target.value, setPincodeError)
+                                        validator.postalCodeInputBlurHandler(e.target.value, setPincodeError)
                                     }}
                                 />
                                 <Text className='my-1' type="danger">{pincodeError}</Text>
@@ -240,6 +241,7 @@ function AddAddressModal({
                         </Row>
 
                     </Form>
+                    <Text className='my-1' type="danger">{warning}</Text>
 
 
                 </Modal.Body>
@@ -247,7 +249,17 @@ function AddAddressModal({
                     <Button variant="secondary" onClick={addAddressHandleClose}>
                         Close
                     </Button>
-                    <Button variant="primary">Add</Button>
+                  {loading?<div class="spinner-border" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+                    :<Button onClick={addAddressHandler} variant="primary" disabled={flatNOError ||
+                        numberError ||
+                        pincodeError ||
+                        nameError ||
+                        streetError ||
+                        districtError ||
+                        stateError ||
+                        landmarkError}    >Add new Address</Button>}
                 </Modal.Footer>
             </Modal>
 

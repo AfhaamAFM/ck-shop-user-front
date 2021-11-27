@@ -3,10 +3,11 @@ import { Container, Row, Col, Card, Button, Image, Placeholder } from "react-boo
 import { Select, Typography } from 'antd'
 import AdressModal from "./CartModal/AdressModal";
 import { useSelector, useDispatch } from 'react-redux'
-import { userlogged } from "../../redux/userStore/userAction";
-
+import { addAddress, userlogged } from "../../redux/userStore/userAction";
+import Swal from 'sweetalert2'
 import { Link } from 'react-router-dom'
 import AddAddressModal from "./CartModal/AddAddressModal";
+import axios from "axios";
 
 
 const { Option } = Select;
@@ -19,14 +20,15 @@ function CartScreen() {
 
   // address states
   const [name, setName] = useState('')
-  const [flatNO, setFlatNO] = useState('')
+  const [flatNo, setFlatNO] = useState('')
   const [number, setNumber] = useState('')
   const [pincode, setPincode] = useState('')
   const [street, setStreet] = useState('')
   const [district, setDistrict] = useState('')
   const [state, setState] = useState('')
   const [landmark, setLandmark] = useState('')
-
+const[warning,setWarning]=useState('')
+const[loading,setLoading]=useState(false)
   // form error states
 
 
@@ -57,9 +59,9 @@ function CartScreen() {
   const modalAddButtonHandler = () => {
 
     addressHandleClose()
-   
 
-      addAddressHandleShow()
+
+    addAddressHandleShow()
 
   }
 
@@ -76,6 +78,84 @@ function CartScreen() {
   }
 
   // Quantity handler end
+
+  // ===============================Add new ADDRESS START=========================
+
+  function addAddressHandler() {
+    setLoading(true)
+if(!name||!flatNo||!number||!pincode|| !street||!district||!state||!landmark){
+  setLoading(false)
+  return setWarning('Please fill all,thisssss')
+}
+    axios.post('/user/address/add', {
+      name,
+      flatNo,
+      number,
+      pincode,
+      street,
+      district,
+      state,
+      landmark,
+    }).then(res=>{
+
+if(res.data.response){
+  setLoading(false)
+  return setWarning(res.data.response)
+
+
+}
+
+if(res.data){
+  setLoading(false)
+  dispatch(userlogged())
+  addAddressHandleClose ()
+  Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'Your work has been saved',
+    showConfirmButton: false,
+    timer: 1500
+  })
+
+
+
+}
+
+
+    })
+
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ===============================ADD NEW ADDRESS END ==========================
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -111,7 +191,7 @@ function CartScreen() {
         <AddAddressModal
 
           name={name}
-          flatNO={flatNO}
+          flatNo={flatNo}
           number={number}
           pincode={pincode}
           street={street}
@@ -127,8 +207,9 @@ function CartScreen() {
           setDistrict={setDistrict}
           setState={setState}
           setLandmark={setLandmark}
-
-
+          warning={ warning}
+          loading={loading}
+          addAddressHandler={addAddressHandler}
           addAddressShow={addAddressShow}
           addAddressHandleClose={addAddressHandleClose}
         />
