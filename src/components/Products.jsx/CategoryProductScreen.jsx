@@ -24,7 +24,7 @@ setWarning(`No items  in ${category}`)
        }
     },[category,dispatch])
   
-console.log(products);
+
 
     return (
         <>

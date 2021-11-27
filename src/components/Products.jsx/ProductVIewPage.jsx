@@ -16,7 +16,7 @@ import {
 
 } from "react-bootstrap";
 import ProductCard from "../Map component/ProductCard";
-import { Axios } from "axios";
+import { addToCart } from "../../redux/CARTSTORE/cartAction";
 
 function ProductVIewPage() {
     const [previewSource, sestPreviewSource] = useState(
@@ -38,15 +38,16 @@ const navigate =useNavigate()
 
     // Add to bag handler
     function addToBagHandler(){
-console.log('reacdssdsa');
 if(!selectedSize){
-    console.log('radsadDADDsdsa');
 return setSelectedSizeWarning(true)
 
 }
-setSelectedSizeWarning()
-
-
+setSelectedSizeWarning(false)
+const product =id
+const size =selectedSize
+const price = showProducts.price
+const cartItems={product,size,price}
+dispatch(addToCart(cartItems))
 
     }
 

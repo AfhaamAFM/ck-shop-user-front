@@ -2,7 +2,7 @@ import {CART_ADD_SUCCESS,CART_FETCH_SUCCESS,CART_FETCH_ERROR,CART_FETCH_REQUEST}
 import axios from 'axios'
 
 
-export const fetchCartError=()=>{
+export const fetchCartRequest=()=>{
 
 return {
 
@@ -14,11 +14,11 @@ return {
 
 export const addToCartSuccess=(response)=>{
 
+    console.log(response)
 return {
 
-
     type:CART_ADD_SUCCESS,
-    playload:response
+    payload:response
 }
 }
 
@@ -28,7 +28,7 @@ export const fetchCartSuccess=(cartItems)=>{
 return {
 
     type:CART_FETCH_SUCCESS,
-    playload:cartItems
+    payload:cartItems
 }
 }
 
@@ -36,9 +36,34 @@ export const fetchCartError=(err)=>{
 
 return {
 type:CART_FETCH_ERROR,
-playload:err
+payload:err
 
 
 }
 
+}
+
+
+
+export const addToCart=(cartItem)=>{
+
+return (dispatch)=>{
+dispatch(fetchCartRequest())
+
+axios.post('/user/cart/add',cartItem).then(res=>{
+
+dispatch(addToCartSuccess(res.data))
+
+
+}).catch(err=>{
+
+
+    dispatch(fetchCartError(err))
+})
+
+
+
+
+
+}
 }

@@ -7,7 +7,7 @@ const initial = {
     loading: false,
     cartItems: [],
     error: '',
-    addResponse: ''
+    addResponse: null
 
 }
 
@@ -30,13 +30,13 @@ const cartReducer = (state = initial, action) => {
         case CART_ADD_SUCCESS:
             return {
                 ...state,
+                addResponse: action.payload,
                 loading: false,
-                error: '',
-                addResponse: action.payload
+                error: ''
             }
-        case CART_FETCH_ERROR:
-            return {
-                ...state,
+            case CART_FETCH_ERROR:
+                return {
+                    ...state,
                 loading: false,
                 error:action.payload
             }
