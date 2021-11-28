@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams,useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Typography, Space } from 'antd';
 import { GlassMagnifier } from 'react-image-magnifiers'
 import { fetchProduct } from "../../redux/PRODUCTS/productAction";
+import Swal from 'sweetalert2'
+
 import {
     Row,
     Col,
@@ -13,6 +15,7 @@ import {
     Card,
     Container,
     ButtonGroup,
+    Spinner
 
 } from "react-bootstrap";
 import ProductCard from "../Map component/ProductCard";
@@ -22,32 +25,53 @@ function ProductVIewPage() {
     const [previewSource, sestPreviewSource] = useState(
         "https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png"
     );
-const[selectedSize,setSelectedSize]=useState('')
-const[selectedSizeWarning,setSelectedSizeWarning]=useState(false)
+    const [selectedSize, setSelectedSize] = useState('')
+    const [selectedSizeWarning, setSelectedSizeWarning] = useState(false)
     const { id } = useParams();
-const navigate =useNavigate()
+    const navigate = useNavigate()
 
 
 
     const { Text } = Typography;
     const dispatch = useDispatch();
     const { product } = useSelector((state) => state.product);
+    const {userActive} = useSelector(state => state.user)
 
-
+    const { loading: addLoading, addResponse } = useSelector(state => state.cart)
 
 
     // Add to bag handler
-    function addToBagHandler(){
-if(!selectedSize){
-return setSelectedSizeWarning(true)
+    function addToBagHandler() {
+
+
+
+        if(!userActive){
+            return navigate('/cart')
+        }
+        if (!selectedSize) {
+            return setSelectedSizeWarning(true)
+
+        }
+        setSelectedSizeWarning(false)
+        const product = id
+        const size = selectedSize
+        const price = showProducts.price
+        const cartItems = { product, size, price }
+        dispatch(addToCart(cartItems))
+
+if(addResponse){
+
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `${addResponse.response}`,
+        showConfirmButton: false,
+        timer: 1500
+      })
+
 
 }
-setSelectedSizeWarning(false)
-const product =id
-const size =selectedSize
-const price = showProducts.price
-const cartItems={product,size,price}
-dispatch(addToCart(cartItems))
+
 
     }
 
@@ -61,6 +85,7 @@ dispatch(addToCart(cartItems))
 
     return (
         <>
+
             <Container>
                 {showProducts && (
                     <Row className="mt-5">
@@ -130,7 +155,7 @@ dispatch(addToCart(cartItems))
                                         /> */}
 
 
-                                        <div  style={{ height: "100%", width: "100%",objectFit:'contain' }}>
+                                        <div style={{ height: "100%", width: "100%", objectFit: 'contain' }}>
 
 
 
@@ -151,7 +176,8 @@ dispatch(addToCart(cartItems))
                                             <Button disabled={showProducts.quantity === 0} variant='danger' className='mx-1' ><i className="fas fa-running  mx-2" ></i> Buy Now</Button>
 
 
-                                            <Button disabled={showProducts.quantity === 0} variant='warning' className='mx-1' onClick={addToBagHandler}> <i className="fas fa-shopping-bag mx-2" ></i>  Add To Bag</Button>
+                                            {addLoading ? <Spinner animation="grow" variant="warning" /> :
+                                                <Button disabled={showProducts.quantity === 0} variant='warning' className='mx-1' onClick={addToBagHandler}> <i className="fas fa-shopping-bag mx-2" ></i>  Add To Bag</Button>}
                                         </Col >
 
                                     </Row>
@@ -179,26 +205,26 @@ dispatch(addToCart(cartItems))
 
                                 {showProducts.quantity > 0 ? <h4 className=' ms-1 my-3'><b>{`Only ${showProducts.quantity} left, Please hurry!`}</b></h4> : <Text type="danger" className=' ms-1'><b>sorry,No stocks left</b></Text>}
                             </ListGroup>
-<ListGroup>
+                            <ListGroup>
 
-    <ListGroup.Item  >
-<h4 >Select size </h4>
+                                <ListGroup.Item  >
+                                    <h4 >Select size </h4>
 
-<ButtonGroup aria-label="Basic example">
-  <Button variant="outline-warning" value='small' onClick={(e)=>{setSelectedSize(e.target.value)}}>small</Button>
-  <Button variant="outline-danger" value='medium' onClick={(e)=>{setSelectedSize(e.target.value)}}>medium</Button>
-  <Button variant="outline-info" value='large'   onClick={(e)=>{setSelectedSize(e.target.value)}}>large</Button>
-</ButtonGroup>
-  
-{selectedSize&&<h6 className='m-3' style={{color:'pink'}}>selected {selectedSize}</h6>}
-{selectedSizeWarning&&<h5 className='m-3' style={{color:'red'}}>Select a size</h5>}
-   
-    </ListGroup.Item>
-</ListGroup>
+                                    <ButtonGroup aria-label="Basic example">
+                                        <Button variant="outline-warning" value='small' onClick={(e) => { setSelectedSize(e.target.value) }}>small</Button>
+                                        <Button variant="outline-danger" value='medium' onClick={(e) => { setSelectedSize(e.target.value) }}>medium</Button>
+                                        <Button variant="outline-info" value='large' onClick={(e) => { setSelectedSize(e.target.value) }}>large</Button>
+                                    </ButtonGroup>
+
+                                    {selectedSize && <h6 className='m-3' style={{ color: 'pink' }}>selected {selectedSize}</h6>}
+                                    {selectedSizeWarning && <h5 className='m-3' style={{ color: 'red' }}>Select a size</h5>}
+
+                                </ListGroup.Item>
+                            </ListGroup>
 
                         </Col>
                     </Row>
-                   
+
 
                 )}
 

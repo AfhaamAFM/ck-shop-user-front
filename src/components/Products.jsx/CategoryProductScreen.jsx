@@ -22,7 +22,7 @@ function CategoryProductScreen() {
 setWarning(`No items  in ${category}`)
 
        }
-    },[category,dispatch])
+    },[category,dispatch,products])
   
 
 

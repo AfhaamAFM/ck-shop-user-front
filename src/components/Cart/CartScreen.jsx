@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Image, Placeholder } from "react-bootstrap";
-import { Select, Typography } from 'antd'
+import { Container, Row, Col, Card, Button, Image, Placeholder, Spinner } from "react-bootstrap";
+import { Select, Typography,Space } from 'antd'
 import AdressModal from "./CartModal/AdressModal";
 import { useSelector, useDispatch } from 'react-redux'
 import { addAddress, userlogged } from "../../redux/userStore/userAction";
@@ -8,12 +8,13 @@ import Swal from 'sweetalert2'
 import { Link } from 'react-router-dom'
 import AddAddressModal from "./CartModal/AddAddressModal";
 import axios from "axios";
+import { fetchCart } from "../../redux/CARTSTORE/cartAction";
 
 
 const { Option } = Select;
 const { Text, Title } = Typography;
-
 function CartScreen() {
+  const dispatch = useDispatch()
   // UseStates
   const [changeAddressShow, setChangeAddressShow] = useState(false);
   const [addAddressShow, setAddAddressShow] = useState(false)
@@ -27,8 +28,8 @@ function CartScreen() {
   const [district, setDistrict] = useState('')
   const [state, setState] = useState('')
   const [landmark, setLandmark] = useState('')
-const[warning,setWarning]=useState('')
-const[loading,setLoading]=useState(false)
+  const [warning, setWarning] = useState('')
+  const [loading, setLoading] = useState(false)
   // form error states
 
 
@@ -41,7 +42,8 @@ const[loading,setLoading]=useState(false)
 
   // Redux function
   const { userActive, users } = useSelector(state => state.user)
-  const dispatch = useDispatch()
+  const { cartItems, loading: getCartLoading } = useSelector(state => state.cart)
+
 
 
   // console.log('THis is normal ',userActive);
@@ -83,10 +85,10 @@ const[loading,setLoading]=useState(false)
 
   function addAddressHandler() {
     setLoading(true)
-if(!name||!flatNo||!number||!pincode|| !street||!district||!state||!landmark){
-  setLoading(false)
-  return setWarning('Please fill all,thisssss')
-}
+    if (!name || !flatNo || !number || !pincode || !street || !district || !state || !landmark) {
+      setLoading(false)
+      return setWarning('Please fill all,thisssss')
+    }
     axios.post('/user/address/add', {
       name,
       flatNo,
@@ -96,30 +98,30 @@ if(!name||!flatNo||!number||!pincode|| !street||!district||!state||!landmark){
       district,
       state,
       landmark,
-    }).then(res=>{
+    }).then(res => {
 
-if(res.data.response){
-  setLoading(false)
-  return setWarning(res.data.response)
-
-
-}
-
-if(res.data){
-  setLoading(false)
-  dispatch(userlogged())
-  addAddressHandleClose ()
-  Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'Your work has been saved',
-    showConfirmButton: false,
-    timer: 1500
-  })
+      if (res.data.response) {
+        setLoading(false)
+        return setWarning(res.data.response)
 
 
+      }
 
-}
+      if (res.data) {
+        setLoading(false)
+        dispatch(userlogged())
+        addAddressHandleClose()
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Your work has been saved',
+          showConfirmButton: false,
+          timer: 1500
+        })
+
+
+
+      }
 
 
     })
@@ -131,17 +133,6 @@ if(res.data){
 
 
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -162,13 +153,12 @@ if(res.data){
   useEffect(() => {
     dispatch(userlogged())
     users && setAllAddress(users.address)
-
+    dispatch(fetchCart())
   }, [dispatch, selectedAddressID])
 
   const showAddress = selectedAddressID ? users.address.find(p => p._id === selectedAddressID) : users ? users.address[0] : <Placeholder as="p" animation="glow">
     <Placeholder xs={12} />
   </Placeholder>
-
 
 
 
@@ -207,7 +197,7 @@ if(res.data){
           setDistrict={setDistrict}
           setState={setState}
           setLandmark={setLandmark}
-          warning={ warning}
+          warning={warning}
           loading={loading}
           addAddressHandler={addAddressHandler}
           addAddressShow={addAddressShow}
@@ -239,66 +229,94 @@ if(res.data){
                   </Card.Body>
                 </Col>
               </Card>
-
+              {/* Delivary address end */}
               {/* Cart items start */}
-              <Card>
-                <Col sm={12} className="p-4">
-                  <Row>
-                    <Col md={2}>
-                      <Image
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRob7O_z9fowFg11bfZDYN-SoFLcVdbIlFKWQ&usqp=CAU"
-                        alt="product image"
-                        fluid
-                        rounded
-                      />
-                    </Col>
-                    <Col md={9}>
-                      <Card.Title>Shirt</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">
-                        Men's Top wear
-                      </Card.Subtitle>
-                      <Card.Text>Very colorful T-shirt in the world</Card.Text>
-                      <Text strong>₹ 435</Text>
 
-                      {/* QUANTITY SELECTOR STRAT */}
 
-                      <Row >
-                        <Col>
-                          <Select className='mb-3' defaultValue={1} style={{ width: 120 }} onChange={quantityHandler}>
-                            < Option value={1}>{1}</Option>
-                            <Option value={2}>{2}</Option>
+              {cartItems || getCartLoading ?
+                <>
+                  {cartItems.map((v) => {
+                    return <Card className='mb-3' key={v._id}>
 
+                      <Row className='p-2'>
+                        <Col md={2}>
+                          <Image
+                            src={v.cartProduct[0].imageUrl[0].img}
+                            alt="product image"
+                            fluid
+                            rounded
+                          />
+                        </Col>
+                        <Col md={6}>
+                          <Card.Title>{v.cartProduct[0].name}</Card.Title>
+                          <Card.Subtitle className="mb-2 text-muted">
+                            {`${v.cartProduct[0].category}'s ${v.cartProduct[0].subCat}`}
+                          </Card.Subtitle>
+                          {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
+                          <Text strong>{v.cartItem.price}</Text>
+
+                          {/* QUANTITY SELECTOR STRAT */}
+
+                          <Row >
+
+                            {/* <Col>
+                            <Select className='mb-3' defaultValue={'small'} style={{ width: 120 }} onChange={sizeHandler}>
+                              <Option value="jack">small</Option>
+                              <Option value="jack">large</Option>
+                              <Option value="jack">medium</Option>
+                            </Select>
+                            <Card.Text>Select size</Card.Text>
+                          </Col> */}
+                          </Row>
+
+
+                          {/* QUANTITY SELECTOR END */}
+
+
+
+                        </Col>
+                        <Col md={3}>
+                          <Row>
+                          <Select id={v.cartItem._id} className='mb-3' defaultValue={1} style={{ width: 120 }} onChange={quantityHandler}>
+
+
+                            <>
+                              {
+
+
+                                < Option value={1}>{1}</Option>
+                              }
+
+                            </>
                           </Select>
                           <Card.Text>Select quantity</Card.Text>
+                          </Row>
+
+                          <Row>
+
+<Space direction='horizontal'>
+  <Text strong>Size : </Text>
+  <Text >{v.cartItem.size}</Text>
+</Space>
+                          </Row>
                         </Col>
-                        <Col>
-                          <Select className='mb-3' defaultValue={'small'} style={{ width: 120 }} onChange={sizeHandler}>
-                            <Option value="jack">small</Option>
-                            <Option value="jack">large</Option>
-                            <Option value="jack">medium</Option>
-                          </Select>
-                          <Card.Text>Select size</Card.Text>
+                        <Col md={1}>
+                          <span id={v.cartItem._id} style={{ fontSize: '2em', color: 'Tomato' }}>
+                            <i className="far fa-times-circle"></i>
+                          </span>
                         </Col>
                       </Row>
 
+                    </Card>
+                  })}
+                </>
+                : <Spinner animation="grow" variant="dark" />
 
-                      {/* QUANTITY SELECTOR END */}
 
-
-
-                    </Col>
-                    <Col md={1}>
-                      <span style={{ fontSize: '2em', color: 'Tomato' }}>
-                        <i className="far fa-times-circle"></i>
-                      </span>
-                    </Col>
-                  </Row>
-                </Col>
-              </Card>
-
+              }
               {/* Cart items end */}
             </Col>
-            {/* Delivary address end */}
+
             <Col sm={12} md={4} >
 
 
