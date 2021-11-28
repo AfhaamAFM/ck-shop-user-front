@@ -135,3 +135,25 @@ box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   height: 15rem;
  margin: auto;
 }
+
+/* delete cart icon*/
+.deleteIcon:hover{
+cursor: pointer;
+color: blue;
+
+}
+.quantityHandler{
+display: flex;
+justify-content: center;
+padding: auto;
+}
+.quantityHandler i{
+  font-size: 1.5rem;
+  padding: 2px;
+  margin: auto;
+  }
+  .quantityHandler i:hover{
+    cursor: pointer;
+    color: whitesmoke;
+    background-color: black;
+    }

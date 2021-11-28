@@ -57,11 +57,12 @@ function ProductVIewPage() {
         const size = selectedSize
         const price = showProducts.price
         const cartItems = { product, size, price }
+        
         dispatch(addToCart(cartItems))
 
-if(addResponse){
+        console.log();
 
-    Swal.fire({
+  addResponse&& Swal.fire({
         position: 'top-end',
         icon: 'success',
         title: `${addResponse.response}`,
@@ -70,7 +71,6 @@ if(addResponse){
       })
 
 
-}
 
 
     }

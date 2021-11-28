@@ -50,9 +50,9 @@ export const addToCart=(cartItem)=>{
 return (dispatch)=>{
 dispatch(fetchCartRequest())
 
-axios.post('/user/cart/add').then(res=>{
-
-dispatch(fetchCartSuccess(res.data))
+axios.post('/user/cart/add',cartItem).then(res=>{
+console.log(res.data);
+dispatch(addToCartSuccess(res.data))
 
 
 }).catch(err=>{

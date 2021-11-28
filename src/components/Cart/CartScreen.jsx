@@ -114,7 +114,7 @@ function CartScreen() {
         Swal.fire({
           position: 'top-end',
           icon: 'success',
-          title: 'Your work has been saved',
+          title: 'Address added',
           showConfirmButton: false,
           timer: 1500
         })
@@ -140,7 +140,31 @@ function CartScreen() {
 
 
 
+// Delete cart start
+function deleteHandler(e){
+const id= e.target.id
+axios.get(`/user/cart/delete/${id}`).then((res)=>{
 
+if(res.data){
+dispatch(fetchCart()  )
+  Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'cart item deleted',
+    showConfirmButton: false,
+    timer: 1500
+  })
+
+}
+
+}).catch(err=>{
+
+
+  console.log('this is a cart item delete '+err);
+})
+
+
+}
 
 
 
@@ -211,17 +235,17 @@ function CartScreen() {
         <Row className="mt-5">
           <Title>Shopping Bag <i className="fas fa-shopping-bag"></i> </Title>
 
-          {userActive ? <>
+          {userActive? <>
             <Col sm={12} md={8}>
               <Card className="mb-3">
                 <Col sm={12} className="mb-3">
                   <Card.Body>
                     <Card.Title>Delivary to</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
-                      {showAddress.name}
+                      {showAddress?.name}
                     </Card.Subtitle>
                     <Card.Text>
-                      <Text>{showAddress.flatNo} ,{showAddress.landmark} ,{showAddress.street} ,{showAddress.district} dist ,{showAddress.state} ,{showAddress.pincode} ,<b>Ph:</b>{showAddress.number}</Text>
+                      <Text>{showAddress?.flatNo} ,{showAddress?.landmark} ,{showAddress?.street} ,{showAddress?.district} dist ,{showAddress?.state} ,{showAddress?.pincode} ,<b>Ph:</b>{showAddress?.number}</Text>
                     </Card.Text>
                     <Button variant="outline-danger" size="sm" onClick={addressHandleShow}>
                       Change Address
@@ -231,26 +255,26 @@ function CartScreen() {
               </Card>
               {/* Delivary address end */}
               {/* Cart items start */}
+{/* {cartItems.lengt} */}
 
-
-              {cartItems || getCartLoading ?
+              {cartItems?
                 <>
                   {cartItems.map((v) => {
-                    return <Card className='mb-3' key={v._id}>
+                    return <Card className='mb-3' key={v.cartItem._id}>
 
                       <Row className='p-2'>
                         <Col md={2}>
                           <Image
-                            src={v.cartProduct[0].imageUrl[0].img}
+                            src={ cartItems&&v.cartProduct[0]?.imageUrl[0]?.img}
                             alt="product image"
                             fluid
                             rounded
                           />
                         </Col>
                         <Col md={6}>
-                          <Card.Title>{v.cartProduct[0].name}</Card.Title>
+                          <Card.Title>{cartItems&&v.cartProduct[0]?.name}</Card.Title>
                           <Card.Subtitle className="mb-2 text-muted">
-                            {`${v.cartProduct[0].category}'s ${v.cartProduct[0].subCat}`}
+                            {`${v.cartProduct[0]?.category}'s ${v.cartProduct[0]?.subCat}`}
                           </Card.Subtitle>
                           {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
                           <Text strong>{v.cartItem.price}</Text>
@@ -277,7 +301,8 @@ function CartScreen() {
                         </Col>
                         <Col md={3}>
                           <Row>
-                          <Select id={v.cartItem._id} className='mb-3' defaultValue={1} style={{ width: 120 }} onChange={quantityHandler}>
+                          
+                          {/* <Select id={v.cartItem._id} className='mb-3' defaultValue={1} style={{ width: 120 }} onChange={quantityHandler}>
 
 
                             <>
@@ -288,8 +313,13 @@ function CartScreen() {
                               }
 
                             </>
-                          </Select>
-                          <Card.Text>Select quantity</Card.Text>
+                          </Select> */}
+                          <div className='quantityHandler'>
+                          <i className="fas fa-minus-circle"></i>
+                          <input type="text" size='5' value={v.cartItem.quantity} />
+                          <i className="fas fa-plus-circle"></i>
+                          </div>
+                          <Card.Text>Select quantity {v.cartItem.quantity} </Card.Text>
                           </Row>
 
                           <Row>
@@ -301,8 +331,9 @@ function CartScreen() {
                           </Row>
                         </Col>
                         <Col md={1}>
-                          <span id={v.cartItem._id} style={{ fontSize: '2em', color: 'Tomato' }}>
-                            <i className="far fa-times-circle"></i>
+                          {console.log(v.cartItem._id)}
+                          <span  style={{ fontSize: '2em', color: 'Tomato' }} className='deleteIcon' >
+                            <i id={v.cartItem._id} className="far fa-times-circle"  onClick={deleteHandler} ></i>
                           </span>
                         </Col>
                       </Row>
