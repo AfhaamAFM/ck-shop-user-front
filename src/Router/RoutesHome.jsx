@@ -8,15 +8,15 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useSelector, useDispatch } from 'react-redux'
 import { userlogged } from '../redux/userStore/userAction';
-import CategoryNav from '../components/CategoryNav';
-import ProductDetailsScreen from '../components/Products.jsx/ProductDetailsScreen';
-import ProductScreen from '../components/ProductScreen';
+
 import CategoryProductScreen from '../components/Products.jsx/CategoryProductScreen';
 import SubcategoryProductScreen from '../components/Products.jsx/SubcategoryProductScreen';
 import SearchProductScreen from '../components/Products.jsx/SearchProductScreen';
 import CartScreen from '../components/Cart/CartScreen';
 import ProductVIewPage from '../components/Products.jsx/ProductVIewPage';
 import CategoryHeader from '../components/CategoryHeader';
+import CheckoutPaymentScreen from '../components/CheckoutPaymentScreen';
+import UserProfileScreen from '../components/UserProfile/UserProfileScreen';
 
 function RoutesHome() {
 
@@ -37,6 +37,8 @@ function RoutesHome() {
 
                         <Route path="/" element={<HomeScreen />} />
                         <Route path='/product/:id' element={<ProductVIewPage />} />
+                        <Route path='/checkoutPay' element={<CheckoutPaymentScreen />} />
+                        <Route path='/userProfile' element={<UserProfileScreen />} />
 
                         <Route path='/catProduct/:category/' element={<CategoryProductScreen />} />
                         <Route path='/catProduct/:category/:subCat' element={<SubcategoryProductScreen/>} />

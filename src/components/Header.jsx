@@ -54,12 +54,12 @@ dispatch(fetchUserError(err))
         </InputGroup>
       </Form>
 
-        <Nav.Link as={Link} to='/cart' variant='danger'><i className="fas fa-shopping-bag"></i> Bag</Nav.Link>
+        <Nav.Link variant='danger'><i className="fas fa-shopping-bag"></i> Bag</Nav.Link>
         <Nav.Link href="#link">Link</Nav.Link>
         <NavDropdown title={userActive?users.name:"Accounts"} id="basic-nav-dropdown">
 
 {userActive?<><NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.4">My profile</NavDropdown.Item></>:<NavDropdown.Item as={Link} to='/signin'>Sign in</NavDropdown.Item>}
+          <NavDropdown.Item as={Link} to='/userProfile' >My profile</NavDropdown.Item></>:<NavDropdown.Item as={Link} to='/signin'>Sign in</NavDropdown.Item>}
          
           {/* <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item> */}
           <NavDropdown.Divider />

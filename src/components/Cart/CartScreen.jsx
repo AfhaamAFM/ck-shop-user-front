@@ -1,52 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Image, Placeholder, Spinner } from "react-bootstrap";
-import { Select, Typography,Space } from 'antd'
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Image,
+  Placeholder,
+  Spinner,
+} from "react-bootstrap";
+import { Select, Typography, Space } from "antd";
 import AdressModal from "./CartModal/AdressModal";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
 import { addAddress, userlogged } from "../../redux/userStore/userAction";
-import Swal from 'sweetalert2'
-import { Link } from 'react-router-dom'
+import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 import AddAddressModal from "./CartModal/AddAddressModal";
 import axios from "axios";
 import { fetchCart } from "../../redux/CARTSTORE/cartAction";
-
+import CheckoutStep from "../Map component/CheckoutStep";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
+
+
 function CartScreen() {
-  const dispatch = useDispatch()
+
+
+
+  const dispatch = useDispatch();
   // UseStates
   const [changeAddressShow, setChangeAddressShow] = useState(false);
-  const [addAddressShow, setAddAddressShow] = useState(false)
-
+  const [addAddressShow, setAddAddressShow] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
   // address states
-  const [name, setName] = useState('')
-  const [flatNo, setFlatNO] = useState('')
-  const [number, setNumber] = useState('')
-  const [pincode, setPincode] = useState('')
-  const [street, setStreet] = useState('')
-  const [district, setDistrict] = useState('')
-  const [state, setState] = useState('')
-  const [landmark, setLandmark] = useState('')
-  const [warning, setWarning] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [name, setName] = useState("");
+  const [flatNo, setFlatNO] = useState("");
+  const [number, setNumber] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [street, setStreet] = useState("");
+  const [district, setDistrict] = useState("");
+  const [state, setState] = useState("");
+  const [landmark, setLandmark] = useState("");
+  const [warning, setWarning] = useState("");
+  const [loading, setLoading] = useState(false);
   // form error states
 
-
-
-
-  const [allAddress, setAllAddress] = useState()
-  const [selectedAddressID, setSelectedAddressID] = useState('')
+  const [allAddress, setAllAddress] = useState();
+  const [selectedAddressID, setSelectedAddressID] = useState("");
   // const[defaultAddress,setDefualtAddress]=useState('')
 
-
   // Redux function
-  const { userActive, users } = useSelector(state => state.user)
-  const { cartItems, loading: getCartLoading } = useSelector(state => state.cart)
+  const { userActive, users } = useSelector((state) => state.user);
+  const { cartItems, loading: getCartLoading } = useSelector(
+    (state) => state.cart
+  );
 
-
-
-  // console.log('THis is normal ',userActive);
   // =============================Modal controller start===============================
 
   // Change address modal
@@ -54,144 +63,150 @@ function CartScreen() {
   const addressHandleShow = () => setChangeAddressShow(true);
 
   // Add address modal
-  const addAddressHandleClose = () => setAddAddressShow(false)
-  const addAddressHandleShow = () => setAddAddressShow(true)
-
+  const addAddressHandleClose = () => setAddAddressShow(false);
+  const addAddressHandleShow = () => setAddAddressShow(true);
 
   const modalAddButtonHandler = () => {
+    addressHandleClose();
 
-    addressHandleClose()
-
-
-    addAddressHandleShow()
-
-  }
-
-
+    addAddressHandleShow();
+  };
 
   // ==================================modal controller end=============================
 
   // QUANTITY HANDLER START
-  const quantityHandler = () => {
-
-  }
-  const sizeHandler = () => {
-
-  }
+  const quantityHandler = () => {};
+  const sizeHandler = () => {};
 
   // Quantity handler end
 
   // ===============================Add new ADDRESS START=========================
 
   function addAddressHandler() {
-    setLoading(true)
-    if (!name || !flatNo || !number || !pincode || !street || !district || !state || !landmark) {
-      setLoading(false)
-      return setWarning('Please fill all,thisssss')
+    setLoading(true);
+    if (
+      !name ||
+      !flatNo ||
+      !number ||
+      !pincode ||
+      !street ||
+      !district ||
+      !state ||
+      !landmark
+    ) {
+      setLoading(false);
+      return setWarning("Please fill all,thisssss");
     }
-    axios.post('/user/address/add', {
-      name,
-      flatNo,
-      number,
-      pincode,
-      street,
-      district,
-      state,
-      landmark,
-    }).then(res => {
+    axios
+      .post("/user/address/add", {
+        name,
+        flatNo,
+        number,
+        pincode,
+        street,
+        district,
+        state,
+        landmark,
+      })
+      .then((res) => {
+        if (res.data.response) {
+          setLoading(false);
+          return setWarning(res.data.response);
+        }
 
-      if (res.data.response) {
-        setLoading(false)
-        return setWarning(res.data.response)
-
-
-      }
-
-      if (res.data) {
-        setLoading(false)
-        dispatch(userlogged())
-        addAddressHandleClose()
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: 'Address added',
-          showConfirmButton: false,
-          timer: 1500
-        })
-
-
-
-      }
-
-
-    })
-
-
-
-
-
-
-
+        if (res.data) {
+          setLoading(false);
+          dispatch(userlogged());
+          addAddressHandleClose();
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Address added",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
   }
-
-
 
   // ===============================ADD NEW ADDRESS END ==========================
 
+  // Delete cart start
+  function deleteHandler(e) {
+    const id = e.target.id;
+    axios
+      .get(`/user/cart/delete/${id}`)
+      .then((res) => {
+        if (res.data) {
+          dispatch(fetchCart());
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "cart item deleted",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("this is a cart item delete " + err);
+      });
+  }
 
-
-// Delete cart start
-function deleteHandler(e){
-const id= e.target.id
-axios.get(`/user/cart/delete/${id}`).then((res)=>{
-
-if(res.data){
-dispatch(fetchCart()  )
-  Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'cart item deleted',
-    showConfirmButton: false,
-    timer: 1500
-  })
-
-}
-
-}).catch(err=>{
-
-
-  console.log('this is a cart item delete '+err);
-})
-
-
-}
-
-
-
-
-
-
-
-
+  // cartItems&&cartItems.map((v) => {setTotalAmount(totalAmount+(v.cartItem.quantity*v.cartItem.price))})
 
   useEffect(() => {
-    dispatch(userlogged())
-    users && setAllAddress(users.address)
-    dispatch(fetchCart())
-  }, [dispatch, selectedAddressID])
+    dispatch(userlogged());
+    users && setAllAddress(users.address);
+    dispatch(fetchCart());
+  }, [dispatch, selectedAddressID]);
 
-  const showAddress = selectedAddressID ? users.address.find(p => p._id === selectedAddressID) : users ? users.address[0] : <Placeholder as="p" animation="glow">
-    <Placeholder xs={12} />
-  </Placeholder>
+  let [cartProducts, setCartProducts] = useState([]);
+  let [cartItem, setCartItem] = useState([]);
+
+  useEffect(() => {
+    if (!cartItems) return;
+    if (!cartItems.cartProduct) return;
+    setCartProducts(cartItems.cartProduct);
+
+    setCartItem(cartItems.cartItem);
+  }, [cartItems]);
 
 
+
+
+useEffect(()=>{
+
+let total=0;
+cartItem.forEach(item=>{
+  total+=item.price*item.quantity
+})
+setTotalAmount(total);
+
+},[cartItem])
+
+
+
+
+
+
+
+  const showAddress = selectedAddressID ? (
+    users.address.find((p) => p._id === selectedAddressID)
+  ) : users ? (
+    users.address[0]
+  ) : (
+    <Placeholder as="p" animation="glow">
+      <Placeholder xs={12} />
+    </Placeholder>
+  );
 
 
   return (
     <div>
       <Container>
         {/* Modalss start */}
-
+        <CheckoutStep step1 step2 />
 
         <AdressModal
           changeAddressShow={changeAddressShow}
@@ -203,7 +218,6 @@ dispatch(fetchCart()  )
           modalAddButtonHandler={modalAddButtonHandler}
         />
         <AddAddressModal
-
           name={name}
           flatNo={flatNo}
           number={number}
@@ -212,7 +226,6 @@ dispatch(fetchCart()  )
           district={district}
           state={state}
           landmark={landmark}
-
           setName={setName}
           setFlatNo={setFlatNO}
           setNumber={setNumber}
@@ -230,79 +243,75 @@ dispatch(fetchCart()  )
 
         {/* Modals end */}
 
-
-
         <Row className="mt-5">
-          <Title>Shopping Bag <i className="fas fa-shopping-bag"></i> </Title>
+          <Title>
+            Shopping Bag <i className="fas fa-shopping-bag"></i>{" "}
+          </Title>
 
-          {userActive? <>
-            <Col sm={12} md={8}>
-              <Card className="mb-3">
-                <Col sm={12} className="mb-3">
-                  <Card.Body>
-                    <Card.Title>Delivary to</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">
-                      {showAddress?.name}
-                    </Card.Subtitle>
-                    <Card.Text>
-                      <Text>{showAddress?.flatNo} ,{showAddress?.landmark} ,{showAddress?.street} ,{showAddress?.district} dist ,{showAddress?.state} ,{showAddress?.pincode} ,<b>Ph:</b>{showAddress?.number}</Text>
-                    </Card.Text>
-                    <Button variant="outline-danger" size="sm" onClick={addressHandleShow}>
-                      Change Address
-                    </Button>
-                  </Card.Body>
-                </Col>
-              </Card>
-              {/* Delivary address end */}
-              {/* Cart items start */}
-{/* {cartItems.lengt} */}
+          {userActive? (
+            <>
+              <Col sm={12} md={8}>
+                <Card className="mb-3">
+                  <Col sm={12} className="mb-3">
+                    <Card.Body>
+                      <Card.Title>Delivary to</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">
+                        {showAddress?.name}
+                      </Card.Subtitle>
+                      <Card.Text>
+                        <Text>
+                          {showAddress?.flatNo} ,{showAddress?.landmark} ,
+                          {showAddress?.street} ,{showAddress?.district} dist ,
+                          {showAddress?.state} ,{showAddress?.pincode} ,
+                          <b>Ph:</b>
+                          {showAddress?.number}
+                        </Text>
+                      </Card.Text>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={addressHandleShow}
+                      >
+                        Change Address
+                      </Button>
+                    </Card.Body>
+                  </Col>
+                </Card>
+                {/* Delivary address end */}
+                {/* Cart items start */}
+                {cartItems ? (
+                  <>
+                    {cartItem.map((value, i) => {
 
-              {cartItems?
-                <>
-                  {cartItems.map((v) => {
-                    return <Card className='mb-3' key={v.cartItem._id}>
+                      let index=cartProducts.findIndex(item=>item._id===value.product);
 
-                      <Row className='p-2'>
-                        <Col md={2}>
-                          <Image
-                            src={ cartItems&&v.cartProduct[0]?.imageUrl[0]?.img}
-                            alt="product image"
-                            fluid
-                            rounded
-                          />
-                        </Col>
-                        <Col md={6}>
-                          <Card.Title>{cartItems&&v.cartProduct[0]?.name}</Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">
-                            {`${v.cartProduct[0]?.category}'s ${v.cartProduct[0]?.subCat}`}
-                          </Card.Subtitle>
-                          {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
-                          <Text strong>{v.cartItem.price}</Text>
+                      return (
+                        <Card className="mb-3" key={value._id}>
+                          <Row className="p-2">
+                            <Col md={2}>
+                              <Image
+                                src={ cartProducts[index].imageUrl[0].img}
+                                alt="product image"
+                                fluid
+                                rounded
+                              />
+                            </Col>
+                            <Col md={6}>
+                              <Card.Title>
+                                {cartItems && cartItem.name}
+                              </Card.Title>
+                              <Card.Subtitle className="mb-2 text-muted">
+                                {`${cartProducts[index].category}'s ${cartProducts[index].subCat}`}
+                              </Card.Subtitle>
+                             {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
+                              <Text strong>{value.quantity*value.price}</Text>
+                              {/* QUANTITY SELECTOR STRAT */}
 
-                          {/* QUANTITY SELECTOR STRAT */}
-
-                          <Row >
-
-                            {/* <Col>
-                            <Select className='mb-3' defaultValue={'small'} style={{ width: 120 }} onChange={sizeHandler}>
-                              <Option value="jack">small</Option>
-                              <Option value="jack">large</Option>
-                              <Option value="jack">medium</Option>
-                            </Select>
-                            <Card.Text>Select size</Card.Text>
-                          </Col> */}
-                          </Row>
-
-
-                          {/* QUANTITY SELECTOR END */}
-
-
-
-                        </Col>
-                        <Col md={3}>
-                          <Row>
-                          
-                          {/* <Select id={v.cartItem._id} className='mb-3' defaultValue={1} style={{ width: 120 }} onChange={quantityHandler}>
+                              {/* QUANTITY SELECTOR END */}
+                            </Col>
+                            <Col md={3}>
+                              <Row>
+                                {/* <Select id={v.cartItem._id} className='mb-3' defaultValue={1} style={{ width: 120 }} onChange={quantityHandler}>
 
 
                             <>
@@ -314,90 +323,115 @@ dispatch(fetchCart()  )
 
                             </>
                           </Select> */}
-                          <div className='quantityHandler'>
-                          <i className="fas fa-minus-circle"></i>
-                          <input type="text" size='5' value={v.cartItem.quantity} />
-                          <i className="fas fa-plus-circle"></i>
-                          </div>
-                          <Card.Text>Select quantity {v.cartItem.quantity} </Card.Text>
+                                <div className="quantityHandler">
+                                  <i className="fas fa-minus-circle"></i>
+                                  <input type="text" size='5' readOnly value={value.quantity} />
+                                  <i className="fas fa-plus-circle"></i>
+                                </div>
+                                <Card.Text>Select quantity {value.quantity} </Card.Text>
+                              </Row>
+
+                              <Row>
+                                <Space direction="horizontal">
+                                  <Text strong>Size : </Text>
+                                  <Text >{value.size}</Text>
+                                </Space>
+                              </Row>
+                            </Col>
+                            <Col md={1}>
+                              <span
+                                style={{ fontSize: "2em", color: "Tomato" }}
+                                className="deleteIcon"
+                              >
+                                <i id={value. _id} className="far fa-times-circle"  onClick={deleteHandler} ></i>
+                              </span>
+                            </Col>
                           </Row>
+                        </Card>
+                        );
+                      })}
+                  </>
+                ) : (
+                  <Spinner animation="grow" variant="dark" />
+                )}
+                {/* Cart items end */}
+              </Col>
 
-                          <Row>
+              <Col sm={12} md={4}>
+                <Card>
+                  <Col sm={12} className="p-4">
+                    <Card.Title>
+                      PRICE DETAILS 
+                    </Card.Title>
+                    <hr />
+                  </Col>
 
-<Space direction='horizontal'>
-  <Text strong>Size : </Text>
-  <Text >{v.cartItem.size}</Text>
-</Space>
-                          </Row>
-                        </Col>
-                        <Col md={1}>
-                          {console.log(v.cartItem._id)}
-                          <span  style={{ fontSize: '2em', color: 'Tomato' }} className='deleteIcon' >
-                            <i id={v.cartItem._id} className="far fa-times-circle"  onClick={deleteHandler} ></i>
-                          </span>
-                        </Col>
-                      </Row>
-
-                    </Card>
-                  })}
-                </>
-                : <Spinner animation="grow" variant="dark" />
-
-
-              }
-              {/* Cart items end */}
-            </Col>
-
-            <Col sm={12} md={4} >
-
-
-              <Card>
-                <Col sm={12} className='p-4'>
-                  <Card.Title>
-                    PRICE DETAILS <small>(3) ITEMS</small>
-                  </Card.Title>
-                  <hr />
-                </Col>
-
-                <Row className='p-1 ms-1'>
-                  <Col md={4}> <Text strong>Total MRP</Text></Col>
-                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-                </Row>
-                <Row className='p-1 ms-1'>
+                  <Row className="p-1 ms-1">
+                    <Col md={4}>
+                      <Text strong> total mrp</Text>
+                    </Col>
+                    <Col md={{ span: 4, offset: 4 }}>
+                      <Text>₹ {totalAmount}</Text>{" "}
+                    </Col>
+                  </Row>
+                  {/* <Row className='p-1 ms-1'>
                   <Col md={4}> <Text strong>Discount on MRP</Text></Col>
                   <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
                 </Row>
                 <Row className='p-1 ms-1'>
                   <Col md={4}> <Text strong>Coupen Discount</Text></Col>
                   <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-                </Row>
-                {/* <Row className='p-1 ms-1'>
-    <Col md={4}> <Text strong>Convienience Fee</Text></Col>
-    <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-  </Row> */}
-                <hr />
+                </Row> */}
+                  {/* <Row className='p-1 ms-1'>
+                <Col md={4}> <Text strong>Convienience Fee</Text></Col>
+                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
+                  </Row> */}
+                  <hr />
 
-                <Row className='p-1 ms-1'>
-                  <Col md={4}> <Text strong>Grand Total</Text></Col>
-                  <Col md={{ span: 4, offset: 4 }}><Text strong>₹ 435</Text> </Col>
-                </Row>
-              </Card>
+                  <Row className="p-1 ms-1">
+                    <Col md={4}>
+                      {" "}
+                      <Text strong>Grand Total</Text>
+                    </Col>
+                    <Col md={{ span: 4, offset: 4 }}>
+                      <Text strong>₹ {totalAmount}</Text>{" "}
+                    </Col>
+                  </Row>
+                </Card>
 
-
-              <Button className='m-3' variant="success">Proceed To Checkout</Button>
-            </Col>
-          </> : <Row>
-            <Col className='cartPLace' >
-              <h4>Please sign in &#128517;</h4>
-              <img className='flipkartImage' src='https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90' alt='signin' />
-              <Button className='mx-auto px-3 my-3' as={Link} to='/signin' variant='danger'>Sign in</Button>
-            </Col>
-          </Row>}
-
-
+                <Button
+                  className="m-3"
+                  variant="success"
+                  disabled={!users.address.length}
+                  as={Link}
+                  to={`/checkoutPay/?address=${selectedAddressID}&amount=${totalAmount}`}
+                >
+                  Proceed To Checkout
+                </Button>
+              </Col>
+            </>
+          ) : (
+            <Row>
+              <Col className="cartPLace">
+                <h4>Please sign in &#128517;</h4>
+                <img
+                  className="flipkartImage"
+                  src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
+                  alt="signin"
+                />
+                <Button
+                  className="mx-auto px-3 my-3"
+                  as={Link}
+                  to="/signin"
+                  variant="danger"
+                >
+                  Sign in
+                </Button>
+              </Col>
+            </Row>
+          )}
 
           {/* Delivary address start */}
-
         </Row>
       </Container>
     </div>

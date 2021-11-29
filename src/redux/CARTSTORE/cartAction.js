@@ -52,7 +52,7 @@ dispatch(fetchCartRequest())
 
 axios.post('/user/cart/add',cartItem).then(res=>{
 console.log(res.data);
-dispatch(addToCartSuccess(res.data))
+dispatch(addToCartSuccess(res.data.response))
 
 
 }).catch(err=>{
@@ -75,7 +75,6 @@ return (dispatch)=>{
     dispatch(fetchCartRequest())
 
     axios.get('/user/cart/').then(res=>{
-    
     dispatch(fetchCartSuccess(res.data))
     
     

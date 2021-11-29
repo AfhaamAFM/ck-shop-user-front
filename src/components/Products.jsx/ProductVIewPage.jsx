@@ -62,10 +62,10 @@ function ProductVIewPage() {
 
         console.log();
 
-  addResponse&& Swal.fire({
+  Swal.fire({
         position: 'top-end',
         icon: 'success',
-        title: `${addResponse.response}`,
+        title: `${addResponse}`,
         showConfirmButton: false,
         timer: 1500
       })

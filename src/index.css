@@ -157,3 +157,9 @@ padding: auto;
     color: whitesmoke;
     background-color: black;
     }
+
+    .editHandler:hover{
+
+      cursor: pointer;
+    color: goldenrod;
+    }

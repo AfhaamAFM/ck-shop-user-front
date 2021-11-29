@@ -5,7 +5,7 @@ import { CART_ADD_SUCCESS, CART_FETCH_SUCCESS, CART_FETCH_ERROR, CART_FETCH_REQU
 const initial = {
 
     loading: false,
-    cartItems: [],
+    cartItems: '',
     error: '',
     addResponse: null
 
