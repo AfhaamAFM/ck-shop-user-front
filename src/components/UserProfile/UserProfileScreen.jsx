@@ -4,6 +4,7 @@ import UserHomeScreen from './UserHomeScreen'
 import {useSelector,useDispatch} from 'react-redux'
 import { userlogged } from '../../redux/userStore/userAction'
 import UserAdressScreen from './UserAdressScreen'
+import MyordersScreen from './MyordersScreen'
 
 
 
@@ -41,7 +42,7 @@ const dispatch =useDispatch()
    <UserAdressScreen users={users} />
   </Tab>
   <Tab eventKey="contact" title="Contact" >
-    {/* <Sonnet /> */}
+    <MyordersScreen />
   </Tab>
 </Tabs>
 </Row>

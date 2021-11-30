@@ -1,40 +1,40 @@
-import { CART_ADD_SUCCESS, CART_FETCH_SUCCESS, CART_FETCH_ERROR, CART_FETCH_REQUEST } from './cartType'
+import {ORDER_ADD_SUCCESS,ORDER_FETCH_SUCCESS,ORDER_FETCH_ERROR,ORDER_FETCH_REQUEST} from './orderType'
 
 
 
 const initial = {
 
     loading: false,
-    cartItems: '',
+    orders: '',
     error: '',
-    addResponse: null
-
+    addResponse:''
+ 
 }
 
-const cartReducer = (state = initial, action) => {
+const orderReducer = (state = initial, action) => {
 
 
     switch (action.type) {
-        case CART_FETCH_REQUEST:
+        case ORDER_FETCH_REQUEST:
             return {
                 ...state,
                 loading: true
             }
-        case CART_FETCH_SUCCESS:
+        case ORDER_FETCH_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                cartItems: action.payload,
+                orders: action.payload,
                 error: ''
             }
-        case CART_ADD_SUCCESS:
+        case ORDER_ADD_SUCCESS:
             return {
                 ...state,
                 addResponse: action.payload,
                 loading: false,
                 error: ''
             }
-            case CART_FETCH_ERROR:
+            case ORDER_FETCH_ERROR:
                 return {
                     ...state,
                 loading: false,
@@ -48,4 +48,4 @@ const cartReducer = (state = initial, action) => {
     }
 
 }
-    export default cartReducer
+    export default orderReducer

@@ -17,6 +17,7 @@ import ProductVIewPage from '../components/Products.jsx/ProductVIewPage';
 import CategoryHeader from '../components/CategoryHeader';
 import CheckoutPaymentScreen from '../components/CheckoutPaymentScreen';
 import UserProfileScreen from '../components/UserProfile/UserProfileScreen';
+import PlaceOrderScreen from '../components/PlaceOrderScreen';
 
 function RoutesHome() {
 
@@ -46,6 +47,8 @@ function RoutesHome() {
                         <Route path="/signin" element={userActive ? <Navigate to="/" /> : <Signin />} />
                         <Route path="/signup" element={userActive ? <Navigate to="/" /> : <Signup />} />
                         <Route path='/cart'   element= { <CartScreen/> }/>
+                        <Route path='/placeOrder'   element= { <PlaceOrderScreen/> }/>
+
 
                     </Routes>
                 </main>

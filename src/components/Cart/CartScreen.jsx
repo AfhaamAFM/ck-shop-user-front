@@ -14,11 +14,12 @@ import AdressModal from "./CartModal/AdressModal";
 import { useSelector, useDispatch } from "react-redux";
 import { addAddress, userlogged } from "../../redux/userStore/userAction";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import AddAddressModal from "./CartModal/AddAddressModal";
 import axios from "axios";
 import { fetchCart } from "../../redux/CARTSTORE/cartAction";
 import CheckoutStep from "../Map component/CheckoutStep";
+import { storeAddress, storeAmount, storecartItems } from "../../redux/Checkout/checkoutAction";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
@@ -26,8 +27,8 @@ const { Text, Title } = Typography;
 
 function CartScreen() {
 
-
-
+const[checkoutWarning,setCheckoutWarning]=useState()
+const navigate =useNavigate()
   const dispatch = useDispatch();
   // UseStates
   const [changeAddressShow, setChangeAddressShow] = useState(false);
@@ -52,9 +53,7 @@ function CartScreen() {
 
   // Redux function
   const { userActive, users } = useSelector((state) => state.user);
-  const { cartItems, loading: getCartLoading } = useSelector(
-    (state) => state.cart
-  );
+  const { cartItems, loading: getCartLoading } = useSelector( (state) => state.cart );
 
   // =============================Modal controller start===============================
 
@@ -152,6 +151,34 @@ function CartScreen() {
         console.log("this is a cart item delete " + err);
       });
   }
+  // delete end
+
+
+
+  // Checkout Handler start
+
+function checkoutHandler(){
+if(!showAddress){
+
+  return setCheckoutWarning('Select a address')
+}
+
+if(cartItems.cartItem.length===0){
+
+  return setCheckoutWarning('Cart is empty')
+}
+  dispatch(storeAmount(totalAmount))
+  dispatch(storeAddress(showAddress))
+  dispatch(storecartItems(cartItems))
+
+
+
+navigate('/checkoutPay')
+  
+
+}
+  
+  // Checkout Handler end
 
   // cartItems&&cartItems.map((v) => {setTotalAmount(totalAmount+(v.cartItem.quantity*v.cartItem.price))})
 
@@ -170,8 +197,11 @@ function CartScreen() {
     setCartProducts(cartItems.cartProduct);
 
     setCartItem(cartItems.cartItem);
-  }, [cartItems]);
 
+
+
+
+  }, [cartItems]);
 
 
 
@@ -182,6 +212,7 @@ cartItem.forEach(item=>{
   total+=item.price*item.quantity
 })
 setTotalAmount(total);
+
 
 },[cartItem])
 
@@ -200,7 +231,6 @@ setTotalAmount(total);
       <Placeholder xs={12} />
     </Placeholder>
   );
-
 
   return (
     <div>
@@ -284,7 +314,6 @@ setTotalAmount(total);
                     {cartItem.map((value, i) => {
 
                       let index=cartProducts.findIndex(item=>item._id===value.product);
-
                       return (
                         <Card className="mb-3" key={value._id}>
                           <Row className="p-2">
@@ -403,11 +432,11 @@ setTotalAmount(total);
                   className="m-3"
                   variant="success"
                   disabled={!users.address.length}
-                  as={Link}
-                  to={`/checkoutPay/?address=${selectedAddressID}&amount=${totalAmount}`}
+                 onClick={checkoutHandler}
                 >
                   Proceed To Checkout
                 </Button>
+                <Text type='danger' className='mt-3'>{checkoutWarning} </Text>
               </Col>
             </>
           ) : (
