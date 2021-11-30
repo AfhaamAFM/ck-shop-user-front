@@ -24,7 +24,7 @@ function RoutesHome() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(userlogged())
-    }, [])
+    }, [dispatch])
 
     return (
         <div>
@@ -38,7 +38,7 @@ function RoutesHome() {
                         <Route path="/" element={<HomeScreen />} />
                         <Route path='/product/:id' element={<ProductVIewPage />} />
                         <Route path='/checkoutPay' element={<CheckoutPaymentScreen />} />
-                        <Route path='/userProfile' element={<UserProfileScreen />} />
+                        {userActive&&<Route path='/userProfile' element={<UserProfileScreen />} />}
 
                         <Route path='/catProduct/:category/' element={<CategoryProductScreen />} />
                         <Route path='/catProduct/:category/:subCat' element={<SubcategoryProductScreen/>} />

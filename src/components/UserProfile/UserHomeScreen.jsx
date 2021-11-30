@@ -126,7 +126,7 @@ if(res.data){
 setEmail(user.email)
 setName(user.name)
 
-    },[user])
+    },[])
    
     return (
         <>
@@ -136,7 +136,7 @@ setName(user.name)
                     <Row className='d-flex' className=''>
                         <Space direction='horizontal'>
                             <h2 as={Col} md={8}>User details</h2>
-                            <h2 as={Col} md={4} className='editHandler' onClick={handleShow} ><i class="far fa-edit"></i> </h2>
+                            <h2 as={Col} md={4} className='editHandler' onClick={handleShow} ><i className="far fa-edit"></i> </h2>
                         </Space>
                     </Row>
                     <ListGroup >

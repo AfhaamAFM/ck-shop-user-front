@@ -163,3 +163,21 @@ padding: auto;
       cursor: pointer;
     color: goldenrod;
     }
+
+   .address-Header{
+
+
+display: flex;
+justify-content: space-between;
+   } 
+
+   .address-icon{
+font-size: 1.2rem;
+
+   }
+
+   .address-icon i:hover{
+   color: goldenrod;
+   cursor: pointer;
+    
+       }

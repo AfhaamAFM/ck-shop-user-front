@@ -3,6 +3,7 @@ import { Container,Row,Tabs,Tab } from 'react-bootstrap'
 import UserHomeScreen from './UserHomeScreen'
 import {useSelector,useDispatch} from 'react-redux'
 import { userlogged } from '../../redux/userStore/userAction'
+import UserAdressScreen from './UserAdressScreen'
 
 
 
@@ -19,12 +20,12 @@ const {users}=useSelector((state)=>state.user)
 const dispatch =useDispatch()
 
 
-useEffect(()=>{
+// useEffect(()=>{
 
-dispatch(userlogged())
+// // dispatch(userlogged())
 
 
-},[dispatch])
+// },[users])
 
 
 
@@ -32,12 +33,12 @@ dispatch(userlogged())
       <Container>
 <Row>
 
-<Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-3">
+<Tabs  id="uncontrolled-tab-example" className="mb-3">
   <Tab eventKey="home" title="Home">
     <UserHomeScreen user={users}/>
   </Tab>
-  <Tab eventKey="profile" title="Profile">
-    {/* <Sonnet /> */}
+  <Tab eventKey="Address" title="Address">
+   <UserAdressScreen users={users} />
   </Tab>
   <Tab eventKey="contact" title="Contact" >
     {/* <Sonnet /> */}
