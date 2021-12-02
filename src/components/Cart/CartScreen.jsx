@@ -75,7 +75,6 @@ const navigate =useNavigate()
 
   // QUANTITY HANDLER START
   const quantityHandler = () => {};
-  const sizeHandler = () => {};
 
   // Quantity handler end
 
@@ -133,6 +132,18 @@ const navigate =useNavigate()
   // Delete cart start
   function deleteHandler(e) {
     const id = e.target.id;
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Delete it!'
+    }).then((result) => {
+  
+  if(result.isConfirmed){
+    
     axios
       .get(`/user/cart/delete/${id}`)
       .then((res) => {
@@ -150,7 +161,10 @@ const navigate =useNavigate()
       .catch((err) => {
         console.log("this is a cart item delete " + err);
       });
+    }})
+ 
   }
+
   // delete end
 
 

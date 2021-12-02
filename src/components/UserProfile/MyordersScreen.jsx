@@ -1,8 +1,9 @@
+import axios from 'axios'
 import React,{useState,useEffect} from 'react'
-import {Container,Row,Col,Image,ListGroup,Spinner} from 'react-bootstrap'
+import {Container,Row,Col,Image,ListGroup,Spinner,Button} from 'react-bootstrap'
 import {useSelector,useDispatch} from 'react-redux'
 import { fetchOrders } from '../../redux/ORDERSTORE/orderAction'
-
+import Swal from 'sweetalert2'
 
 
 function MyordersScreen() {
@@ -14,6 +15,50 @@ const[orderList,setOrderList]=useState('')
 
 
 // useEffects constainer start
+
+
+
+
+
+function cancelOrderHandler(e){
+
+const orderId = e.target.id
+
+Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, Cancel it!'
+  }).then((result) => {
+
+if(result.isConfirmed){
+    axios.get(`/order/user/cancelOrder/${orderId}`).then(res=>{
+
+console.log('ulli ljkerrin');
+
+        if (res.data) {
+            Swal.fire(
+              'Deleted!',
+              'Your order has been canceled.',
+              'success'
+            )
+            dispatch(fetchOrders())
+          }
+
+    })
+}
+   
+  })
+
+
+
+
+
+
+}
 
 useEffect(()=>{
 
@@ -43,11 +88,17 @@ console.log('Rhis',orderList);
        { orderList?orderList.map((value,m)=>{ 
      return <Row key={value._id}>
             <ListGroup className='mb-3'>
-                <ListGroup.Item>
-                    <h5>Order {m+1}</h5>
-<h6>order status : {value.orderStatus}</h6>
-<h6>Price : ₹ {value.amount}</h6>
-                </ListGroup.Item>
+                <Row className='p-3 order-container' >
+                    <Col md={4} >
+                        <h5 >Order {m+1}</h5>
+                        {value.orderStatus==='canceled'?<h6 style={{color:'red'}}>Your order is canceled</h6>:<h6>order status : {value.orderStatus}</h6>}
+                        
+                        <h6>Price : ₹ {value.amount}</h6>
+                    </Col>
+                    <Col md={3}>
+                       {value.orderStatus!=='canceled'&&<Button id={value._id} onClick={cancelOrderHandler} variant='danger'>Cancel</Button>}
+                    </Col>
+                </Row>
 {value.orderItem.map((product,i)=>{
  return <ListGroup.Item key={i}>
       <Row>

@@ -1,6 +1,6 @@
 import {CART_ADD_SUCCESS,CART_FETCH_SUCCESS,CART_FETCH_ERROR,CART_FETCH_REQUEST} from './cartType'
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 
 export const fetchCartRequest=()=>{
 
@@ -45,13 +45,21 @@ payload:err
 
 
 
-export const addToCart=(cartItem)=>{
+export const addToCart= (cartItem)=>{
 
-return (dispatch)=>{
+return(dispatch)=>{
 dispatch(fetchCartRequest())
 
-axios.post('/user/cart/add',cartItem).then(res=>{
+ axios.post('/user/cart/add',cartItem).then(res=>{
 console.log(res.data);
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: `${res.data.response}`,
+    showConfirmButton: false,
+    timer: 1500
+  })
+
 dispatch(addToCartSuccess(res.data.response))
 
 

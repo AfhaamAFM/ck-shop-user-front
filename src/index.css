@@ -208,3 +208,11 @@ overflow: hidden;
 border: 2px solid salmon;
 
 }
+
+.order-container button{
+  border-radius: 2rem;
+}
+
+.order-container button:hover{
+  color: aquamarine;
+}

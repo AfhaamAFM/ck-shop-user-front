@@ -41,7 +41,7 @@ const dispatch =useDispatch()
   <Tab eventKey="Address" title="Address">
    <UserAdressScreen users={users} />
   </Tab>
-  <Tab eventKey="contact" title="Contact" >
+  <Tab eventKey="contact" title="My Orders" >
     <MyordersScreen />
   </Tab>
 </Tabs>

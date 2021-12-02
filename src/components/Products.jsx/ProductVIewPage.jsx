@@ -41,7 +41,7 @@ function ProductVIewPage() {
 
 
     // Add to bag handler
-    function addToBagHandler() {
+   function addToBagHandler() {
 
 
 
@@ -58,17 +58,11 @@ function ProductVIewPage() {
         const price = showProducts.price
         const cartItems = { product, size, price }
         
-        dispatch(addToCart(cartItems))
+       dispatch(addToCart(cartItems))
 
         console.log();
 
-  Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: `${addResponse}`,
-        showConfirmButton: false,
-        timer: 1500
-      })
+      
 
 
 
