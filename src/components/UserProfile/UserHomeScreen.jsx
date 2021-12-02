@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ListGroup, Row, Col, Modal, Button, Form } from 'react-bootstrap'
+import { ListGroup, Row, Col, Modal, Button, Form, Image } from 'react-bootstrap'
 import { Space } from 'antd'
 import validator from '../../simple-react-form-validation-helper/validationHelpers';
 import Text from 'antd/lib/typography/Text';
@@ -7,6 +7,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 import {useSelector,useDispatch} from 'react-redux'
 import { userlogged } from '../../redux/userStore/userAction';
+import ImageEditModal from './ImageEditModal';
+import { height } from '@mui/system';
 
 function UserHomeScreen({ user }) {
 
@@ -35,7 +37,8 @@ const[confirmPassword,setConfirmPassword]=useState('')
 const[password,setPassword]=useState('')
 const[passwordError,setPasswordError]=useState('')
 
-
+// edit modal constroller
+const [editImageShow, seteditImageShow] = useState(false);
 
 
 
@@ -150,11 +153,19 @@ setName(user.name)
                        <Button variant='danger' onClick={passwordhandleShow}>Change password</Button>
                     </ListGroup>
                 </Col>
+                <Col md={6} className='d-flex'>
+                <div className='profileImageContainer'>
+<Image  src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8&auto=format&fit=crop&w=400&q=60'  fluid/>
+                </div>
+<i className="fas fa-pen  deleteIcon" onClick={seteditImageShow}  ></i>
+                {/* <Button onClick={seteditImageShow}>Edit Image</Button> */}
+                </Col>
             </Row>
 
 
             <>
-
+<ImageEditModal editImageShow={editImageShow}
+seteditImageShow={seteditImageShow} />
 {/* Eddit username start */}
                 <Modal
                     show={show}

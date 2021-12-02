@@ -187,3 +187,24 @@ font-size: 1.2rem;
 align-items: center;
 
 }
+/* Image cropper js start*/
+.box {
+  display: inline-block;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.img-preview {
+  overflow: hidden;
+}
+/* image cropper js end */
+.profileImageContainer{
+
+height: 200px;
+width: 200px;
+
+border-radius: 50%;
+object-fit: contain;
+overflow: hidden;
+border: 2px solid salmon;
+
+}
