@@ -30,7 +30,7 @@ const {Text} = Typography
        <Space direction='horizontal'>
 
            <Card.Text as='div' className='priceHolder1'>
-           ₹ {product.price}
+           ₹{product.price}
            </Card.Text>
            <Text type="success">{product.offer.percentage}% off </Text>
        </Space>

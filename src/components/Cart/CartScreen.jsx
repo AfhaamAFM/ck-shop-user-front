@@ -34,6 +34,9 @@ const navigate =useNavigate()
   const [changeAddressShow, setChangeAddressShow] = useState(false);
   const [addAddressShow, setAddAddressShow] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const[totalMrp,setTotalMrp]=useState(0)
+  const[totalDiscount,setTotalDiscount]=useState(0)
+
   // address states
   const [name, setName] = useState("");
   const [flatNo, setFlatNO] = useState("");
@@ -221,11 +224,20 @@ navigate('/checkoutPay')
 
 useEffect(()=>{
 
-let total=0;
-cartItem.forEach(item=>{
-  total+=item.price*item.quantity
+let totalMrp =0;
+let totalAmount=0
+let totalDiscount=0
+
+cartItem.forEach((value,i)=>{
+  let index=cartProducts.findIndex(item=>item._id===value.product);
+
+  totalDiscount+=Math.round(cartProducts[index].discountPrice*value.quantity)
+totalAmount+=Math.round(cartProducts[index].offerPrice*value.quantity)
+  totalMrp+=value.price*value.quantity
 })
-setTotalAmount(total);
+setTotalAmount(totalAmount);
+setTotalMrp(totalMrp)
+setTotalDiscount(totalDiscount)
 
 
 },[cartItem])
@@ -347,7 +359,18 @@ setTotalAmount(total);
                                 {`${cartProducts[index].category}'s ${cartProducts[index].subCat}`}
                               </Card.Subtitle>
                              {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
-                              <Text strong>{value.quantity*value.price}</Text>
+                           { cartProducts[index].isOffer? <Space direction='vertical'>
+   <Card.Text as='div' className='priceHolder'>
+       ₹{( Math.round(cartProducts[index].offerPrice*value.quantity))}
+       </Card.Text>
+       <Space direction='horizontal'>
+
+           <Card.Text as='div' className='priceHolder1'>
+           ₹{(Math.round(cartProducts[index].price*value.quantity))}
+           </Card.Text>
+           <Text type="success">{cartProducts[index].offer.percentage}% off </Text>
+       </Space>
+    </Space> :<Text strong>{value.quantity*cartProducts[index].price}</Text>}
                               {/* QUANTITY SELECTOR STRAT */}
 
                               {/* QUANTITY SELECTOR END */}
@@ -414,14 +437,14 @@ setTotalAmount(total);
                       <Text strong> total mrp</Text>
                     </Col>
                     <Col md={{ span: 4, offset: 4 }}>
-                      <Text>₹ {totalAmount}</Text>{" "}
+                      <Text>₹{totalMrp}</Text>{" "}
                     </Col>
                   </Row>
-                  {/* <Row className='p-1 ms-1'>
+                  <Row className='p-1 ms-1'>
                   <Col md={4}> <Text strong>Discount on MRP</Text></Col>
-                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
+                  <Col md={{ span: 4, offset: 4 }}><Text type='success' > -₹{totalDiscount} off</Text> </Col>
                 </Row>
-                <Row className='p-1 ms-1'>
+                {/* <Row className='p-1 ms-1'>
                   <Col md={4}> <Text strong>Coupen Discount</Text></Col>
                   <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
                 </Row> */}
@@ -437,7 +460,7 @@ setTotalAmount(total);
                       <Text strong>Grand Total</Text>
                     </Col>
                     <Col md={{ span: 4, offset: 4 }}>
-                      <Text strong>₹ {totalAmount}</Text>{" "}
+                      <Text strong>₹{totalAmount}</Text>{" "}
                     </Col>
                   </Row>
                 </Card>
