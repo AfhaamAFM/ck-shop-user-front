@@ -216,3 +216,20 @@ border: 2px solid salmon;
 .order-container button:hover{
   color: aquamarine;
 }
+
+/* Offer price handler start */
+
+.priceHolder{
+
+font-size: 14px;
+font-weight: 500;
+
+}
+
+.priceHolder1{
+  font-size: 14px;
+  font-weight: 300;
+  text-decoration: line-through;
+
+}
+/* offer price handelr end */

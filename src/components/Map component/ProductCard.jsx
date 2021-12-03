@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Card } from 'react-bootstrap'
+import { Card,Row,Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Rating from './Rating';
+import {Space,Typography} from 'antd'
 function ProductCard({product}) {
   
-
+const {Text} = Typography
 
 
     return (
@@ -19,11 +20,29 @@ function ProductCard({product}) {
 {/* <Card.Text as='div'>
  <Rating value={4} />
 </Card.Text> */}
-<Card.Text as='div'>
-    <strong>
-₹ {product.price}
-    </strong>
-</Card.Text>
+<Row>
+    {product.isOffer?
+    
+    <Space direction='vertical'>
+   <Card.Text as='div' className='priceHolder'>
+       ₹{product.offerPrice}
+       </Card.Text>
+       <Space direction='horizontal'>
+
+           <Card.Text as='div' className='priceHolder1'>
+           ₹ {product.price}
+           </Card.Text>
+           <Text type="success">{product.offer.percentage}% off </Text>
+       </Space>
+    </Space>
+
+    :
+    <Card.Text as='div' className='priceHolder'>
+       
+    ₹{product.price}
+       
+    </Card.Text>}
+</Row>
 </Card.Body>
         </Card>
     )
