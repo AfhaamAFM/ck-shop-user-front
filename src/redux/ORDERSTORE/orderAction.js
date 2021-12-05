@@ -52,7 +52,7 @@ export const addOrder = (order) => {
 
         axios.post('/order/user/placeOrder',order).then(res => {
             console.log(res.data);
-            dispatch(addOrderSuccess(res.data.response))
+            dispatch(addOrderSuccess(res.data))
 
 
         }).catch(err => {
@@ -84,3 +84,5 @@ return (dispatch)=>{
 
 
 }}
+
+

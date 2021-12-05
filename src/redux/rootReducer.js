@@ -5,7 +5,7 @@ import productReducer from "./PRODUCTS/productReducer";
 import filterProductReducer from "./filterProducts/filterProductReducer";
 import cartReducer from "./CARTSTORE/cartReducer";
 import checkoutReducer from "./Checkout/checkoutReducer";
-import orderReducer from "./ORDERSTORE/orderReducer";
+import {orderReducer,orderPayReducer} from "./ORDERSTORE/orderReducer";
 
 const rootReducer = combineReducers({
   
@@ -15,7 +15,9 @@ const rootReducer = combineReducers({
     filterProduct:filterProductReducer,
     cart:cartReducer,
     checkout:checkoutReducer,
-    order:orderReducer
+    order:orderReducer,
+    orderPay:orderPayReducer
+    
 
 })
 export default rootReducer

@@ -1,5 +1,5 @@
 import {ORDER_ADD_SUCCESS,ORDER_FETCH_SUCCESS,ORDER_FETCH_ERROR,ORDER_FETCH_REQUEST} from './orderType'
-
+import { ORDER_PAY_REQUEST,ORDER_PAY_SUCCESS,ORDER_PAY_FAIL,ORDER_PAY_RESET } from './orderType'
 
 
 const initial = {
@@ -7,11 +7,11 @@ const initial = {
     loading: false,
     orders: '',
     error: '',
-    addResponse:''
+    orderId:''
  
 }
 
-const orderReducer = (state = initial, action) => {
+export const orderReducer = (state = initial, action) => {
 
 
     switch (action.type) {
@@ -30,7 +30,7 @@ const orderReducer = (state = initial, action) => {
         case ORDER_ADD_SUCCESS:
             return {
                 ...state,
-                addResponse: action.payload,
+                orderId: action.payload,
                 loading: false,
                 error: ''
             }
@@ -48,4 +48,36 @@ const orderReducer = (state = initial, action) => {
     }
 
 }
-    export default orderReducer
+   
+
+export const orderPayReducer=(state={},action)=>{
+
+
+    switch (action.type) {
+        case ORDER_PAY_REQUEST:
+            return {
+                loading: true
+            }
+        case ORDER_PAY_SUCCESS:
+            return {
+           
+                loading: false,
+               success:true
+            }
+        case ORDER_PAY_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+            case ORDER_PAY_RESET:
+                return {}
+
+        default:
+            return state
+
+
+    }
+
+
+
+}

@@ -47,7 +47,7 @@ function RoutesHome() {
                         <Route path="/signin" element={userActive ? <Navigate to="/" /> : <Signin />} />
                         <Route path="/signup" element={userActive ? <Navigate to="/" /> : <Signup />} />
                         <Route path='/cart'   element= { <CartScreen/> }/>
-                        <Route path='/placeOrder'   element= { <PlaceOrderScreen/> }/>
+                        <Route path='/placeOrder/:orderId'   element= { <PlaceOrderScreen/> }/>
 
 
                     </Routes>
