@@ -35,10 +35,7 @@ function CheckoutPaymentScreen() {
         dispatch(addOrder({ amount, address, orderStatus: 'ordered', cartItems }))
 
     }
-const successPaypalPaymentHandler=(paymentResult)=>{
 
-console.log(paymentResult);
-}
 
     // use effects
 
@@ -172,7 +169,7 @@ console.log(paymentResult);
             <Row className='mt-4'>
 
                
-                    <Button onClick={placeOrderHandler}  variant='danger'>Place Order</Button>
+                    <Button onClick={placeOrderHandler}  variant='danger'>Go For Payment</Button>
             </Row>
         </Container>
     )

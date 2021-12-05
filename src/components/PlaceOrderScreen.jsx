@@ -6,12 +6,13 @@ import { userlogged } from '../redux/userStore/userAction'
 import Text from 'antd/lib/typography/Text'
 import CheckoutStep from './Map component/CheckoutStep'
 import { useNavigate } from 'react-router-dom'
-import { addOrder, fetchOrders } from '../redux/ORDERSTORE/orderAction'
+import { fetchOrders, payOrder } from '../redux/ORDERSTORE/orderAction'
 import Message from './Map component/Message'
 import { PayPalButton } from 'react-paypal-button-v2'
 import axios from 'axios'
 import Loader from 'react-loader-spinner'
 import { ORDER_PAY_RESET } from '.././redux/ORDERSTORE/orderType'
+import RazorPayComponent from './UserProfile/RazorPayComponent'
 function PlaceOrderScreen() {
 
 
@@ -20,6 +21,9 @@ function PlaceOrderScreen() {
     const [totalMrp, setTotalMrp] = useState(0)
     const [totalDiscount, setTotalDiscount] = useState(0)
     const [showPaypal, setShowPaypal] = useState(false)
+    const [showRazor, setShowRazor] = useState(false)
+    const [showCod, setShowCod] = useState(false)
+
     let [cartProducts, setCartProducts] = useState([]);
     let [cartItem, setCartItem] = useState([]);
     const dispatch = useDispatch()
@@ -38,9 +42,10 @@ function PlaceOrderScreen() {
 
 
 
-    const successPaypalPaymentHandler = (paymentResult) => {
-
-        console.log(paymentResult);
+    const successPaymentHandler = (paymentResult) => {
+        const{id:payId}=paymentResult
+        dispatch(payOrder(payId,paymentMethod,orderId))
+        
     }
     // use effects
 
@@ -48,13 +53,12 @@ function PlaceOrderScreen() {
         if (!orders)
             return
         const finded = orders.find(value => value.orderId === orderId)
-
         setShowOrder(finded)
-    })
+    },[dispatch,allOrder])
 
 
     useEffect(() => {
-
+        // paypal start 
         const addPayPalScript = async () => {
 
             const { data: clientId } = await axios.get('/config/paypal')
@@ -81,7 +85,9 @@ function PlaceOrderScreen() {
             setSdkReady(true)
         }
 
-
+        // paypal end
+//eslint-disable-next-line 
+        // 
     }, [dispatch, successPay])
 
     // const showOrder = orders&&orders.find(value=>value.orderId===orderId)
@@ -94,7 +100,7 @@ function PlaceOrderScreen() {
         setCartItem(cartItems.cartItem);
 
 
-
+// eslint-disable-next-line 
     }, [cartItems, orderId]);
     useEffect(() => {
 
@@ -118,8 +124,9 @@ function PlaceOrderScreen() {
     useEffect(() => {
         dispatch(fetchOrders())
         dispatch(userlogged())
+        // eslint-disable-next-line 
     }, [dispatch])
-
+console.log('THisss is show order   ', showOrder );
     return (
         <Container>
             {orderFetchLoading || !allOrder || !showOrder ? <Loader
@@ -210,7 +217,7 @@ function PlaceOrderScreen() {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={6}>
+                      { !showOrder.isPaid &&  <Col md={6}>
 
 
 
@@ -228,6 +235,8 @@ function PlaceOrderScreen() {
                                             value='COD'
                                             label='Cash on Delivary'
                                             onChange={(e) => {
+                                                setShowCod(true)
+                                                setShowRazor(false)
                                                 setShowPaypal(false)
 
                                                 setPaymentMethod(e.target.value)
@@ -238,6 +247,8 @@ function PlaceOrderScreen() {
                                             name='paymentMethod'
                                             onChange={(e) => {
                                                 setShowPaypal(true)
+                                                setShowRazor(false)
+                                                setShowCod(false)
                                                 setPaymentMethod(e.target.value)
 
                                             }}
@@ -248,11 +259,14 @@ function PlaceOrderScreen() {
                                         />
                                         <Form.Check
                                             onChange={(e) => {
+                                                setShowRazor(true)
+                                                setShowPaypal(false)
+                                                setShowCod(false)
                                                 setPaymentMethod(e.target.value)
 
                                             }}
                                             name='paymentMethod'
-                                            disabled
+
                                             type='radio'
                                             value='razorpay'
                                             label='Razorpay'
@@ -261,25 +275,26 @@ function PlaceOrderScreen() {
                                 </Form.Group>
                             </Form>
 
-                            <Button className='mx-3'variant='danger'>Go For Payment</Button>
+                            {/* <Button className='mx-3' variant='danger'>Go For Payment</Button> */}
 
 
-                        </Col>
+                        </Col>}
 
-                        <Col md={6} className='p-5'>
+                     {  !showOrder.isPaid &&<Col md={6} className='p-5'>
                             {/* !showOrder?.isPaid|| */}
-                            {showPaypal && (<ListGroup>
+                            { (<ListGroup>
                                 <ListGroup.Item>
+                                    {showCod && <Button className='mx-3' variant='danger'>Proceed</Button> }
+                                    { showRazor&&<RazorPayComponent successPaymentHandler={successPaymentHandler} amount={totalAmount} />}
+                                   
                                     {loadingPay && <Loader />}
-                                    {!sdkReady ? <Loader /> : (<PayPalButton
-                                        amount={showOrder.amount}
-                                        // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-                                        onSuccess={successPaypalPaymentHandler}
-                                    />)}
+                                  { !sdkReady? <Loader /> :showPaypal?( <PayPalButton amount={showOrder.amount} onSuccess={successPaymentHandler}
+                                    />):''}
                                 </ListGroup.Item>
                             </ListGroup>)}
+                           
 
-                        </Col>
+                        </Col>}
                     </Row>
 
                 </>
