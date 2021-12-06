@@ -86,11 +86,11 @@ return (dispatch)=>{
 
 }}
 
-export const payOrder=(paymentId,paymentMethod,orderId)=>{
+export const payOrder=(paymentId,paymentMethod,orderId,orderStatus)=>{
 return (dispatch)=>{
 
 dispatch({type:ORDER_PAY_REQUEST})
-axios.post(`order/${orderId}/pay-amount/`,{paymentId,paymentMethod}).then(res=>{
+axios.post(`order/${orderId}/pay-amount/`,{paymentId,paymentMethod,orderStatus}).then(res=>{
 
 if(res.data){
 
@@ -115,4 +115,35 @@ if(res.data){
 
 
 }
+// place order wih cod
+
+export const placeCOD=(paymentMethod,orderStatus,orderId)=>{
+    return (dispatch)=>{
+    
+    dispatch({type:ORDER_PAY_REQUEST})
+    axios.post(`order/placeOrder/${orderId}/cod/`,{paymentMethod,orderStatus}).then(res=>{
+    
+    if(res.data){
+    
+        dispatch({type:ORDER_PAY_SUCCESS})
+        dispatch(fetchOrders())
+     return   Swal.fire({
+            position: 'top-center',
+            icon: 'success',
+            title: 'Place Order Success',
+            showConfirmButton: false,
+            timer: 1500
+          })
+    }
+    
+    
+    }).catch(err=>{
+    
+        dispatch({type:ORDER_PAY_FAIL})
+    })
+    
+    }
+    
+    
+    }
 

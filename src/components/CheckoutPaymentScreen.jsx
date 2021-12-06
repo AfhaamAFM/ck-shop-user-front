@@ -32,7 +32,7 @@ function CheckoutPaymentScreen() {
 
     function placeOrderHandler() {
 
-        dispatch(addOrder({ amount, address, orderStatus: 'ordered', cartItems }))
+        dispatch(addOrder({ amount, address, cartItems }))
 
     }
 
