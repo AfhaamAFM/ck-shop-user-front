@@ -8,7 +8,6 @@ import Swal from 'sweetalert2'
 import {useSelector,useDispatch} from 'react-redux'
 import { userlogged } from '../../redux/userStore/userAction';
 import ImageEditModal from './ImageEditModal';
-import { height } from '@mui/system';
 
 function UserHomeScreen({ user }) {
 
@@ -38,8 +37,8 @@ const[password,setPassword]=useState('')
 const[passwordError,setPasswordError]=useState('')
 
 // edit modal constroll(er
-const [editImageShow, seteditImageShow] = useState(false);
 const[profilePreview,setProfilePreview]=useState()
+const [editImageShow, seteditImageShow] = useState(false);
 const [cropData, setCropData] = useState("#");
 const [cropper, setCropper] = useState();
 const[loading,setLoading]=useState(false)
@@ -49,9 +48,6 @@ const {users}=useSelector((state)=>state.user)
 const dispatch =useDispatch()
 
 const getCropData = () => {
-   
-
-   
     if (typeof cropper !== "undefined") {
       setCropData(cropper.getCroppedCanvas().toDataURL());
 setProfilePreview(cropper.getCroppedCanvas().toDataURL())
@@ -212,10 +208,8 @@ setProfilePreview(user.image.url)
 <ImageEditModal editImageShow={editImageShow}
 seteditImageShow={seteditImageShow} 
 ShowImageHandler={ShowImageHandler}
-cropData={cropData}
-setCropData={setCropData}
-cropper={cropper} setCropper={setCropper} 
-const getCropData = {getCropData}/>
+ setCropper={setCropper} 
+/>
 {/* Eddit username start */}
                 <Modal
                     show={show}

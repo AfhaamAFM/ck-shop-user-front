@@ -8,10 +8,8 @@ import "cropperjs/dist/cropper.css";
 
 
 function ImageEditModal({editImageShow,
-    seteditImageShow,ShowImageHandler,
-    cropData,
-    setCropData,cropper, setCropper,
- getCropData }) {
+    seteditImageShow,ShowImageHandler,setCropper,
+  }) {
 
 
 // Image cropper js controller start
