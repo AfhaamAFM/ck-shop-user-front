@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ListGroup, Row, Col, Modal, Button, Form, Image } from 'react-bootstrap'
+import { ListGroup, Row, Col, Modal, Button, Form, Image,Spinner } from 'react-bootstrap'
 import { Space } from 'antd'
 import validator from '../../simple-react-form-validation-helper/validationHelpers';
 import Text from 'antd/lib/typography/Text';
@@ -37,14 +37,57 @@ const[confirmPassword,setConfirmPassword]=useState('')
 const[password,setPassword]=useState('')
 const[passwordError,setPasswordError]=useState('')
 
-// edit modal constroller
+// edit modal constroll(er
 const [editImageShow, seteditImageShow] = useState(false);
-
-
+const[profilePreview,setProfilePreview]=useState()
+const [cropData, setCropData] = useState("#");
+const [cropper, setCropper] = useState();
+const[loading,setLoading]=useState(false)
+const[saveMode,setSaveMode]=useState(false)
 
 const {users}=useSelector((state)=>state.user)
 const dispatch =useDispatch()
 
+const getCropData = () => {
+   
+
+   
+    if (typeof cropper !== "undefined") {
+      setCropData(cropper.getCroppedCanvas().toDataURL());
+setProfilePreview(cropper.getCroppedCanvas().toDataURL())
+    }
+  };
+
+
+// crop image uploader
+
+async function ShowImageHandler(){
+    getCropData()
+setSaveMode(true)
+seteditImageShow(false)
+}
+const image=cropData
+function uploadImageHandler(){
+    setLoading(true)
+    const oldImage=user.image
+    axios.post('/user/imageUpload',{image,oldImage}).then(res=>{
+if(res.data){
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Image Upload',
+        showConfirmButton: false,
+        timer: 1500
+      })
+      setSaveMode(false)
+      setLoading(false)
+
+}
+        
+    })
+    
+
+}
 // Local function
 
 function editHandler (){
@@ -119,18 +162,14 @@ if(res.data){
 }
 
 
-
-
-
-
-
     useEffect(()=>{
 
 setEmail(user.email)
 setName(user.name)
+setProfilePreview(user.image.url)
 
     },[])
-   
+  console.log(cropData); 
     return (
         <>
 
@@ -155,9 +194,15 @@ setName(user.name)
                 </Col>
                 <Col md={6} className='d-flex'>
                 <div className='profileImageContainer'>
-<Image  src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8&auto=format&fit=crop&w=400&q=60'  fluid/>
+<Image src={profilePreview}  fluid/>
+  
+  
                 </div>
-<i className="fas fa-pen  deleteIcon" onClick={seteditImageShow}  ></i>
+                
+{loading?  <Spinner animation="grow" variant="danger" />
+:saveMode?<h4><i className="far fa-save deleteIcon" onClick={uploadImageHandler} ></i></h4>
+:<h4><i className="fas fa-pen  deleteIcon" onClick={seteditImageShow}  ></i></h4>}
+
                 {/* <Button onClick={seteditImageShow}>Edit Image</Button> */}
                 </Col>
             </Row>
@@ -165,7 +210,12 @@ setName(user.name)
 
             <>
 <ImageEditModal editImageShow={editImageShow}
-seteditImageShow={seteditImageShow} />
+seteditImageShow={seteditImageShow} 
+ShowImageHandler={ShowImageHandler}
+cropData={cropData}
+setCropData={setCropData}
+cropper={cropper} setCropper={setCropper} 
+const getCropData = {getCropData}/>
 {/* Eddit username start */}
                 <Modal
                     show={show}

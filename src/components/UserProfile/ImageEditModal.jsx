@@ -8,15 +8,19 @@ import "cropperjs/dist/cropper.css";
 
 
 function ImageEditModal({editImageShow,
-    seteditImageShow}) {
+    seteditImageShow,ShowImageHandler,
+    cropData,
+    setCropData,cropper, setCropper,
+ getCropData }) {
 
 
 // Image cropper js controller start
 
   const [image, setImage] = useState('');
-  const [cropData, setCropData] = useState("#");
-  const [cropper, setCropper] = useState();
-  const[previewSrc,setPreviewSrc]=useState()
+
+
+
+
   const onChange = (e) => {
     e.preventDefault();
     let files;
@@ -32,11 +36,7 @@ function ImageEditModal({editImageShow,
     reader.readAsDataURL(files[0]);
   };
 
-  const getCropData = () => {
-    if (typeof cropper !== "undefined") {
-      setCropData(cropper.getCroppedCanvas().toDataURL());
-    }
-  };
+
 
 // Image cropper jd controllwe end
     return (
@@ -87,7 +87,7 @@ function ImageEditModal({editImageShow,
         />
       </div>
       <div>
-      <Button style={{ float: "right" }} onClick={getCropData}>
+      <Button style={{ float: "right" }} onClick={ShowImageHandler}>
               Save
             </Button>
 
