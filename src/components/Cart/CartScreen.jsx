@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import {
   Container,
   Row,
@@ -48,6 +48,9 @@ const navigate =useNavigate()
   const [landmark, setLandmark] = useState("");
   const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(false);
+  const qty=useRef()
+  let [cartProducts, setCartProducts] = useState([]);
+  let [cartItem, setCartItem] = useState([]);
   // form error states
 
   const [allAddress, setAllAddress] = useState();
@@ -77,7 +80,60 @@ const navigate =useNavigate()
   // ==================================modal controller end=============================
 
   // QUANTITY HANDLER START
-  const quantityHandler = () => {};
+
+  async function quantityHandler(id,value){
+await axios.get(`http://localhost:5000/user/cart/changeQuantity/${id}/${value}`).then(res=>{
+
+if(res.data){
+dispatch(fetchCart())
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: "Quantity updated",
+    showConfirmButton: false,
+    timer: 1500,
+  });
+}
+})
+
+  }
+  const decreaseQuantity = (e) => {
+    const id =e.target.id
+    const  thisCart= cartItem.find(v=>v._id===id)
+    if(thisCart.quantity===1){
+     return Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Delete if you want to remove Item',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }
+
+    quantityHandler(e.target.id,-1)
+
+  };
+  const increaseQuantity = (e) => {
+    const id =e.target.id
+   const  thisCart= cartItem.find(v=>v._id===id)
+   const thisProduct=cartProducts.find(v=>v._id=thisCart.product)
+
+const{quantity,size}=thisCart
+
+if(thisProduct[size]===quantity){
+ return Swal.fire({
+    position: 'top-end',
+    icon: 'error',
+    title: 'Maximum product added',
+    showConfirmButton: false,
+    timer: 1500
+  })
+
+}
+
+
+    quantityHandler(e.target.id,1)
+  };
 
   // Quantity handler end
 
@@ -205,8 +261,7 @@ navigate('/checkoutPay')
     dispatch(fetchCart());
   }, [dispatch, selectedAddressID]);
 
-  let [cartProducts, setCartProducts] = useState([]);
-  let [cartItem, setCartItem] = useState([]);
+ 
 
   useEffect(() => {
     if (!cartItems) return;
@@ -231,8 +286,8 @@ let totalDiscount=0
 cartItem.forEach((value,i)=>{
   let index=cartProducts.findIndex(item=>item._id===value.product);
 
-  totalDiscount+=Math.round(cartProducts[index].discountPrice*value.quantity)
-totalAmount+=Math.round(cartProducts[index].offerPrice*value.quantity)
+  cartProducts[index].isOffer&&(totalDiscount+=Math.round(cartProducts[index].discountPrice*value.quantity))
+totalAmount+=cartProducts[index].isOffer?Math.round(cartProducts[index].offerPrice*value.quantity):Math.round(cartProducts[index].price*value.quantity)
   totalMrp+=value.price*value.quantity
 })
 setTotalAmount(totalAmount);
@@ -240,7 +295,7 @@ setTotalMrp(totalMrp)
 setTotalDiscount(totalDiscount)
 
 
-},[cartItem])
+},[cartItem,dispatch])
 
 
 
@@ -345,7 +400,7 @@ setTotalDiscount(totalDiscount)
                           <Row className="p-2">
                             <Col md={2}>
                               <Image
-                                src={ cartProducts[index].imageUrl[0].img}
+                                src={ cartProducts[index]?.imageUrl[0].img}
                                 alt="product image"
                                 fluid
                                 rounded
@@ -356,21 +411,21 @@ setTotalDiscount(totalDiscount)
                                 {cartItems && cartItem.name}
                               </Card.Title>
                               <Card.Subtitle className="mb-2 text-muted">
-                                {`${cartProducts[index].category}'s ${cartProducts[index].subCat}`}
+                                {`${cartProducts[index]?.category}'s ${cartProducts[index]?.subCat}`}
                               </Card.Subtitle>
                              {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
-                           { cartProducts[index].isOffer? <Space direction='vertical'>
+                           { cartProducts[index]?.isOffer? <Space direction='vertical'>
    <Card.Text as='div' className='priceHolder'>
-       ₹{( Math.round(cartProducts[index].offerPrice*value.quantity))}
+       ₹{( Math.round(cartProducts[index]?.offerPrice*value.quantity))}
        </Card.Text>
        <Space direction='horizontal'>
 
            <Card.Text as='div' className='priceHolder1'>
-           ₹{(Math.round(cartProducts[index].price*value.quantity))}
+           ₹{(Math.round(cartProducts[index]?.price*value.quantity))}
            </Card.Text>
-           <Text type="success">{cartProducts[index].offer.percentage}% off </Text>
+           <Text type="success">{cartProducts[index]?.offer.percentage}% off </Text>
        </Space>
-    </Space> :<Text strong>{value.quantity*cartProducts[index].price}</Text>}
+    </Space> :<Text strong>{value.quantity*cartProducts[index]?.price}</Text>}
                               {/* QUANTITY SELECTOR STRAT */}
 
                               {/* QUANTITY SELECTOR END */}
@@ -390,9 +445,9 @@ setTotalDiscount(totalDiscount)
                             </>
                           </Select> */}
                                 <div className="quantityHandler">
-                                  <i className="fas fa-minus-circle"></i>
-                                  <input type="text" size='5' readOnly value={value.quantity} />
-                                  <i className="fas fa-plus-circle"></i>
+                                  <i className="fas fa-minus-circle"  id={value. _id} onClick={decreaseQuantity} ></i>
+                                  <input type="text" size='5' ref={qty} readOnly value={value.quantity} />
+                                  <i className="fas fa-plus-circle" id={value. _id}value={1} onClick={increaseQuantity} ></i>
                                 </div>
                                 <Card.Text>Select quantity {value.quantity} </Card.Text>
                               </Row>
