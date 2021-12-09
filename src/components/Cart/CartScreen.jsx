@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Container,
   Row,
@@ -14,12 +14,12 @@ import AdressModal from "./CartModal/AdressModal";
 import { useSelector, useDispatch } from "react-redux";
 import { addAddress, userlogged } from "../../redux/userStore/userAction";
 import Swal from "sweetalert2";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddAddressModal from "./CartModal/AddAddressModal";
 import axios from "axios";
 import { fetchCart } from "../../redux/CARTSTORE/cartAction";
 import CheckoutStep from "../Map component/CheckoutStep";
-import { storeAddress, storeAmount, storecartItems } from "../../redux/Checkout/checkoutAction";
+import { getcartItems, storeAddress, storeAmount, storecartItems } from "../../redux/Checkout/checkoutAction";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
@@ -27,15 +27,15 @@ const { Text, Title } = Typography;
 
 function CartScreen() {
 
-const[checkoutWarning,setCheckoutWarning]=useState()
-const navigate =useNavigate()
+  const [checkoutWarning, setCheckoutWarning] = useState()
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   // UseStates
   const [changeAddressShow, setChangeAddressShow] = useState(false);
   const [addAddressShow, setAddAddressShow] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
-  const[totalMrp,setTotalMrp]=useState(0)
-  const[totalDiscount,setTotalDiscount]=useState(0)
+  const [totalMrp, setTotalMrp] = useState(0)
+  const [totalDiscount, setTotalDiscount] = useState(0)
 
   // address states
   const [name, setName] = useState("");
@@ -48,7 +48,7 @@ const navigate =useNavigate()
   const [landmark, setLandmark] = useState("");
   const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(false);
-  const qty=useRef()
+  const qty = useRef()
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
   // form error states
@@ -59,7 +59,7 @@ const navigate =useNavigate()
 
   // Redux function
   const { userActive, users } = useSelector((state) => state.user);
-  const { cartItems, loading: getCartLoading } = useSelector( (state) => state.cart );
+  const { cartItems, loading: getCartLoading } = useSelector((state) => state.cart);
 
   // =============================Modal controller start===============================
 
@@ -81,27 +81,27 @@ const navigate =useNavigate()
 
   // QUANTITY HANDLER START
 
-  async function quantityHandler(id,value){
-await axios.get(`http://localhost:5000/user/cart/changeQuantity/${id}/${value}`).then(res=>{
+  async function quantityHandler(id, value) {
+    await axios.get(`http://localhost:5000/user/cart/changeQuantity/${id}/${value}`).then(res => {
 
-if(res.data){
-dispatch(fetchCart())
-  Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "Quantity updated",
-    showConfirmButton: false,
-    timer: 1500,
-  });
-}
-})
+      if (res.data) {
+        dispatch(fetchCart())
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Quantity updated",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    })
 
   }
   const decreaseQuantity = (e) => {
-    const id =e.target.id
-    const  thisCart= cartItem.find(v=>v._id===id)
-    if(thisCart.quantity===1){
-     return Swal.fire({
+    const id = e.target.id
+    const thisCart = cartItem.find(v => v._id === id)
+    if (thisCart.quantity === 1) {
+      return Swal.fire({
         position: 'top-end',
         icon: 'error',
         title: 'Delete if you want to remove Item',
@@ -110,29 +110,29 @@ dispatch(fetchCart())
       })
     }
 
-    quantityHandler(e.target.id,-1)
+    quantityHandler(e.target.id, -1)
 
   };
   const increaseQuantity = (e) => {
-    const id =e.target.id
-   const  thisCart= cartItem.find(v=>v._id===id)
-   const thisProduct=cartProducts.find(v=>v._id=thisCart.product)
+    const id = e.target.id
+    const thisCart = cartItem.find(v => v._id === id)
+    const thisProduct = cartProducts.find(v => v._id = thisCart.product)
 
-const{quantity,size}=thisCart
+    const { quantity, size } = thisCart
 
-if(thisProduct[size]===quantity){
- return Swal.fire({
-    position: 'top-end',
-    icon: 'error',
-    title: 'Maximum product added',
-    showConfirmButton: false,
-    timer: 1500
-  })
+    if (thisProduct[size] === quantity) {
+      return Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Maximum product added',
+        showConfirmButton: false,
+        timer: 1500
+      })
 
-}
+    }
 
 
-    quantityHandler(e.target.id,1)
+    quantityHandler(e.target.id, 1)
   };
 
   // Quantity handler end
@@ -200,28 +200,29 @@ if(thisProduct[size]===quantity){
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, Delete it!'
     }).then((result) => {
-  
-  if(result.isConfirmed){
-    
-    axios
-      .get(`/user/cart/delete/${id}`)
-      .then((res) => {
-        if (res.data) {
-          dispatch(fetchCart());
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "cart item deleted",
-            showConfirmButton: false,
-            timer: 1500,
+
+      if (result.isConfirmed) {
+
+        axios
+          .get(`/user/cart/delete/${id}`)
+          .then((res) => {
+            if (res.data) {
+              dispatch(fetchCart());
+              Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "cart item deleted",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log("this is a cart item delete " + err);
           });
-        }
-      })
-      .catch((err) => {
-        console.log("this is a cart item delete " + err);
-      });
-    }})
- 
+      }
+    })
+
   }
 
   // delete end
@@ -230,27 +231,30 @@ if(thisProduct[size]===quantity){
 
   // Checkout Handler start
 
-function checkoutHandler(){
-if(!showAddress){
+  function checkoutHandler() {
+    if (!showAddress) {
 
-  return setCheckoutWarning('Select a address')
-}
+      return setCheckoutWarning('Select a address')
+    }
 
-if(cartItems.cartItem.length===0){
+    if (cartItems.cartItem.length === 0) {
 
-  return setCheckoutWarning('Cart is empty')
-}
-  dispatch(storeAmount(totalAmount))
-  dispatch(storeAddress(showAddress))
-  dispatch(storecartItems(cartItems))
+      return setCheckoutWarning('Cart is empty')
+    }
 
 
+    
+    dispatch(storeAmount(totalAmount))
+    dispatch(storeAddress(showAddress))
+    dispatch(storecartItems(cartItems))
+dispatch(getcartItems())
 
-navigate('/checkoutPay')
-  
 
-}
-  
+    navigate('/checkoutPay')
+
+
+  }
+
   // Checkout Handler end
 
   // cartItems&&cartItems.map((v) => {setTotalAmount(totalAmount+(v.cartItem.quantity*v.cartItem.price))})
@@ -261,7 +265,7 @@ navigate('/checkoutPay')
     dispatch(fetchCart());
   }, [dispatch, selectedAddressID]);
 
- 
+
 
   useEffect(() => {
     if (!cartItems) return;
@@ -277,25 +281,25 @@ navigate('/checkoutPay')
 
 
 
-useEffect(()=>{
+  useEffect(() => {
 
-let totalMrp =0;
-let totalAmount=0
-let totalDiscount=0
+    let totalMrp = 0;
+    let totalAmount = 0
+    let totalDiscount = 0
 
-cartItem.forEach((value,i)=>{
-  let index=cartProducts.findIndex(item=>item._id===value.product);
+    cartItem.forEach((value, i) => {
+      let index = cartProducts.findIndex(item => item._id === value.product);
 
-  cartProducts[index].isOffer&&(totalDiscount+=Math.round(cartProducts[index].discountPrice*value.quantity))
-totalAmount+=cartProducts[index].isOffer?Math.round(cartProducts[index].offerPrice*value.quantity):Math.round(cartProducts[index].price*value.quantity)
-  totalMrp+=value.price*value.quantity
-})
-setTotalAmount(totalAmount);
-setTotalMrp(totalMrp)
-setTotalDiscount(totalDiscount)
+      cartProducts[index].isOffer && (totalDiscount += Math.round(cartProducts[index].discountPrice * value.quantity))
+      totalAmount += cartProducts[index].isOffer ? Math.round(cartProducts[index].offerPrice * value.quantity) : Math.round(cartProducts[index].price * value.quantity)
+      totalMrp += value.price * value.quantity
+    })
+    setTotalAmount(totalAmount);
+    setTotalMrp(totalMrp)
+    setTotalDiscount(totalDiscount)
 
 
-},[cartItem,dispatch])
+  }, [cartItem, dispatch])
 
 
 
@@ -359,7 +363,7 @@ setTotalDiscount(totalDiscount)
             Shopping Bag <i className="fas fa-shopping-bag"></i>{" "}
           </Title>
 
-          {userActive? (
+          {userActive ? (
             <>
               <Col sm={12} md={8}>
                 <Card className="mb-3">
@@ -394,13 +398,13 @@ setTotalDiscount(totalDiscount)
                   <>
                     {cartItem.map((value, i) => {
 
-                      let index=cartProducts.findIndex(item=>item._id===value.product);
+                      let index = cartProducts.findIndex(item => item._id === value.product);
                       return (
                         <Card className="mb-3" key={value._id}>
                           <Row className="p-2">
                             <Col md={2}>
                               <Image
-                                src={ cartProducts[index]?.imageUrl[0].img}
+                                src={cartProducts[index]?.imageUrl[0].img}
                                 alt="product image"
                                 fluid
                                 rounded
@@ -413,19 +417,19 @@ setTotalDiscount(totalDiscount)
                               <Card.Subtitle className="mb-2 text-muted">
                                 {`${cartProducts[index]?.category}'s ${cartProducts[index]?.subCat}`}
                               </Card.Subtitle>
-                             {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
-                           { cartProducts[index]?.isOffer? <Space direction='vertical'>
-   <Card.Text as='div' className='priceHolder'>
-       ₹{( Math.round(cartProducts[index]?.offerPrice*value.quantity))}
-       </Card.Text>
-       <Space direction='horizontal'>
+                              {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
+                              {cartProducts[index]?.isOffer ? <Space direction='vertical'>
+                                <Card.Text as='div' className='priceHolder'>
+                                  ₹{(Math.round(cartProducts[index]?.offerPrice * value.quantity))}
+                                </Card.Text>
+                                <Space direction='horizontal'>
 
-           <Card.Text as='div' className='priceHolder1'>
-           ₹{(Math.round(cartProducts[index]?.price*value.quantity))}
-           </Card.Text>
-           <Text type="success">{cartProducts[index]?.offer.percentage}% off </Text>
-       </Space>
-    </Space> :<Text strong>{value.quantity*cartProducts[index]?.price}</Text>}
+                                  <Card.Text as='div' className='priceHolder1'>
+                                    ₹{(Math.round(cartProducts[index]?.price * value.quantity))}
+                                  </Card.Text>
+                                  <Text type="success">{cartProducts[index]?.offer.percentage}% off </Text>
+                                </Space>
+                              </Space> : <Text strong>{value.quantity * cartProducts[index]?.price}</Text>}
                               {/* QUANTITY SELECTOR STRAT */}
 
                               {/* QUANTITY SELECTOR END */}
@@ -445,9 +449,9 @@ setTotalDiscount(totalDiscount)
                             </>
                           </Select> */}
                                 <div className="quantityHandler">
-                                  <i className="fas fa-minus-circle"  id={value. _id} onClick={decreaseQuantity} ></i>
+                                  <i className="fas fa-minus-circle" id={value._id} onClick={decreaseQuantity} ></i>
                                   <input type="text" size='5' ref={qty} readOnly value={value.quantity} />
-                                  <i className="fas fa-plus-circle" id={value. _id}value={1} onClick={increaseQuantity} ></i>
+                                  <i className="fas fa-plus-circle" id={value._id} value={1} onClick={increaseQuantity} ></i>
                                 </div>
                                 <Card.Text>Select quantity {value.quantity} </Card.Text>
                               </Row>
@@ -464,13 +468,13 @@ setTotalDiscount(totalDiscount)
                                 style={{ fontSize: "2em", color: "Tomato" }}
                                 className="deleteIcon"
                               >
-                                <i id={value. _id} className="far fa-times-circle"  onClick={deleteHandler} ></i>
+                                <i id={value._id} className="far fa-times-circle" onClick={deleteHandler} ></i>
                               </span>
                             </Col>
                           </Row>
                         </Card>
-                        );
-                      })}
+                      );
+                    })}
                   </>
                 ) : (
                   <Spinner animation="grow" variant="dark" />
@@ -482,7 +486,7 @@ setTotalDiscount(totalDiscount)
                 <Card>
                   <Col sm={12} className="p-4">
                     <Card.Title>
-                      PRICE DETAILS 
+                      PRICE DETAILS
                     </Card.Title>
                     <hr />
                   </Col>
@@ -496,10 +500,10 @@ setTotalDiscount(totalDiscount)
                     </Col>
                   </Row>
                   <Row className='p-1 ms-1'>
-                  <Col md={4}> <Text strong>Discount on MRP</Text></Col>
-                  <Col md={{ span: 4, offset: 4 }}><Text type='success' > -₹{totalDiscount} off</Text> </Col>
-                </Row>
-                {/* <Row className='p-1 ms-1'>
+                    <Col md={4}> <Text strong>Discount on MRP</Text></Col>
+                    <Col md={{ span: 4, offset: 4 }}><Text type='success' > -₹{totalDiscount} off</Text> </Col>
+                  </Row>
+                  {/* <Row className='p-1 ms-1'>
                   <Col md={4}> <Text strong>Coupen Discount</Text></Col>
                   <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
                 </Row> */}
@@ -524,7 +528,7 @@ setTotalDiscount(totalDiscount)
                   className="m-3"
                   variant="success"
                   disabled={!users.address.length}
-                 onClick={checkoutHandler}
+                  onClick={checkoutHandler}
                 >
                   Proceed To Checkout
                 </Button>

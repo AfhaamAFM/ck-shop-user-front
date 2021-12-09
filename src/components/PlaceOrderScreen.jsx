@@ -16,7 +16,7 @@ import RazorPayComponent from './UserProfile/RazorPayComponent'
 import { value } from 'dom7'
 import { fetchCart } from '../redux/CARTSTORE/cartAction'
 import Swal from 'sweetalert2'
-
+import { fetchCheckout } from '../redux/Checkout/checkoutAction'
 function PlaceOrderScreen() {
 
 
@@ -27,65 +27,64 @@ function PlaceOrderScreen() {
     const [showPaypal, setShowPaypal] = useState(false)
     const [showRazor, setShowRazor] = useState(false)
     const [showCod, setShowCod] = useState(false)
-    const [orderItems, setOrderItems] = useState()
+
     let [cartProducts, setCartProducts] = useState([]);
     let [cartItem, setCartItem] = useState([]);
+
     const dispatch = useDispatch()
     const [paymentMethod, setPaymentMethod] = useState('')
-    const navigate = useNavigate(0)
-    const { amount } = useSelector((state) => state.checkout);
-    const { cartItems, loading: getCartLoading } = useSelector((state) => state.cart);
-    const { orders: allOrder, loading: orderFetchLoading } = useSelector((state) => state.order);
-    const { orders } = allOrder
-    const { orderId } = useParams()
-    const [address, setAddress] = useState()
+
+
     const { success: successPay, loading: loadingPay } = useSelector((state) => state.orderPay);
+    const { cartItems, loading: getCartLoading, address, amount } = useSelector((state) => state.checkout);
 
     const [sdkReady, setSdkReady] = useState(false)
 
     const codPlaceHandler = () => {
         const orderStatus = 'ordered'
-        dispatch(placeCOD(paymentMethod, orderStatus, orderId,))
+        dispatch(placeCOD(paymentMethod, orderStatus))
     }
 
 
-    const successPaymentHandler = async (paymentResult) => {
+    const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult);
-        const { id: payId } = paymentResult
+        const { id: paymentId } = paymentResult
         const orderStatus = 'ordered'
+        axios.post(`order/pay-amount/`, { paymentId, paymentMethod, orderStatus }).then(res => {
 
-        await axios.post(`order/placeOrder/${orderId}/cod/`, { paymentMethod, orderStatus }).then(res => {
-
+            console.log('sssssssssssssssss' + res.data);
             if (res.data) {
-console.log('TISSSSSSss  '+res);
                 dispatch({ type: ORDER_PAY_SUCCESS })
                 dispatch(fetchOrders())
-                return Swal.fire({
+                Swal.fire({
                     position: 'top-center',
                     icon: 'success',
-                    title: 'Place Order Success',
+                    title: 'Payment success',
                     showConfirmButton: false,
                     timer: 1500
                 })
             }
-            })
+
+
+        })
 
     }
-        function errorHandler(err){
 
-    alert(err)
 
-        }
+    //     function errorHandler(err){
+
+    // alert(err)
+
+    //     }
     // use effects
 
-    useEffect(() => {
-        if (!orders)
-            return
-        const finded = orders.find(value => value.orderId === orderId)
-        setShowOrder(finded)
-        setOrderItems(finded?.orderItem)
-        setAddress(finded?.address)
-    }, [dispatch, allOrder])
+    // useEffect(() => {
+    //     if (!cartItems) return
+    //     setCartProducts(cartItems.cartProduct);
+    //     setCartItem(cartItems.cartItem);
+    //     // setShowOrder(finded)
+    //     // setOrderItems(finded?.orderItem)
+    // }, [dispatch,cartItems])
 
 
     useEffect(() => {
@@ -105,7 +104,7 @@ console.log('TISSSSSSss  '+res);
             document.body.appendChild(script)
         }
         // if(!showOrder) return
-        if (!allOrder || successPay) {
+        if (successPay) {
             dispatch({ type: ORDER_PAY_RESET })
             dispatch(fetchOrders())
 
@@ -123,6 +122,7 @@ console.log('TISSSSSSss  '+res);
 
 
     useEffect(() => {
+        dispatch(fetchCheckout())
         if (!cartItems) return;
         if (!cartItems.cartProduct) return;
         setCartProducts(cartItems.cartProduct);
@@ -131,7 +131,8 @@ console.log('TISSSSSSss  '+res);
 
 
         // eslint-disable-next-line 
-    }, [cartItems, orderId, dispatch]);
+    }, [cartItems, dispatch]);
+
     useEffect(() => {
 
         let totalMrp = 0;
@@ -150,7 +151,8 @@ console.log('TISSSSSSss  '+res);
         setTotalDiscount(totalDiscount)
 
 
-    }, [cartItem, dispatch, orderId])
+    }, [cartItem, dispatch])
+
     useEffect(() => {
         dispatch(fetchCart())
         dispatch(fetchOrders())
@@ -159,10 +161,9 @@ console.log('TISSSSSSss  '+res);
         // eslint-disable-next-line 
     }, [dispatch])
 
-    console.log(showOrder?.amount);
     return (
         <Container>
-            {orderFetchLoading || !allOrder || !showOrder || getCartLoading || !cartItems ? <Loader
+            {getCartLoading ? <Loader
                 type="Puff"
                 color="#00BFFF"
                 height={100}
@@ -194,17 +195,17 @@ console.log('TISSSSSSss  '+res);
                                 </Card.Body>
                             </Card>
 
-                            {showOrder.isPaid ? <Message variant={'success'} >
+                            <Message variant={'success'} >
                                 <h5>Payment</h5>
                                 <p>paid</p>
                             </Message> : <Message variant={'danger'} >
                                 <h5>Payment</h5>
                                 <p> Not paid</p>
-                            </Message>}
+                            </Message>
 
                         </Col>
 
-                        <Col sm={12} md={4}>
+                         <Col sm={12} md={4}>
                             <Card>
                                 <Col sm={12} className="p-4">
                                     <Card.Title>
@@ -226,13 +227,13 @@ console.log('TISSSSSSss  '+res);
                                     <Col md={{ span: 4, offset: 4 }}><Text type='success' > -₹{totalDiscount} off</Text> </Col>
                                 </Row>
                                 {/* <Row className='p-1 ms-1'>
-                  <Col md={4}> <Text strong>Coupen Discount</Text></Col>
-                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-                </Row> */}
+                                 <Col md={4}> <Text strong>Coupen Discount</Text></Col>
+                                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
+                                 </Row> */}
                                 {/* <Row className='p-1 ms-1'>
-                <Col md={4}> <Text strong>Convienience Fee</Text></Col>
-                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-                  </Row> */}
+                                   <Col md={4}> <Text strong>Convienience Fee</Text></Col>
+                                         <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
+                                   </Row> */}
                                 <hr />
 
                                 <Row className="p-1 ms-1">
@@ -247,12 +248,12 @@ console.log('TISSSSSSss  '+res);
                             </Card>
 
 
-                        </Col>
+                        </Col> 
                     </Row>
                     <Row>
 
 
-                        {!showOrder.isPaid || !showOrder.orderStatus ? <Col md={6}>
+                     <Col md={6}>
 
 
 
@@ -313,7 +314,7 @@ console.log('TISSSSSSss  '+res);
                             {/* <Button className='mx-3' variant='danger'>Go For Payment</Button> */}
 
 
-                        </Col> : (<Col md={6}>
+                        </Col><Col md={6}>
 
                             <h4>Order Summary</h4>
 
@@ -331,11 +332,12 @@ console.log('TISSSSSSss  '+res);
                                         </thead>
                                         <tbody>
 
-                                            {orderItems.map((value, i) => {
+                                            {cartItem.map((value, i) => {
+                                                   let index = cartProducts.findIndex(item => item._id === value.product);
 
                                                 return <tr key={i}>
                                                     <td>{i + 1}</td>
-                                                    <td>{value.name} <small>{value.category}'s {value.subCat}</small> </td>
+                                                    <td>{cartProducts[index].name} <small>{cartProducts[index].category}'s {cartProducts[index].subCat}</small> </td>
                                                     <td>{value.price}</td>
                                                     <td>{value.quantity}</td>
                                                     <td>{value.quantity * value.price}</td>
@@ -343,32 +345,41 @@ console.log('TISSSSSSss  '+res);
                                             })}
 
                                             <tr>
-                                                <td colSpan="3">Total amount</td>
-                                                <td> <b> {totalAmount}</b> </td>
+                                                <td colSpan="4 ">Total amount ({totalDiscount}% off) </td>
+
+                                                <td> <b> {amount}</b> </td>
                                             </tr>
                                         </tbody>
                                     </Table>
 
                                 </Col>
+                                <Col>
+
+                                    `</Col>
                             </Row>
 
-                        </Col>)}
+                        </Col>
 
-                        {!showOrder.isPaid && <Col md={6} className='p-5'>
+
+                        {/* raxor pay start */}
+                      <Col md={6} className='p-5'>
                             {/* !showOrder?.isPaid|| */}
                             {(<ListGroup>
                                 <ListGroup.Item>
                                     {showCod && <Button onClick={codPlaceHandler} className='mx-3' variant='danger'>Proceed Cash on delivary</Button>}
-                                    {showRazor && <RazorPayComponent successPaymentHandler={successPaymentHandler} amount={showOrder.amount} />}
+                                    {showRazor && <RazorPayComponent successPaymentHandler={successPaymentHandler} amount={amount} />}
 
                                     {loadingPay && <Loader />}
-                                    {!sdkReady ? <Loader /> : showPaypal ? (<PayPalButton amount={'3445'} onError={errorHandler} onSuccess={successPaymentHandler}
+                                    {!sdkReady ? <Loader /> : showPaypal ? (<PayPalButton amount={amount} onSuccess={successPaymentHandler}
                                     />) : ''}
                                 </ListGroup.Item>
-                            </ListGroup>)}
+                            </ListGroup>)} 
 
 
-                        </Col>}
+                        </Col>
+
+                        {/* razor pay end */}
+
                     </Row>
 
                 </>

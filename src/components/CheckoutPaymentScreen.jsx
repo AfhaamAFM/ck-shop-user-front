@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { addOrder } from '../redux/ORDERSTORE/orderAction'
 import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
-
+import {fetchCheckout} from '../redux/Checkout/checkoutAction'
 
 function CheckoutPaymentScreen() {
 
@@ -22,40 +22,27 @@ function CheckoutPaymentScreen() {
     const [sdkReady, setSdkReady] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate(0)
-    const { amount, address } = useSelector((state) => state.checkout);
-    const { cartItems, loading: getCartLoading } = useSelector((state) => state.cart);
-    const { orderId } = useSelector((state) => state.order);
-
-
-
-
-
-    function placeOrderHandler() {
-
-        dispatch(addOrder({ amount, address, cartItems }))
-
-    }
+    // const { amount, address } = useSelector((state) => state.checkout);
+    const { cartItems, loading: getCartLoading,address } = useSelector((state) => state.checkout);
 
 
     // use effects
-
+   
     useEffect(() => {
-        if (!cartItems) return;
-        if (!cartItems.cartProduct) return;
+        dispatch(fetchCheckout())
+        if(!cartItems) return
         setCartProducts(cartItems.cartProduct);
-
         setCartItem(cartItems.cartItem);
 
+    }, [dispatch,cartItems]);
 
-
-    }, [cartItems, orderId]);
     useEffect(() => {
 
         let totalMrp = 0;
         let totalAmount = 0
         let totalDiscount = 0
-
-        cartItem.forEach((value, i) => {
+if(!cartItem) return
+      cartItem.forEach((value, i) => {
             let index = cartProducts.findIndex(item => item._id === value.product);
 
             totalDiscount += Math.round(cartProducts[index].discountPrice * value.quantity)
@@ -67,20 +54,13 @@ function CheckoutPaymentScreen() {
         setTotalDiscount(totalDiscount)
 
 
-    }, [cartItem])
+    }, [dispatch,cartItem])
 
-    useEffect(() => {
-        if (orderId) {
-            navigate(`/placeOrder/${orderId}`)
-        }
-
-    })
+  
+    // checking user is logged in or not
     useEffect(() => {
       
-
         dispatch(userlogged())
-
-
     }, [dispatch])
 
 
@@ -100,14 +80,14 @@ function CheckoutPaymentScreen() {
                         <Card.Body>
                             <Card.Title>Shipping Address</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted">
-                                {address.name}
+                                {address?.name}
                             </Card.Subtitle>
                             <Card.Text>
                                 <Text>
-                                    {address.flatNo} ,{address.landmark} ,
-                                    {address.street} ,{address.district} dist ,
-                                    {address.state} ,{address.pincode} ,
-                                    <b>Ph:</b>
+                                    {address?.flatNo} ,{address?.landmark} ,
+                                    {address?.street} ,{address?.district} dist ,
+                                    {address?.state} ,{address?.pincode} ,
+                                    <b>Ph:</b>?
                                     {address?.number}
                                 </Text>
                             </Card.Text>
@@ -169,7 +149,7 @@ function CheckoutPaymentScreen() {
             <Row className='mt-4'>
 
                
-                    <Button onClick={placeOrderHandler}  variant='danger'>Go For Payment</Button>
+                    <Button onClick={()=>{navigate(`/placeOrder`)}}  variant='danger'>Go For Payment</Button>
             </Row>
         </Container>
     )

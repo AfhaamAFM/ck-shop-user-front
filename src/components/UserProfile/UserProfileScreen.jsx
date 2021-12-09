@@ -21,12 +21,7 @@ const {users}=useSelector((state)=>state.user)
 const dispatch =useDispatch()
 
 
-// useEffect(()=>{
 
-// // dispatch(userlogged())
-
-
-// },[users])
 
 
 
