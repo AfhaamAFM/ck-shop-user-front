@@ -92,7 +92,6 @@ return (dispatch)=>{
 dispatch({type:ORDER_PAY_REQUEST})
 axios.post(`order/${orderId}/pay-amount/`,{paymentId,paymentMethod,orderStatus}).then(res=>{
 
-    console.log('sssssssssssssssss');
 if(res.data){
     dispatch({type:ORDER_PAY_SUCCESS})
  dispatch(fetchOrders())

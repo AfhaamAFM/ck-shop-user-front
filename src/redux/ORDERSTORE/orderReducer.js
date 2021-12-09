@@ -1,5 +1,5 @@
-import {ORDER_ADD_SUCCESS,ORDER_FETCH_SUCCESS,ORDER_FETCH_ERROR,ORDER_FETCH_REQUEST} from './orderType'
-import { ORDER_PAY_REQUEST,ORDER_PAY_SUCCESS,ORDER_PAY_FAIL,ORDER_PAY_RESET } from './orderType'
+import { ORDER_ADD_SUCCESS, ORDER_FETCH_SUCCESS, ORDER_FETCH_ERROR, ORDER_FETCH_REQUEST } from './orderType'
+import { ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_RESET,ORDER_PAY_RESET_ALL } from './orderType'
 
 
 const initial = {
@@ -7,8 +7,8 @@ const initial = {
     loading: false,
     orders: '',
     error: '',
-    orderId:''
- 
+    orderId: ''
+
 }
 
 export const orderReducer = (state = initial, action) => {
@@ -34,11 +34,11 @@ export const orderReducer = (state = initial, action) => {
                 loading: false,
                 error: ''
             }
-            case ORDER_FETCH_ERROR:
-                return {
-                    ...state,
+        case ORDER_FETCH_ERROR:
+            return {
+                ...state,
                 loading: false,
-                error:action.payload
+                error: action.payload
             }
 
         default:
@@ -48,9 +48,9 @@ export const orderReducer = (state = initial, action) => {
     }
 
 }
-   
 
-export const orderPayReducer=(state={},action)=>{
+
+export const orderPayReducer = (state = { success: false, loading: false, error: '', orderPlaced: false,paid:false }, action) => {
 
 
     switch (action.type) {
@@ -60,17 +60,26 @@ export const orderPayReducer=(state={},action)=>{
             }
         case ORDER_PAY_SUCCESS:
             return {
-           
+                orderPlaced: true,
                 loading: false,
-               success:true
+                success: true,
+                paid:true
             }
         case ORDER_PAY_FAIL:
             return {
                 loading: false,
                 error: action.payload
             }
-            case ORDER_PAY_RESET:
-                return {}
+        case ORDER_PAY_RESET:
+            return {
+                ...state,
+                loading: false,
+                success: false,
+                error:''
+            }
+
+            case ORDER_PAY_RESET_ALL:
+                return {}    
 
         default:
             return state

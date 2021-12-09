@@ -29,7 +29,6 @@ function CheckoutPaymentScreen() {
     // use effects
    
     useEffect(() => {
-        dispatch(fetchCheckout())
         if(!cartItems) return
         setCartProducts(cartItems.cartProduct);
         setCartItem(cartItems.cartItem);
@@ -59,7 +58,8 @@ if(!cartItem) return
   
     // checking user is logged in or not
     useEffect(() => {
-      
+        dispatch(fetchCheckout())
+
         dispatch(userlogged())
     }, [dispatch])
 

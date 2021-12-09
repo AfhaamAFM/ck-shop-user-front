@@ -20,6 +20,7 @@ import axios from "axios";
 import { fetchCart } from "../../redux/CARTSTORE/cartAction";
 import CheckoutStep from "../Map component/CheckoutStep";
 import { getcartItems, storeAddress, storeAmount, storecartItems } from "../../redux/Checkout/checkoutAction";
+import { ORDER_PAY_RESET_ALL } from "../../redux/ORDERSTORE/orderType";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
@@ -263,6 +264,7 @@ dispatch(getcartItems())
     dispatch(userlogged());
     users && setAllAddress(users.address);
     dispatch(fetchCart());
+    dispatch({type:ORDER_PAY_RESET_ALL})
   }, [dispatch, selectedAddressID]);
 
 
