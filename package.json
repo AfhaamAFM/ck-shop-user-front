@@ -30,7 +30,7 @@
     "react-scripts": "^3.4.4",
     "redux": "^4.1.2",
     "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.0",
+    "redux-thunk": "^2.4.1",
     "styled-components": "^5.3.3",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.2.1",

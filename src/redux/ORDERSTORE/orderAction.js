@@ -86,17 +86,17 @@ return (dispatch)=>{
 
 }}
 
-export const payOrder=(paymentId,paymentMethod,orderId,orderStatus)=>{
+export const payOrder=async (paymentId,paymentMethod,orderId,orderStatus)=>{
 return (dispatch)=>{
 
 dispatch({type:ORDER_PAY_REQUEST})
 axios.post(`order/${orderId}/pay-amount/`,{paymentId,paymentMethod,orderStatus}).then(res=>{
 
+    console.log('sssssssssssssssss');
 if(res.data){
-
     dispatch({type:ORDER_PAY_SUCCESS})
-    dispatch(fetchOrders())
- return   Swal.fire({
+ dispatch(fetchOrders())
+ Swal.fire({
         position: 'top-center',
         icon: 'success',
         title: 'Payment success',
@@ -106,9 +106,6 @@ if(res.data){
 }
 
 
-}).catch(err=>{
-
-    dispatch({type:ORDER_PAY_FAIL})
 })
 
 }
@@ -118,10 +115,10 @@ if(res.data){
 // place order wih cod
 
 export const placeCOD=(paymentMethod,orderStatus,orderId)=>{
-    return (dispatch)=>{
+    return async (dispatch)=>{
     
     dispatch({type:ORDER_PAY_REQUEST})
-    axios.post(`order/placeOrder/${orderId}/cod/`,{paymentMethod,orderStatus}).then(res=>{
+  await axios.post(`order/placeOrder/${orderId}/cod/`,{paymentMethod,orderStatus}).then(res=>{
     
     if(res.data){
     

@@ -11,9 +11,12 @@ import Message from './Map component/Message'
 import { PayPalButton } from 'react-paypal-button-v2'
 import axios from 'axios'
 import Loader from 'react-loader-spinner'
-import { ORDER_PAY_RESET } from '.././redux/ORDERSTORE/orderType'
+import { ORDER_PAY_RESET, ORDER_PAY_SUCCESS } from '.././redux/ORDERSTORE/orderType'
 import RazorPayComponent from './UserProfile/RazorPayComponent'
 import { value } from 'dom7'
+import { fetchCart } from '../redux/CARTSTORE/cartAction'
+import Swal from 'sweetalert2'
+
 function PlaceOrderScreen() {
 
 
@@ -30,12 +33,12 @@ function PlaceOrderScreen() {
     const dispatch = useDispatch()
     const [paymentMethod, setPaymentMethod] = useState('')
     const navigate = useNavigate(0)
-    const { amount, address } = useSelector((state) => state.checkout);
+    const { amount } = useSelector((state) => state.checkout);
     const { cartItems, loading: getCartLoading } = useSelector((state) => state.cart);
     const { orders: allOrder, loading: orderFetchLoading } = useSelector((state) => state.order);
     const { orders } = allOrder
     const { orderId } = useParams()
-
+    const [address, setAddress] = useState()
     const { success: successPay, loading: loadingPay } = useSelector((state) => state.orderPay);
 
     const [sdkReady, setSdkReady] = useState(false)
@@ -46,12 +49,33 @@ function PlaceOrderScreen() {
     }
 
 
-    const successPaymentHandler = (paymentResult) => {
+    const successPaymentHandler = async (paymentResult) => {
+        console.log(paymentResult);
         const { id: payId } = paymentResult
         const orderStatus = 'ordered'
-        dispatch(payOrder(payId, paymentMethod, orderId, orderStatus))
+
+        await axios.post(`order/placeOrder/${orderId}/cod/`, { paymentMethod, orderStatus }).then(res => {
+
+            if (res.data) {
+console.log('TISSSSSSss  '+res);
+                dispatch({ type: ORDER_PAY_SUCCESS })
+                dispatch(fetchOrders())
+                return Swal.fire({
+                    position: 'top-center',
+                    icon: 'success',
+                    title: 'Place Order Success',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            })
 
     }
+        function errorHandler(err){
+
+    alert(err)
+
+        }
     // use effects
 
     useEffect(() => {
@@ -60,7 +84,7 @@ function PlaceOrderScreen() {
         const finded = orders.find(value => value.orderId === orderId)
         setShowOrder(finded)
         setOrderItems(finded?.orderItem)
-
+        setAddress(finded?.address)
     }, [dispatch, allOrder])
 
 
@@ -107,7 +131,7 @@ function PlaceOrderScreen() {
 
 
         // eslint-disable-next-line 
-    }, [cartItems, orderId]);
+    }, [cartItems, orderId, dispatch]);
     useEffect(() => {
 
         let totalMrp = 0;
@@ -126,20 +150,24 @@ function PlaceOrderScreen() {
         setTotalDiscount(totalDiscount)
 
 
-    }, [cartItem])
+    }, [cartItem, dispatch, orderId])
     useEffect(() => {
+        dispatch(fetchCart())
         dispatch(fetchOrders())
         dispatch(userlogged())
+
         // eslint-disable-next-line 
     }, [dispatch])
+
+    console.log(showOrder?.amount);
     return (
         <Container>
-            {orderFetchLoading || !allOrder || !showOrder ? <Loader
+            {orderFetchLoading || !allOrder || !showOrder || getCartLoading || !cartItems ? <Loader
                 type="Puff"
                 color="#00BFFF"
                 height={100}
                 width={100}
-                timeout={3000} //3 secs
+
             /> :
                 <>
                     <CheckoutStep step1 step2 step3 />
@@ -152,13 +180,13 @@ function PlaceOrderScreen() {
                                 <Card.Body>
                                     <Card.Title>Shipping Address</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">
-                                        {address.name}
+                                        {address?.name}
                                     </Card.Subtitle>
                                     <Card.Text>
                                         <Text>
-                                            {address.flatNo} ,{address.landmark} ,
-                                            {address.street} ,{address.district} dist ,
-                                            {address.state} ,{address.pincode} ,
+                                            {address?.flatNo} ,{address?.landmark} ,
+                                            {address?.street} ,{address?.district} dist ,
+                                            {address?.state} ,{address?.pincode} ,
                                             <b>Ph:</b>
                                             {address?.number}
                                         </Text>
@@ -303,14 +331,14 @@ function PlaceOrderScreen() {
                                         </thead>
                                         <tbody>
 
-                                            {orderItems.map((value,i) => {
+                                            {orderItems.map((value, i) => {
 
                                                 return <tr key={i}>
-                                                    <td>{i+1}</td>
+                                                    <td>{i + 1}</td>
                                                     <td>{value.name} <small>{value.category}'s {value.subCat}</small> </td>
                                                     <td>{value.price}</td>
                                                     <td>{value.quantity}</td>
-                                                    <td>{value.quantity*value.price}</td>
+                                                    <td>{value.quantity * value.price}</td>
                                                 </tr>
                                             })}
 
@@ -326,15 +354,15 @@ function PlaceOrderScreen() {
 
                         </Col>)}
 
-                        {!showOrder.isPaid  && <Col md={6} className='p-5'>
+                        {!showOrder.isPaid && <Col md={6} className='p-5'>
                             {/* !showOrder?.isPaid|| */}
                             {(<ListGroup>
                                 <ListGroup.Item>
                                     {showCod && <Button onClick={codPlaceHandler} className='mx-3' variant='danger'>Proceed Cash on delivary</Button>}
-                                    {showRazor && <RazorPayComponent successPaymentHandler={successPaymentHandler} amount={totalAmount} />}
+                                    {showRazor && <RazorPayComponent successPaymentHandler={successPaymentHandler} amount={showOrder.amount} />}
 
                                     {loadingPay && <Loader />}
-                                    {!sdkReady ? <Loader /> : showPaypal ? (<PayPalButton amount={showOrder.amount} onSuccess={successPaymentHandler}
+                                    {!sdkReady ? <Loader /> : showPaypal ? (<PayPalButton amount={'3445'} onError={errorHandler} onSuccess={successPaymentHandler}
                                     />) : ''}
                                 </ListGroup.Item>
                             </ListGroup>)}

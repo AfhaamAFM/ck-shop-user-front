@@ -38,7 +38,7 @@ async function showRazorPAy(){
   
   const { data: key } = await axios.get('/config/razor')
   
-  const {data} = await axios.get('/order/razorpay/payAmount')
+  const {data} = await axios.get(`/order/razorpay/payAmount/${totalAmount}`)
   console.log(data)
   
   var options = {
