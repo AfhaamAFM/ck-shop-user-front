@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect} from "react";
 import { Carousel, Row,Col } from "react-bootstrap";
-import Loader from "react-loader-spinner";
 import { useSelector } from 'react-redux';
-import ProductScreen from "./ProductScreen";
 import {Container} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
+import { ORDER_PAY_RESET_ALL } from "../redux/ORDERSTORE/orderType";
 // // Import Swiper React components
 // import { Swiper, SwiperSlide } from "swiper/react";
 // import 'swiper/swiper.scss'
@@ -25,7 +25,17 @@ import {Link} from 'react-router-dom'
 
 function HomeScreen() {
   const { loading } = useSelector(state => state.user)
+ const dispatch = useDispatch()
 
+
+
+
+
+ useEffect(()=>{
+
+  dispatch({type:ORDER_PAY_RESET_ALL})
+
+ },[])
   return (
     <>
     <div className='carousel-container mb-5'>

@@ -1,4 +1,4 @@
-import { ORDER_ADD_SUCCESS, ORDER_FETCH_SUCCESS, ORDER_FETCH_ERROR, ORDER_FETCH_REQUEST, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL } from './orderType'
+import { ORDER_ADD_SUCCESS, ORDER_FETCH_SUCCESS, ORDER_FETCH_ERROR, ORDER_FETCH_REQUEST, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL,ORDER_COD_SUCCESS } from './orderType'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -113,15 +113,15 @@ if(res.data){
 }
 // place order wih cod
 
-export const placeCOD=(paymentMethod,orderStatus,orderId)=>{
+export const placeCOD=(paymentMethod,orderStatus,amount,address,cartItems)=>{
     return async (dispatch)=>{
     
     dispatch({type:ORDER_PAY_REQUEST})
-  await axios.post(`order/placeOrder/${orderId}/cod/`,{paymentMethod,orderStatus}).then(res=>{
-    
+  await axios.post('/order/placeOrder/cod',{paymentMethod,orderStatus,amount,address,cartItems}).then(res=>{
+    console.log("ibdde tethinnn");
     if(res.data){
     
-        dispatch({type:ORDER_PAY_SUCCESS})
+        dispatch({type:ORDER_COD_SUCCESS})
         dispatch(fetchOrders())
      return   Swal.fire({
             position: 'top-center',

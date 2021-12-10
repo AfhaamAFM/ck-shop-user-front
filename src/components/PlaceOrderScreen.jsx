@@ -41,7 +41,7 @@ function PlaceOrderScreen() {
   const [showPaypal, setShowPaypal] = useState(false);
   const [showRazor, setShowRazor] = useState(false);
   const [showCod, setShowCod] = useState(false);
-const navigate = useNavigate()
+  const navigate = useNavigate();
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
 
@@ -65,7 +65,7 @@ const navigate = useNavigate()
 
   const codPlaceHandler = () => {
     const orderStatus = "ordered";
-    dispatch(placeCOD(paymentMethod, orderStatus));
+    dispatch(placeCOD(paymentMethod, orderStatus, amount, address, cartItems));
   };
 
   const successPaymentHandler = (paymentResult) => {
@@ -157,13 +157,13 @@ const navigate = useNavigate()
 
     cartItem.forEach((value, i) => {
       let index = cartProducts.findIndex((item) => item._id === value.product);
-
-      totalDiscount += Math.round(
-        cartProducts[index].discountPrice * value.quantity
-      );
-      totalAmount += Math.round(
-        cartProducts[index].offerPrice * value.quantity
-      );
+      cartProducts[index].isOffer &&
+        (totalDiscount += Math.round(
+          cartProducts[index].discountPrice * value.quantity
+        ));
+      totalAmount += cartProducts[index].isOffer
+        ? Math.round(cartProducts[index].offerPrice * value.quantity)
+        : Math.round(cartProducts[index].price * value.quantity);
       totalMrp += value.price * value.quantity;
     });
     setTotalAmount(totalAmount);
@@ -181,7 +181,6 @@ const navigate = useNavigate()
   }, [dispatch]);
 
   // test
-  console.log("This is the success", successPay);
 
   return (
     <Container>
@@ -412,24 +411,31 @@ const navigate = useNavigate()
                       ""
                     )}
                   </ListGroup.Item>
-                ):(
-                <>
-               <Row>
-                <Button variant='info' onClick={()=>{  
-                    navigate('/')
-                    }}   className='m-3 px-2' >
-                   Continue Shopping
-                    </Button>
-                   
-                   
-                    <Button variant='warning' onClick={()=>{  
-                    navigate('/cart')
-                    }}  className='m-3 px-2' >
-                    Go to Cart
-                    </Button>
-                 </Row>
-                    </>
-                    )}
+                ) : (
+                  <>
+                    <Row>
+                      <Button
+                        variant="info"
+                        onClick={() => {
+                          navigate("/");
+                        }}
+                        className="m-3 px-2"
+                      >
+                        Continue Shopping
+                      </Button>
+
+                      <Button
+                        variant="warning"
+                        onClick={() => {
+                          navigate("/cart");
+                        }}
+                        className="m-3 px-2"
+                      >
+                        Go to Cart
+                      </Button>
+                    </Row>
+                  </>
+                )}
               </ListGroup>
             </Col>
             {/* razor pay end */}

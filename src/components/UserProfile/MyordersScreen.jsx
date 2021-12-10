@@ -70,10 +70,10 @@ useEffect(()=>{
 
    if(!orders)
    return 
-
-   setOrderList(orders.orders)
-
-    
+const orderList = orders.orders
+  //  setOrderList(orders.orders)
+  const sortedOrders= orderList.sort((a,b) => (a.paymentResult.payed_Date < b.paymentResult.payed_Date ) ? 1 : ((b.paymentResult.payed_Date  < a.paymentResult.payed_Date ) ? -1 : 0));
+    setOrderList(sortedOrders)
     },[orders])
 
 // useEffects constainer end
@@ -103,7 +103,7 @@ console.log('Rhis',orderList);
  return <ListGroup.Item key={i}>
       <Row>
 
-<Col sm={2}> <Image style={{width:'50px'}} src={product.image} /></Col>
+<Col sm={2}> <Image style={{width:'30px'}} src={product.image} /></Col>
 <Col sm={4}> <p>{product.name} <small>{product.category}'s {product.subCat}</small> </p></Col>
 <Col> <p></p> </Col>
       </Row>
