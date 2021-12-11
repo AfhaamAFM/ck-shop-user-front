@@ -15,6 +15,8 @@ function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [referel, setReferel] = useState('')
+
   const [password, setPassword] = useState('')
   const [warning, setWarning] = useState('')
 
@@ -28,13 +30,16 @@ if(!name||!email||!phone||!password){
 if(name.length<4){
   return setWarning('atleast 4 characters in name')
 }
+if(referel.length<8){
+  return setWarning('atleast 8 characters in referel code')
+}
 if(phone.length<10){
   return setWarning('invalid phone number')
 }
-
+const refCode = referel
 
     const users = {
-      name, email, phone, password
+      name, email, phone, password,refCode
     }
     console.log(users);
     dispatch(fetchUserRequest())
@@ -85,6 +90,10 @@ if(phone.length<10){
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control type="password" placeholder="Password"   onChange={(e) => setPassword(e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicRefere">
+            <Form.Label>Referel Code <small>(if there is any,you will get ₹10)</small></Form.Label>
+            <Form.Control type="text" placeholder="Referal Code"   onChange={(e) => setReferel(e.target.value)} />
           </Form.Group>
           {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
     <Form.Check type="checkbox" label="Check me out" />
