@@ -10,7 +10,7 @@ function MyordersScreen() {
 
 
 const dispatch = useDispatch()
-const {orders} =useSelector(state=>state.order)
+const {orders,loading} =useSelector(state=>state.order)
 const[orderList,setOrderList]=useState('')
 
 
@@ -110,9 +110,9 @@ console.log('Rhis',orderList);
   </ListGroup.Item>})}
 
 </ListGroup>
-      </Row>}):<Spinner animation="border" role="status">
+      </Row>}):loading?<Spinner animation="border" role="status">
   <span className="visually-hidden">Loading...</span>
-</Spinner> }
+</Spinner> :<h4>No orders</h4>}
 
             
         </Container>

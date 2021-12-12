@@ -232,4 +232,10 @@ font-weight: 500;
   text-decoration: line-through;
 
 }
+.coupenText{
+
+  display: inline-block;
+  background-color: greenyellow;
+  border-radius: 2rem;
+}
 /* offer price handelr end */

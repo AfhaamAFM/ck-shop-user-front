@@ -19,24 +19,28 @@ import AddAddressModal from "./CartModal/AddAddressModal";
 import axios from "axios";
 import { fetchCart } from "../../redux/CARTSTORE/cartAction";
 import CheckoutStep from "../Map component/CheckoutStep";
-import { getcartItems, storeAddress, storeAmount, storecartItems } from "../../redux/Checkout/checkoutAction";
+import {
+  getcartItems,
+  storeAddress,
+  storeAmount,
+  storecartItems,
+} from "../../redux/Checkout/checkoutAction";
 import { ORDER_PAY_RESET_ALL } from "../../redux/ORDERSTORE/orderType";
+import Loader from "react-loader-spinner";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
 
-
 function CartScreen() {
-
-  const [checkoutWarning, setCheckoutWarning] = useState()
-  const navigate = useNavigate()
+  const [checkoutWarning, setCheckoutWarning] = useState();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // UseStates
   const [changeAddressShow, setChangeAddressShow] = useState(false);
   const [addAddressShow, setAddAddressShow] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [totalMrp, setTotalMrp] = useState(0)
-  const [totalDiscount, setTotalDiscount] = useState(0)
+  const [totalMrp, setTotalMrp] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
 
   // address states
   const [name, setName] = useState("");
@@ -49,7 +53,7 @@ function CartScreen() {
   const [landmark, setLandmark] = useState("");
   const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(false);
-  const qty = useRef()
+  const qty = useRef();
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
   // form error states
@@ -60,7 +64,9 @@ function CartScreen() {
 
   // Redux function
   const { userActive, users } = useSelector((state) => state.user);
-  const { cartItems, loading: getCartLoading } = useSelector((state) => state.cart);
+  const { cartItems, loading: getCartLoading } = useSelector(
+    (state) => state.cart
+  );
 
   // =============================Modal controller start===============================
 
@@ -83,57 +89,54 @@ function CartScreen() {
   // QUANTITY HANDLER START
 
   async function quantityHandler(id, value) {
-    await axios.get(`http://localhost:5000/user/cart/changeQuantity/${id}/${value}`).then(res => {
-
-      if (res.data) {
-        dispatch(fetchCart())
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Quantity updated",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    })
-
+    await axios
+      .get(`http://localhost:5000/user/cart/changeQuantity/${id}/${value}`)
+      .then((res) => {
+        if (res.data) {
+          dispatch(fetchCart());
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Quantity updated",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
   }
   const decreaseQuantity = (e) => {
-    const id = e.target.id
-    const thisCart = cartItem.find(v => v._id === id)
+    const id = e.target.id;
+    const thisCart = cartItem.find((v) => v._id === id);
     if (thisCart.quantity === 1) {
       return Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: 'Delete if you want to remove Item',
+        position: "top-end",
+        icon: "error",
+        title: "Delete if you want to remove Item",
         showConfirmButton: false,
-        timer: 1500
-      })
+        timer: 1500,
+      });
     }
 
-    quantityHandler(e.target.id, -1)
-
+    quantityHandler(e.target.id, -1);
   };
   const increaseQuantity = (e) => {
-    const id = e.target.id
-    const thisCart = cartItem.find(v => v._id === id)
-    const thisProduct = cartProducts.find(v => v._id = thisCart.product)
+    const id = e.target.id;
+    const thisCart = cartItem.find((v) => v._id === id);
+    const thisProduct = cartProducts.find((v) => (v._id = thisCart.product));
 
-    const { quantity, size } = thisCart
+    const { quantity, size } = thisCart;
 
     if (thisProduct[size] === quantity) {
       return Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: 'Maximum product added',
+        position: "top-end",
+        icon: "error",
+        title: "Maximum product added",
         showConfirmButton: false,
-        timer: 1500
-      })
-
+        timer: 1500,
+      });
     }
 
-
-    quantityHandler(e.target.id, 1)
+    quantityHandler(e.target.id, 1);
   };
 
   // Quantity handler end
@@ -193,17 +196,15 @@ function CartScreen() {
   function deleteHandler(e) {
     const id = e.target.id;
     Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, Delete it!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Delete it!",
     }).then((result) => {
-
       if (result.isConfirmed) {
-
         axios
           .get(`/user/cart/delete/${id}`)
           .then((res) => {
@@ -222,38 +223,28 @@ function CartScreen() {
             console.log("this is a cart item delete " + err);
           });
       }
-    })
-
+    });
   }
 
   // delete end
-
-
 
   // Checkout Handler start
 
   function checkoutHandler() {
     if (!showAddress) {
-
-      return setCheckoutWarning('Select a address')
+      return setCheckoutWarning("Select a address");
     }
 
     if (cartItems.cartItem.length === 0) {
-
-      return setCheckoutWarning('Cart is empty')
+      return setCheckoutWarning("Cart is empty");
     }
 
+    dispatch(storeAmount(totalAmount));
+    dispatch(storeAddress(showAddress));
+    dispatch(storecartItems(cartItems));
+    dispatch(getcartItems());
 
-    
-    dispatch(storeAmount(totalAmount))
-    dispatch(storeAddress(showAddress))
-    dispatch(storecartItems(cartItems))
-dispatch(getcartItems())
-
-
-    navigate('/checkoutPay')
-
-
+    navigate("/checkoutPay");
   }
 
   // Checkout Handler end
@@ -264,10 +255,7 @@ dispatch(getcartItems())
     dispatch(userlogged());
     users && setAllAddress(users.address);
     dispatch(fetchCart());
-    dispatch({type:ORDER_PAY_RESET_ALL})
   }, [dispatch, selectedAddressID]);
-
-
 
   useEffect(() => {
     if (!cartItems) return;
@@ -275,38 +263,35 @@ dispatch(getcartItems())
     setCartProducts(cartItems.cartProduct);
 
     setCartItem(cartItems.cartItem);
-
-
-
-
   }, [cartItems]);
 
-
-
   useEffect(() => {
-
     let totalMrp = 0;
-    let totalAmount = 0
-    let totalDiscount = 0
+    let totalAmount = 0;
+    let totalDiscount = 0;
 
     cartItem.forEach((value, i) => {
-      let index = cartProducts.findIndex(item => item._id === value.product);
+      let index = cartProducts.findIndex((item) => item._id === value.product);
 
-      cartProducts[index].isOffer && (totalDiscount += Math.round(cartProducts[index].discountPrice * value.quantity))
-      totalAmount += cartProducts[index].isOffer ? Math.round(cartProducts[index].offerPrice * value.quantity) : Math.round(cartProducts[index].price * value.quantity)
-      totalMrp += value.price * value.quantity
-    })
+      cartProducts[index].isOffer &&
+        (totalDiscount += Math.round(
+          cartProducts[index].discountPrice * value.quantity
+        ));
+      totalAmount += cartProducts[index].isOffer
+        ? Math.round(cartProducts[index].offerPrice * value.quantity)
+        : Math.round(cartProducts[index].price * value.quantity);
+      totalMrp += value.price * value.quantity;
+    });
     setTotalAmount(totalAmount);
-    setTotalMrp(totalMrp)
-    setTotalDiscount(totalDiscount)
+    setTotalMrp(totalMrp);
+    setTotalDiscount(totalDiscount);
+  }, [cartItem, dispatch]);
+  
+  useEffect(()=>{
+    
+    dispatch({ type: ORDER_PAY_RESET_ALL });
 
-
-  }, [cartItem, dispatch])
-
-
-
-
-
+},[])
 
 
   const showAddress = selectedAddressID ? (
@@ -365,42 +350,101 @@ dispatch(getcartItems())
             Shopping Bag <i className="fas fa-shopping-bag"></i>{" "}
           </Title>
 
-          {userActive ? (
+          {loading?   <Loader
+        type="ThreeDots"
+        color="#00BFFF"
+        height={100}
+        width={100}
+        timeout={3000} //3 secs
+      /> :!userActive ?  (
+            <Row>
+              <Col className="cartPLace">
+                <h4>Please sign in &#128517;</h4>
+                <img
+                  className="flipkartImage"
+                  src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
+                  alt="signin"
+                />
+                <Button
+                  className="mx-auto px-3 my-3"
+                  as={Link}
+                  to="/signin"
+                  variant="danger"
+                >
+                  Sign in
+                </Button>
+              </Col>
+            </Row>
+          ):(
             <>
               <Col sm={12} md={8}>
                 <Card className="mb-3">
-                  <Col sm={12} className="mb-3">
-                    <Card.Body>
-                      <Card.Title>Delivary to</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">
-                        {showAddress?.name}
-                      </Card.Subtitle>
-                      <Card.Text>
-                        <Text>
-                          {showAddress?.flatNo} ,{showAddress?.landmark} ,
-                          {showAddress?.street} ,{showAddress?.district} dist ,
-                          {showAddress?.state} ,{showAddress?.pincode} ,
-                          <b>Ph:</b>
-                          {showAddress?.number}
-                        </Text>
-                      </Card.Text>
-                      <Button
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={addressHandleShow}
-                      >
-                        Change Address
-                      </Button>
-                    </Card.Body>
-                  </Col>
+                  {users.address? (
+                    <Col sm={12} className="mb-3">
+                      <Card.Body>
+                        <Card.Title>Delivary to</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">
+                          {showAddress?.name}
+                        </Card.Subtitle>
+                        <Card.Text>
+                          <Text>
+                            {showAddress?.flatNo} ,{showAddress?.landmark} ,
+                            {showAddress?.street} ,{showAddress?.district} dist
+                            ,{showAddress?.state} ,{showAddress?.pincode} ,
+                            <b>Ph:</b>
+                            {showAddress?.number}
+                          </Text>
+                        </Card.Text>
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={addressHandleShow}
+                        >
+                          Change Address
+                        </Button>
+                      </Card.Body>
+                    </Col>
+                  ) : (
+                    <>
+                    <Card.Title  className='p-5'><h3 style={{color:'red'}} > No address Added </h3> </Card.Title>
+                    <Button
+                    className='m-3'
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={addAddressHandleShow}
+                  >
+                    Add Address 
+                  </Button>
+                  </>
+                  )}
                 </Card>
                 {/* Delivary address end */}
                 {/* Cart items start */}
-                {cartItems ? (
+                {!cartItems.cartItem? (
+                  <Row>
+              <Col className="cartPLace">
+                <h4>Please sign in &#128517;</h4>
+                <img
+                  className="flipkartImage"
+                  src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
+                  alt="signin"
+                />
+                <Button
+                  className="mx-auto px-3 my-3"
+                  as={Link}
+                  to="/"
+                  variant="danger"
+                >
+                 Add Something
+                </Button>
+              </Col>
+            </Row>
+                ) :(
                   <>
                     {cartItem.map((value, i) => {
-
-                      let index = cartProducts.findIndex(item => item._id === value.product);
+                      let index = cartProducts.findIndex(
+                        (item) => item._id === value.product
+                      );
                       return (
                         <Card className="mb-3" key={value._id}>
                           <Row className="p-2">
@@ -420,18 +464,37 @@ dispatch(getcartItems())
                                 {`${cartProducts[index]?.category}'s ${cartProducts[index]?.subCat}`}
                               </Card.Subtitle>
                               {/* <Card.Text>{v.cartProduct[0].description}</Card.Text>  */}
-                              {cartProducts[index]?.isOffer ? <Space direction='vertical'>
-                                <Card.Text as='div' className='priceHolder'>
-                                  ₹{(Math.round(cartProducts[index]?.offerPrice * value.quantity))}
-                                </Card.Text>
-                                <Space direction='horizontal'>
-
-                                  <Card.Text as='div' className='priceHolder1'>
-                                    ₹{(Math.round(cartProducts[index]?.price * value.quantity))}
+                              {cartProducts[index]?.isOffer ? (
+                                <Space direction="vertical">
+                                  <Card.Text as="div" className="priceHolder">
+                                    ₹
+                                    {Math.round(
+                                      cartProducts[index]?.offerPrice *
+                                        value.quantity
+                                    )}
                                   </Card.Text>
-                                  <Text type="success">{cartProducts[index]?.offer.percentage}% off </Text>
+                                  <Space direction="horizontal">
+                                    <Card.Text
+                                      as="div"
+                                      className="priceHolder1"
+                                    >
+                                      ₹
+                                      {Math.round(
+                                        cartProducts[index]?.price *
+                                          value.quantity
+                                      )}
+                                    </Card.Text>
+                                    <Text type="success">
+                                      {cartProducts[index]?.offer.percentage}%
+                                      off{" "}
+                                    </Text>
+                                  </Space>
                                 </Space>
-                              </Space> : <Text strong>{value.quantity * cartProducts[index]?.price}</Text>}
+                              ) : (
+                                <Text strong>
+                                  {value.quantity * cartProducts[index]?.price}
+                                </Text>
+                              )}
                               {/* QUANTITY SELECTOR STRAT */}
 
                               {/* QUANTITY SELECTOR END */}
@@ -451,17 +514,34 @@ dispatch(getcartItems())
                             </>
                           </Select> */}
                                 <div className="quantityHandler">
-                                  <i className="fas fa-minus-circle" id={value._id} onClick={decreaseQuantity} ></i>
-                                  <input type="text" size='5' ref={qty} readOnly value={value.quantity} />
-                                  <i className="fas fa-plus-circle" id={value._id} value={1} onClick={increaseQuantity} ></i>
+                                  <i
+                                    className="fas fa-minus-circle"
+                                    id={value._id}
+                                    onClick={decreaseQuantity}
+                                  ></i>
+                                  <input
+                                    type="text"
+                                    size="5"
+                                    ref={qty}
+                                    readOnly
+                                    value={value.quantity}
+                                  />
+                                  <i
+                                    className="fas fa-plus-circle"
+                                    id={value._id}
+                                    value={1}
+                                    onClick={increaseQuantity}
+                                  ></i>
                                 </div>
-                                <Card.Text>Select quantity {value.quantity} </Card.Text>
+                                <Card.Text>
+                                  Select quantity {value.quantity}{" "}
+                                </Card.Text>
                               </Row>
 
                               <Row>
                                 <Space direction="horizontal">
                                   <Text strong>Size : </Text>
-                                  <Text >{value.size}</Text>
+                                  <Text>{value.size}</Text>
                                 </Space>
                               </Row>
                             </Col>
@@ -470,7 +550,11 @@ dispatch(getcartItems())
                                 style={{ fontSize: "2em", color: "Tomato" }}
                                 className="deleteIcon"
                               >
-                                <i id={value._id} className="far fa-times-circle" onClick={deleteHandler} ></i>
+                                <i
+                                  id={value._id}
+                                  className="far fa-times-circle"
+                                  onClick={deleteHandler}
+                                ></i>
                               </span>
                             </Col>
                           </Row>
@@ -478,8 +562,6 @@ dispatch(getcartItems())
                       );
                     })}
                   </>
-                ) : (
-                  <Spinner animation="grow" variant="dark" />
                 )}
                 {/* Cart items end */}
               </Col>
@@ -487,9 +569,7 @@ dispatch(getcartItems())
               <Col sm={12} md={4}>
                 <Card>
                   <Col sm={12} className="p-4">
-                    <Card.Title>
-                      PRICE DETAILS
-                    </Card.Title>
+                    <Card.Title>PRICE DETAILS</Card.Title>
                     <hr />
                   </Col>
 
@@ -498,12 +578,17 @@ dispatch(getcartItems())
                       <Text strong> total mrp</Text>
                     </Col>
                     <Col md={{ span: 4, offset: 4 }}>
-                      <Text>₹{totalMrp}</Text>{" "}
+                      <Text>₹{totalMrp?totalMrp:''}</Text>{" "}
                     </Col>
                   </Row>
-                  <Row className='p-1 ms-1'>
-                    <Col md={4}> <Text strong>Discount on MRP</Text></Col>
-                    <Col md={{ span: 4, offset: 4 }}><Text type='success' > -₹{totalDiscount} off</Text> </Col>
+                  <Row className="p-1 ms-1">
+                    <Col md={4}>
+                      {" "}
+                      <Text strong>Discount on MRP</Text>
+                    </Col>
+                    <Col md={{ span: 4, offset: 4 }}>
+                      <Text type="success"> -{totalDiscount?`₹${totalDiscount} off`:''}</Text>{" "}
+                    </Col>
                   </Row>
                   {/* <Row className='p-1 ms-1'>
                   <Col md={4}> <Text strong>Coupen Discount</Text></Col>
@@ -521,7 +606,7 @@ dispatch(getcartItems())
                       <Text strong>Grand Total</Text>
                     </Col>
                     <Col md={{ span: 4, offset: 4 }}>
-                      <Text strong>₹{totalAmount}</Text>{" "}
+                      <Text strong>₹{totalAmount?totalAmount:''}</Text>{" "}
                     </Col>
                   </Row>
                 </Card>
@@ -534,29 +619,13 @@ dispatch(getcartItems())
                 >
                   Proceed To Checkout
                 </Button>
-                <Text type='danger' className='mt-3'>{checkoutWarning} </Text>
+                <Text type="danger" className="mt-3">
+                  {checkoutWarning}{" "}
+                </Text>
               </Col>
             </>
-          ) : (
-            <Row>
-              <Col className="cartPLace">
-                <h4>Please sign in &#128517;</h4>
-                <img
-                  className="flipkartImage"
-                  src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
-                  alt="signin"
-                />
-                <Button
-                  className="mx-auto px-3 my-3"
-                  as={Link}
-                  to="/signin"
-                  variant="danger"
-                >
-                  Sign in
-                </Button>
-              </Col>
-            </Row>
-          )}
+            
+          )  }
 
           {/* Delivary address start */}
         </Row>

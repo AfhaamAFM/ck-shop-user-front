@@ -8,18 +8,15 @@ import {
   Button,
   ListGroup,
   Table,
+  Badge,
+  Spinner,
 } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import { userlogged } from "../redux/userStore/userAction";
 import Text from "antd/lib/typography/Text";
 import CheckoutStep from "./Map component/CheckoutStep";
 import { useNavigate } from "react-router-dom";
-import {
-  fetchOrders,
-  payOrder,
-  placeCOD,
-} from "../redux/ORDERSTORE/orderAction";
+import { fetchOrders, placeCOD } from "../redux/ORDERSTORE/orderAction";
 import Message from "./Map component/Message";
 import { PayPalButton } from "react-paypal-button-v2";
 import axios from "axios";
@@ -30,12 +27,19 @@ import {
   ORDER_PAY_SUCCESS,
 } from ".././redux/ORDERSTORE/orderType";
 import RazorPayComponent from "./UserProfile/RazorPayComponent";
-import { value } from "dom7";
 import { fetchCart } from "../redux/CARTSTORE/cartAction";
 import Swal from "sweetalert2";
 import { fetchCheckout } from "../redux/Checkout/checkoutAction";
+import { fetchCoupen } from "../redux/OFFER/offerAction";
+import { Radio } from 'antd';
+
 function PlaceOrderScreen() {
   const [totalAmount, setTotalAmount] = useState(0);
+const[coupenDiscount,setCoupenDiscount]=useState(0)
+const[walletDiscount,setWalletDiscount]=useState(0)
+const[currentWalletMoney,setCurrentWalletMoney]=useState()
+const[coupenHere,setCoupenHere]=useState([])
+
   const [totalMrp, setTotalMrp] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [showPaypal, setShowPaypal] = useState(false);
@@ -44,9 +48,14 @@ function PlaceOrderScreen() {
   const navigate = useNavigate();
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
-
+  const { userActive, users } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
+
+
+
+  const{coupen,loading:coupenLoading}=useSelector((state)=>state.coupen)
+
 
   const {
     success: successPay,
@@ -61,6 +70,7 @@ function PlaceOrderScreen() {
     amount,
   } = useSelector((state) => state.checkout);
 
+
   const [sdkReady, setSdkReady] = useState(false);
 
   const codPlaceHandler = () => {
@@ -69,7 +79,6 @@ function PlaceOrderScreen() {
   };
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult);
     const { id: paymentId } = paymentResult;
     const orderStatus = "ordered";
     dispatch({ type: ORDER_PAY_REQUEST });
@@ -84,10 +93,9 @@ function PlaceOrderScreen() {
         paymentId,
       })
       .then((res) => {
-        console.log("sssssssssssssssss" + res.data);
         if (res.data) {
-          dispatch({ type: ORDER_PAY_SUCCESS });
           dispatch(fetchOrders());
+          dispatch({ type: ORDER_PAY_SUCCESS });
           Swal.fire({
             position: "top-center",
             icon: "success",
@@ -99,17 +107,35 @@ function PlaceOrderScreen() {
       });
   };
 
-  //     function errorHandler(err){
+// ===================================Coupen and wallet discount handlers=============== START==========================
+function walletDiscountHandler(){
+  let disc=0
+if(setTotalAmount<currentWalletMoney){
+disc=currentWalletMoney-totalAmount
+  setWalletDiscount(currentWalletMoney)
+  setCurrentWalletMoney(disc)
+}else if(totalAmount>currentWalletMoney){
+  setWalletDiscount(currentWalletMoney)
+  setCurrentWalletMoney(0)
+}
+}
 
-  // alert(err)
+// coupen discount
+function coupenDiscountHandler(e){
+const id=e.target.id
+const currentCoupen= coupen.find((value)=>value._id===id)
+const{percentage} = currentCoupen
+console.log(percentage);
+}
+// ===================================Coupen and wallet discount handlers===================END======================
 
-  //     }
+
+
 
   useEffect(() => {
     // paypal start
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get("/config/paypal");
-      console.log(clientId);
       const script = document.createElement("script");
       script.type = "text/javascript";
       script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
@@ -138,7 +164,12 @@ function PlaceOrderScreen() {
     // paypal end
     //eslint-disable-next-line
     //
-  }, [dispatch, successPay]);
+if(!users){
+  return
+}
+setCurrentWalletMoney(users.wallet)
+
+  }, [dispatch, successPay,users]);
 
   useEffect(() => {
     if (!cartItems) return;
@@ -166,16 +197,21 @@ function PlaceOrderScreen() {
         : Math.round(cartProducts[index].price * value.quantity);
       totalMrp += value.price * value.quantity;
     });
-    setTotalAmount(totalAmount);
+    setTotalAmount(totalAmount-(walletDiscount+coupenDiscount));
     setTotalMrp(totalMrp);
     setTotalDiscount(totalDiscount);
-  }, [cartItem, dispatch]);
+if(!coupen) return
+
+const filterCop= coupen.filter((value,i)=>value.minAmount<totalAmount)
+setCoupenHere(filterCop)
+  }, [cartItem, dispatch,walletDiscount,coupenDiscount,coupen,totalAmount]);
 
   useEffect(() => {
     dispatch(fetchCart());
     dispatch(fetchOrders());
     dispatch(userlogged());
     dispatch(fetchCheckout());
+    dispatch(fetchCoupen())
 
     // eslint-disable-next-line
   }, [dispatch]);
@@ -191,255 +227,296 @@ function PlaceOrderScreen() {
           <CheckoutStep step1 step2 step3 />
 
           <Row className="mt-4">
-            <Col>
-              <Card className="mb-3">
-                <Card.Body>
-                  <Card.Title>Shipping Address</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    {address?.name}
-                  </Card.Subtitle>
-                  <Card.Text>
-                    <Text>
-                      {address?.flatNo} ,{address?.landmark} ,{address?.street}{" "}
-                      ,{address?.district} dist ,{address?.state} ,
-                      {address?.pincode} ,<b>Ph:</b>
-                      {address?.number}
-                    </Text>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+            <Col md={7}>
+              <Row>
+                <Card className="mb-3" as={Col}>
+                  <Card.Body>
+                    <Card.Title>Shipping Address</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      {address?.name}
+                    </Card.Subtitle>
+                    <Card.Text>
+                      <Text>
+                        {address?.flatNo} ,{address?.landmark} ,
+                        {address?.street} ,{address?.district} dist ,
+                        {address?.state} ,{address?.pincode} ,<b>Ph:</b>
+                        {address?.number}
+                      </Text>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Row>
 
               {paid ? (
-                <Message variant={"success"}>
+                <Message as={Col} variant={"success"}>
                   <h5>Payment</h5>
                   <p>paid</p>
                 </Message>
               ) : (
-                <Message variant={"danger"}>
+                <Message as={Col} variant={"danger"}>
                   <h5>Payment</h5>
                   <p> Not paid</p>
                 </Message>
               )}
-            </Col>
-
-            <Col sm={12} md={4}>
-              <Card>
-                <Col sm={12} className="p-4">
-                  <Card.Title>PRICE DETAILS</Card.Title>
-                  <hr />
-                </Col>
-
-                <Row className="p-1 ms-1">
-                  <Col md={4}>
-                    <Text strong> total mrp</Text>
-                  </Col>
-                  <Col md={{ span: 4, offset: 4 }}>
-                    <Text>₹{totalMrp}</Text>{" "}
-                  </Col>
-                </Row>
-                <Row className="p-1 ms-1">
-                  <Col md={4}>
-                    {" "}
-                    <Text strong>Discount on MRP</Text>
-                  </Col>
-                  <Col md={{ span: 4, offset: 4 }}>
-                    <Text type="success"> -₹{totalDiscount} off</Text>{" "}
-                  </Col>
-                </Row>
-                {/* <Row className='p-1 ms-1'>
-                                 <Col md={4}> <Text strong>Coupen Discount</Text></Col>
-                                  <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-                                 </Row> */}
-                {/* <Row className='p-1 ms-1'>
-                                   <Col md={4}> <Text strong>Convienience Fee</Text></Col>
-                                         <Col md={{ span: 4, offset: 4 }}><Text>₹ 435</Text> </Col>
-                                   </Row> */}
-                <hr />
-
-                <Row className="p-1 ms-1">
-                  <Col md={4}>
-                    {" "}
-                    <Text strong>Grand Total</Text>
-                  </Col>
-                  <Col md={{ span: 4, offset: 4 }}>
-                    <Text strong>₹{totalAmount}</Text>{" "}
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            {!orderPlaced && (
-              <Col md={6}>
-                <h4>Select payment method</h4>
-
-                <Form>
-                  <Form.Group>
-                    <div className="mb-3">
-                      <Form.Check
-                        name="paymentMethod"
-                        type="radio"
-                        value="COD"
-                        label="Cash on Delivary"
-                        onChange={(e) => {
-                          setShowCod(true);
-                          setShowRazor(false);
-                          setShowPaypal(false);
-
-                          setPaymentMethod(e.target.value);
-                        }}
-                      />
-
-                      <Form.Check
-                        name="paymentMethod"
-                        onChange={(e) => {
-                          setShowPaypal(true);
-                          setShowRazor(false);
-                          setShowCod(false);
-                          setPaymentMethod(e.target.value);
-                        }}
-                        type="radio"
-                        value="paypal"
-                        label="Paypal"
-                      />
-                      <Form.Check
-                        onChange={(e) => {
-                          setShowRazor(true);
-                          setShowPaypal(false);
-                          setShowCod(false);
-                          setPaymentMethod(e.target.value);
-                        }}
-                        name="paymentMethod"
-                        type="radio"
-                        value="razorpay"
-                        label="Razorpay"
-                      />
-                    </div>
-                  </Form.Group>
-                </Form>
-
-                {/* <Button className='mx-3' variant='danger'>Go For Payment</Button> */}
-              </Col>
-            )}
-            {orderPlaced && (
-              <Col md={6}>
-                <h4>Order Summary</h4>
-
-                <Row>
+              <Row>
+                {!orderPlaced && (
                   <Col>
-                    <Table striped bordered hover>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Item Name</th>
-                          <th>Price</th>
-                          <th>Quantity</th>
-                          <th>Sub Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {cartItem.map((value, i) => {
-                          let index = cartProducts.findIndex(
-                            (item) => item._id === value.product
-                          );
+                    <h4>Select payment method</h4>
 
-                          return (
-                            <tr key={i}>
-                              <td>{i + 1}</td>
-                              <td>
-                                {cartProducts[index].name}{" "}
-                                <small>
-                                  {cartProducts[index].category}'s{" "}
-                                  {cartProducts[index].subCat}
-                                </small>{" "}
-                              </td>
-                              <td>{value.price}</td>
-                              <td>{value.quantity}</td>
-                              <td>{value.quantity * value.price}</td>
-                            </tr>
-                          );
-                        })}
+                    <Form>
+                      <Form.Group>
+                        <Form.Check
+                          name="paymentMethod"
+                          type="radio"
+                          value="COD"
+                          label="Cash on Delivary"
+                          onChange={(e) => {
+                            setShowCod(true);
+                            setShowRazor(false);
+                            setShowPaypal(false);
 
-                        <tr>
-                          <td colSpan="4 ">
-                            Total amount ({totalDiscount}% off){" "}
-                          </td>
+                            setPaymentMethod(e.target.value);
+                          }}
+                        />
 
-                          <td>
-                            {" "}
-                            <b> {amount}</b>{" "}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </Table>
+                        <Form.Check
+                          name="paymentMethod"
+                          onChange={(e) => {
+                            setShowPaypal(true);
+                            setShowRazor(false);
+                            setShowCod(false);
+                            setPaymentMethod(e.target.value);
+                          }}
+                          type="radio"
+                          value="paypal"
+                          label="Paypal"
+                        />
+                        <Form.Check
+                          onChange={(e) => {
+                            setShowRazor(true);
+                            setShowPaypal(false);
+                            setShowCod(false);
+                            setPaymentMethod(e.target.value);
+                          }}
+                          name="paymentMethod"
+                          type="radio"
+                          value="razorpay"
+                          label="Razorpay"
+                        />
+                      </Form.Group>
+                    </Form>
+
+                    {/* <Button className='mx-3' variant='danger'>Go For Payment</Button> */}
                   </Col>
-                </Row>
-              </Col>
-            )}
-
-            {/* raxor pay start */}
-            {/* !showOrder?.isPaid|| */}
-            <Col md={6} className="p-5">
-              <ListGroup>
-                {!orderPlaced ? (
-                  <ListGroup.Item>
-                    {showCod && (
-                      <Button
-                        onClick={codPlaceHandler}
-                        className="mx-3"
-                        variant="danger"
-                      >
-                        Proceed Cash on delivary
-                      </Button>
-                    )}
-                    {showRazor && (
-                      <RazorPayComponent
-                        successPaymentHandler={successPaymentHandler}
-                        amount={amount}
-                      />
-                    )}
-
-                    {loadingPay && <Loader />}
-                    {!sdkReady ? (
-                      <Loader />
-                    ) : showPaypal ? (
-                      <PayPalButton
-                        amount={amount}
-                        onSuccess={successPaymentHandler}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </ListGroup.Item>
-                ) : (
-                  <>
-                    <Row>
-                      <Button
-                        variant="info"
-                        onClick={() => {
-                          navigate("/");
-                        }}
-                        className="m-3 px-2"
-                      >
-                        Continue Shopping
-                      </Button>
-
-                      <Button
-                        variant="warning"
-                        onClick={() => {
-                          navigate("/cart");
-                        }}
-                        className="m-3 px-2"
-                      >
-                        Go to Cart
-                      </Button>
-                    </Row>
-                  </>
                 )}
-              </ListGroup>
+              </Row>
             </Col>
-            {/* razor pay end */}
+            {/* main div 2 */}
+            <Col md={5}>
+              <Row className='mb-3'>
+                <Col>
+                  <Card>
+                    <Col sm={12} className="p-4">
+                      <Card.Title>Wallet </Card.Title>
+                      {walletDiscount&&<Badge onClick={()=>{setWalletDiscount(0)
+                      
+                      setCurrentWalletMoney(users.wallet)
+                      }}  bg="info">reset</Badge>}
+                      <hr />
+                    </Col>
+                    <Col>
+                  
+                      <Card.Subtitle className='d-flex justify-content-center"'>
+                        <h4>₹{currentWalletMoney} {currentWalletMoney&&<Badge style={{cursor:'pointer'}} onClick={walletDiscountHandler}  bg="danger">Use Wallet</Badge>}</h4>
+                        
+                      </Card.Subtitle>
+                    </Col>
+                  </Card>
+                </Col>
+              </Row>
+              <Row className='mb-3'>
+                <Col>
+                  <Card>
+                    <Col sm={12} className="p-1">
+                      <Card.Title className='px-3 pt-2'>Coupens </Card.Title>
+                      <hr />
+                    </Col>
+                    <Col className='mb-3 d-flex' >
+
+ {coupenLoading?<Spinner animation="grow" />:!coupen?<h4>No coupen for you&#128514;</h4>:!coupenHere?<h4>no coupen for this amount&#128514;</h4>
+
+:coupenHere.map((value,i)=>
+
+ <Button key={i} variant="warning" className='m-2' size="sm" id={value._id} onClick={coupenDiscountHandler} size={'small'}  > <b> {value.name}</b>  {value.percentage}% </Button> 
+ )}
+
+
+                    </Col>
+                  </Card>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Card>
+                    <Col sm={12} className="p-4">
+                      <Card.Title>PRICE DETAILS</Card.Title>
+                      <hr />
+                    </Col>
+
+                    <Row className="p-1 ms-1">
+                      <Col md={4}>
+                        <Text strong> total mrp</Text>
+                      </Col>
+                      <Col md={{ span: 4, offset: 4 }}>
+                        <Text>₹{totalMrp}</Text>{" "}
+                      </Col>
+                    </Row>
+                    <Row className="p-1 ms-1">
+                      <Col md={4}>
+                        {" "}
+                        <Text strong>Discount on MRP</Text>
+                      </Col>
+                      <Col md={{ span: 4, offset: 4 }}>
+                        <Text type="success"> -₹{totalDiscount} off</Text>{" "}
+                      </Col>
+                    </Row>
+                    <Row className="p-1 ms-1">
+                      <Col md={4}>
+                        {" "}
+                        <Text strong>Wallet</Text>
+                      </Col>
+                      <Col md={{ span: 4, offset: 4 }}>
+                        <Text type="success"> -₹{walletDiscount} off</Text>{" "}
+                      </Col>
+                    </Row>
+
+                    <hr />
+
+                    <Row className="p-1 ms-1">
+                      <Col md={4}>
+                        <Text strong>Grand Total</Text>
+                      </Col>
+                      <Col md={{ span: 4, offset: 4 }}>
+                        <Text strong>₹{totalAmount}</Text>{" "}
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              </Row>
+              <Row>
+                <Col className="p-5">
+                  <ListGroup>
+                    {!orderPlaced ? (
+                      <ListGroup.Item>
+                        {showCod && (
+                          <Button
+                            onClick={codPlaceHandler}
+                            className="mx-3"
+                            variant="danger"
+                          >
+                            Proceed Cash on delivary
+                          </Button>
+                        )}
+                        {showRazor && (
+                          <RazorPayComponent
+                            successPaymentHandler={successPaymentHandler}
+                            amount={amount}
+                          />
+                        )}
+
+                        {loadingPay && <Loader />}
+                        {!sdkReady ? (
+                          <Loader />
+                        ) : showPaypal ? (
+                          <PayPalButton
+                            amount={amount}
+                            onSuccess={successPaymentHandler}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </ListGroup.Item>
+                    ) : (
+                      <>
+                        <Row>
+                          <Button
+                            variant="info"
+                            onClick={() => {
+                              navigate("/");
+                            }}
+                            className="m-3 px-2"
+                          >
+                            Continue Shopping
+                          </Button>
+
+                          <Button
+                            variant="warning"
+                            onClick={() => {
+                              navigate("/cart");
+                            }}
+                            className="m-3 px-2"
+                          >
+                            Go to Cart
+                          </Button>
+                        </Row>
+                      </>
+                    )}
+                  </ListGroup>
+                </Col>
+              </Row>
+            </Col>
+            {/* main dov 2 */}
           </Row>
+          {orderPlaced && (
+            <Row>
+              <Col>
+                <h4>Order Summary</h4>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Item Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Sub Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cartItem.map((value, i) => {
+                      let index = cartProducts.findIndex(
+                        (item) => item._id === value.product
+                      );
+
+                      return (
+                        <tr key={i}>
+                          <td>{i + 1}</td>
+                          <td>
+                            {cartProducts[index].name}{" "}
+                            <small>
+                              {cartProducts[index].category}'s{" "}
+                              {cartProducts[index].subCat}
+                            </small>{" "}
+                          </td>
+                          <td>{value.price}</td>
+                          <td>{value.quantity}</td>
+                          <td>{value.quantity * value.price}</td>
+                        </tr>
+                      );
+                    })}
+
+                    <tr>
+                      <td colSpan="4 ">Total amount ({totalDiscount}% off) </td>
+
+                      <td>
+                        {" "}
+                        <b> {amount}</b>{" "}
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          )}
         </>
       )}
     </Container>

@@ -1,5 +1,5 @@
 import { ORDER_ADD_SUCCESS, ORDER_FETCH_SUCCESS, ORDER_FETCH_ERROR, ORDER_FETCH_REQUEST } from './orderType'
-import { ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_RESET,ORDER_PAY_RESET_ALL,ORDER_COD_SUCCESS } from './orderType'
+import { ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_RESET, ORDER_PAY_RESET_ALL, ORDER_COD_SUCCESS } from './orderType'
 
 
 const initial = {
@@ -50,7 +50,7 @@ export const orderReducer = (state = initial, action) => {
 }
 
 
-export const orderPayReducer = (state = { success: false, loading: false, error: '', orderPlaced: false,paid:false }, action) => {
+export const orderPayReducer = (state = { success: false, loading: false, error: '', orderPlaced: false, paid: false }, action) => {
 
 
     switch (action.type) {
@@ -63,32 +63,33 @@ export const orderPayReducer = (state = { success: false, loading: false, error:
                 orderPlaced: true,
                 loading: false,
                 success: true,
-                paid:true
+                paid: true
             }
 
 
-            case ORDER_COD_SUCCESS:
+        case ORDER_COD_SUCCESS:
             return {
                 orderPlaced: true,
                 loading: false,
                 success: true,
-                paid:false
+                paid: false
             }
         case ORDER_PAY_FAIL:
             return {
+                ...state,
                 loading: false,
                 error: action.payload
             }
         case ORDER_PAY_RESET:
             return {
-                ...state,
+              ...state,
                 loading: false,
                 success: false,
-                error:''
+                error: ''
             }
 
-            case ORDER_PAY_RESET_ALL:
-                return {}    
+        case ORDER_PAY_RESET_ALL:
+            return {}
 
         default:
             return state

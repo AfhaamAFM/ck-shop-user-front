@@ -6,6 +6,7 @@ import filterProductReducer from "./filterProducts/filterProductReducer";
 import cartReducer from "./CARTSTORE/cartReducer";
 import checkoutReducer from "./Checkout/checkoutReducer";
 import {orderReducer,orderPayReducer} from "./ORDERSTORE/orderReducer";
+import { coupenReducer } from "./OFFER/offerReducer";
 
 const rootReducer = combineReducers({
   
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
     cart:cartReducer,
     checkout:checkoutReducer,
     order:orderReducer,
-    orderPay:orderPayReducer
+    orderPay:orderPayReducer,
+    coupen:coupenReducer
     
 
 })
