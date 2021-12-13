@@ -27,6 +27,8 @@ import {
 } from "../../redux/Checkout/checkoutAction";
 import { ORDER_PAY_RESET_ALL } from "../../redux/ORDERSTORE/orderType";
 import Loader from "react-loader-spinner";
+import ProductCard from "../Map component/ProductCard";
+import { fetchProduct } from "../../redux/PRODUCTS/productAction";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
@@ -42,6 +44,10 @@ function CartScreen() {
   const [totalMrp, setTotalMrp] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
 
+  // filter subcategory
+
+  const[subcatArray,setSubCatArray]=useState('')
+  const[showProducts,setShowProducts]=useState('')
   // address states
   const [name, setName] = useState("");
   const [flatNo, setFlatNO] = useState("");
@@ -64,6 +70,8 @@ function CartScreen() {
 
   // Redux function
   const { userActive, users } = useSelector((state) => state.user);
+  const { product } = useSelector((state) => state.product);
+
   const { cartItems, loading: getCartLoading } = useSelector(
     (state) => state.cart
   );
@@ -255,6 +263,7 @@ function CartScreen() {
     dispatch(userlogged());
     users && setAllAddress(users.address);
     dispatch(fetchCart());
+    dispatch(fetchProduct())
   }, [dispatch, selectedAddressID]);
 
   useEffect(() => {
@@ -269,10 +278,12 @@ function CartScreen() {
     let totalMrp = 0;
     let totalAmount = 0;
     let totalDiscount = 0;
-
+var subCategory=[]
     cartItem.forEach((value, i) => {
       let index = cartProducts.findIndex((item) => item._id === value.product);
 
+subCategory.push(cartProducts[index].subCat)
+setSubCatArray(subCategory)
       cartProducts[index].isOffer &&
         (totalDiscount += Math.round(
           cartProducts[index].discountPrice * value.quantity
@@ -285,7 +296,16 @@ function CartScreen() {
     setTotalAmount(totalAmount);
     setTotalMrp(totalMrp);
     setTotalDiscount(totalDiscount);
+
+
   }, [cartItem, dispatch]);
+
+  useEffect(()=>{
+    if(!subcatArray||!product) return
+    let subProducts=[]
+subcatArray.map((v)=>subProducts= product.filter((item) => item.subCat === v))
+setShowProducts(subProducts)
+  },[subcatArray,product])
   
   useEffect(()=>{
     
@@ -303,7 +323,7 @@ function CartScreen() {
       <Placeholder xs={12} />
     </Placeholder>
   );
-
+  
   return (
     <div>
       <Container>
@@ -629,6 +649,17 @@ function CartScreen() {
 
           {/* Delivary address start */}
         </Row>
+        <section>
+<Row className='my-4'>
+  <Row><Col>  <h3>Similar Products</h3></Col></Row>
+{showProducts&&showProducts.map((values,i)=>{
+   return  <Col sm={12} md={6} lg={4} xl={3} key={i}>
+
+    <ProductCard product={values} key={values._id}/>
+    </Col>
+            })}
+</Row>
+</section>
       </Container>
     </div>
   );

@@ -182,7 +182,7 @@ function UserHomeScreen({ user }) {
             <ListGroup.Item>
               <b> Referal Code</b>
             </ListGroup.Item>
-            {!user.refCode || user.wallet ? (
+            
               <>
                 <ListGroup.Item>
                   {user.refCode ? user.refCode : "no referal Code"}
@@ -195,11 +195,7 @@ function UserHomeScreen({ user }) {
                   {user.wallet>0 ? <p style={{color:'green',fontSize:'1rem',fontWeight:"bold"}} >₹{user.wallet}</p>: <span>no money in your wallet &#128534;</span>}
                 </ListGroup.Item>
               </>
-            ) : (
-              <ListGroup.Item>
-                <b>You have no wallet or referal code</b>
-              </ListGroup.Item>
-            )}
+            
           </ListGroup>
           <ListGroup className="p-4">
             {/* <ListGroup.Item > <b> Edit user</b> </ListGroup.Item> */}

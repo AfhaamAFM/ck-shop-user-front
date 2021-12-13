@@ -75,7 +75,7 @@ const[coupenShow,setCoupenShow]=useState(false)
     cartItems,
     loading: getCartLoading,
     address,
-    amount,
+ 
   } = useSelector((state) => state.checkout);
 
 
@@ -83,7 +83,8 @@ const[coupenShow,setCoupenShow]=useState(false)
 
   const codPlaceHandler = () => {
     const orderStatus = "ordered";
-    dispatch(placeCOD(paymentMethod, orderStatus, amount, address, cartItems));
+
+    dispatch(placeCOD(paymentMethod, orderStatus, totalAmount, address, cartItems));
   };
 
   const successPaymentHandler = (paymentResult) => {
@@ -91,16 +92,23 @@ const[coupenShow,setCoupenShow]=useState(false)
     const orderStatus = "ordered";
     dispatch({ type: ORDER_PAY_REQUEST });
 
+
+if(walletDiscount){
+
+}
+const amount = totalAmount
     axios
       .post(`/order/user/placeOrder`, {
-        totalAmount,
+        amount,
         address,
         orderStatus,
         paymentMethod,
         cartItems,
         paymentId,
       })
-      .then((res) => {
+      .then(async(res) => {
+        await axios.post('user/wallet',{currentWalletMoney})
+
         if (res.data) {
           dispatch(fetchOrders());
           dispatch({ type: ORDER_PAY_SUCCESS });
@@ -541,11 +549,11 @@ setCoupenHere(filterCop)
                     })}
 
                     <tr>
-                      <td colSpan="4 ">Total amount ({totalDiscount}% off) </td>
+                      <td colSpan="4 ">Total amount ({totalDiscount+(walletDiscount+coupenDiscount)}% off) </td>
 
                       <td>
                         {" "}
-                        <b> {amount}</b>{" "}
+                        <b> {totalAmount}</b>{" "}
                       </td>
                     </tr>
                   </tbody>

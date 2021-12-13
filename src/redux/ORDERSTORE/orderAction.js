@@ -1,4 +1,4 @@
-import { ORDER_ADD_SUCCESS, ORDER_FETCH_SUCCESS, ORDER_FETCH_ERROR, ORDER_FETCH_REQUEST, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL,ORDER_COD_SUCCESS } from './orderType'
+import { ORDER_ADD_SUCCESS,ORDER_FETCH_ALL_SUCCESS, ORDER_FETCH_SUCCESS, ORDER_FETCH_ERROR, ORDER_FETCH_REQUEST, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL,ORDER_COD_SUCCESS } from './orderType'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -29,6 +29,15 @@ export const fetchOrderSuccess = (orders) => {
     return {
 
         type: ORDER_FETCH_SUCCESS,
+        payload: orders
+    }
+}
+
+export const fetchOrderAllSuccess = (orders) => {
+
+    return {
+
+        type: ORDER_FETCH_ALL_SUCCESS,
         payload: orders
     }
 }
@@ -85,6 +94,31 @@ return (dispatch)=>{
 
 
 }}
+
+
+
+
+// fetch all orders
+
+// fetch actions
+export const fetchOrdersAll=()=>{
+
+    
+    return (dispatch)=>{
+        dispatch(fetchOrderRequest())
+    
+        axios.get('/order/all').then(res=>{
+        dispatch(fetchOrderAllSuccess(res.data))
+    
+    
+        }).catch(err=>{
+    
+    
+            dispatch(fetchOrderError(err))
+        })
+    }
+
+}
 
 export const payOrder=async (paymentId,paymentMethod,orderId,orderStatus)=>{
 return (dispatch)=>{

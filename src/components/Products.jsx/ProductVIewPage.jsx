@@ -22,9 +22,7 @@ import ProductCard from "../Map component/ProductCard";
 import { addToCart } from "../../redux/CARTSTORE/cartAction";
 
 function ProductVIewPage() {
-    const [previewSource, sestPreviewSource] = useState(
-        "https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png"
-    );
+    const [previewSource, sestPreviewSource] = useState('');
     const [selectedSize, setSelectedSize] = useState('')
     const [selectedSizeWarning, setSelectedSizeWarning] = useState(false)
     const { id } = useParams();
@@ -36,6 +34,7 @@ function ProductVIewPage() {
     const dispatch = useDispatch();
     const { product } = useSelector((state) => state.product);
     const {userActive} = useSelector(state => state.user)
+    const[showHereProducts,setShowHereProducts]=useState('')
 
     const { loading: addLoading, addResponse } = useSelector(state => state.cart)
 
@@ -68,6 +67,17 @@ function ProductVIewPage() {
 
 
     }
+    const showProducts = product.find((p) => p._id === id);
+
+
+  useEffect(()=>{
+    if(!product) return
+    let subProducts=[]
+subProducts=product.filter(value=>value.category===showProducts.category)
+
+setShowHereProducts(subProducts)
+
+  },[product])
 
 
     useEffect(() => {
@@ -75,7 +85,7 @@ function ProductVIewPage() {
         // showProducts && sestPreviewSource(showProducts?.ImageUrl[0].img);
     }, [dispatch, id]);
 
-    const showProducts = product.find((p) => p._id === id);
+    
 
     return (
         <>
@@ -154,7 +164,7 @@ function ProductVIewPage() {
 
 
                                             <GlassMagnifier
-                                                imageSrc={previewSource}
+                                                imageSrc={previewSource?previewSource:showProducts?.imageUrl[0].img}
                                                 imageAlt={'show product'}
                                                 magnifierBorderSize={1}
                                                 magnifierSize={'50%'}
@@ -222,7 +232,17 @@ function ProductVIewPage() {
 
                 )}
 
+<section>
+<Row className='my-4'>
+  <Row><Col>  <h3>Similar Products for {showProducts?.category}</h3></Col></Row>
+{showHereProducts&&showHereProducts.map((values,i)=>{
+   return  <Col sm={12} md={6} lg={4} xl={3} key={i}>
 
+    <ProductCard product={values} key={values._id}/>
+    </Col>
+            })}
+</Row>
+</section>
 
             </Container>
         </>
