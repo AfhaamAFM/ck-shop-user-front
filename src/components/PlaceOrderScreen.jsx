@@ -31,7 +31,8 @@ import { fetchCart } from "../redux/CARTSTORE/cartAction";
 import Swal from "sweetalert2";
 import { fetchCheckout } from "../redux/Checkout/checkoutAction";
 import { fetchCoupen } from "../redux/OFFER/offerAction";
-import { Radio } from 'antd';
+import { Radio, Space } from 'antd';
+import CoupenModal from "./Map component/CoupenModal";
 
 function PlaceOrderScreen() {
   const [totalAmount, setTotalAmount] = useState(0);
@@ -39,6 +40,13 @@ const[coupenDiscount,setCoupenDiscount]=useState(0)
 const[walletDiscount,setWalletDiscount]=useState(0)
 const[currentWalletMoney,setCurrentWalletMoney]=useState()
 const[coupenHere,setCoupenHere]=useState([])
+const[selectedCoupen,setSelectedCoupen]=useState('')
+const[coupenDetail,setCoupenDetail]=useState({
+  coupenName:'',
+  discount:''
+})
+const[coupenShow,setCoupenShow]=useState(false)
+
 
   const [totalMrp, setTotalMrp] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
@@ -85,7 +93,7 @@ const[coupenHere,setCoupenHere]=useState([])
 
     axios
       .post(`/order/user/placeOrder`, {
-        amount,
+        totalAmount,
         address,
         orderStatus,
         paymentMethod,
@@ -121,12 +129,28 @@ disc=currentWalletMoney-totalAmount
 }
 
 // coupen discount
-function coupenDiscountHandler(e){
-const id=e.target.id
+function coupenDiscountHandler(){
+const id = selectedCoupen
 const currentCoupen= coupen.find((value)=>value._id===id)
-const{percentage} = currentCoupen
-console.log(percentage);
+const {name,percentage}=currentCoupen
+setCoupenDetail({
+  coupenName:name,
+  discount:percentage
+})
+
+const mrp= totalMrp-totalDiscount
+const coupDisc= mrp*(percentage/100)
+setCoupenDiscount(coupDisc)
+coupenHandleClose()
 }
+
+
+const coupenHandleClose=()=>{
+  
+  setCoupenShow(false)
+
+}
+const coupenHandleShow=()=>{setCoupenShow(true)}
 // ===================================Coupen and wallet discount handlers===================END======================
 
 
@@ -202,7 +226,7 @@ setCurrentWalletMoney(users.wallet)
     setTotalDiscount(totalDiscount);
 if(!coupen) return
 
-const filterCop= coupen.filter((value,i)=>value.minAmount<totalAmount)
+const filterCop= coupen.filter((value,i)=>value.minAmount< (totalMrp-totalDiscount))
 setCoupenHere(filterCop)
   }, [cartItem, dispatch,walletDiscount,coupenDiscount,coupen,totalAmount]);
 
@@ -220,6 +244,15 @@ setCoupenHere(filterCop)
 
   return (
     <Container>
+
+<CoupenModal coupenShow={coupenShow}
+ setSelectedCoupen={setSelectedCoupen}
+ coupenHandleClose={coupenHandleClose}
+ coupenHere={coupenHere}
+ coupenDiscountHandler={coupenDiscountHandler}  />
+
+
+
       {getCartLoading ? (
         <Loader type="Puff" color="#00BFFF" height={100} width={100} />
       ) : (
@@ -338,19 +371,14 @@ setCoupenHere(filterCop)
                 <Col>
                   <Card>
                     <Col sm={12} className="p-1">
-                      <Card.Title className='px-3 pt-2'>Coupens </Card.Title>
+                      <Card.Title className='px-3 pt-2'>Coupens {coupenLoading?<Spinner animation="grow" />:!coupen? <small style={{color:'red'}} >no coupen</small>:<Badge style={{cursor:'pointer'}} onClick={coupenHandleShow}  bg="success">Appy</Badge>}</Card.Title>
                       <hr />
                     </Col>
                     <Col className='mb-3 d-flex' >
-
- {coupenLoading?<Spinner animation="grow" />:!coupen?<h4>No coupen for you&#128514;</h4>:!coupenHere?<h4>no coupen for this amount&#128514;</h4>
-
-:coupenHere.map((value,i)=>
-
- <Button key={i} variant="warning" className='m-2' size="sm" id={value._id} onClick={coupenDiscountHandler} size={'small'}  > <b> {value.name}</b>  {value.percentage}% </Button> 
- )}
-
-
+<Space direction='vertical'>
+{selectedCoupen?<><Text>Name:  {coupenDetail.coupenName}</Text>
+<Text>Discount:  {coupenDetail.discount}</Text></>: <Text>No coupen selected</Text> }
+</Space>
                     </Col>
                   </Card>
                 </Col>
@@ -389,7 +417,15 @@ setCoupenHere(filterCop)
                         <Text type="success"> -₹{walletDiscount} off</Text>{" "}
                       </Col>
                     </Row>
-
+                    <Row className="p-1 ms-1">
+                      <Col md={4}>
+                        {" "}
+                        <Text strong>Coupen Discount</Text>
+                      </Col>
+                      <Col md={{ span: 4, offset: 4 }}>
+                        <Text type="success"> -₹{coupenDiscount} off</Text>{" "}
+                      </Col>
+                    </Row>
                     <hr />
 
                     <Row className="p-1 ms-1">
@@ -420,7 +456,7 @@ setCoupenHere(filterCop)
                         {showRazor && (
                           <RazorPayComponent
                             successPaymentHandler={successPaymentHandler}
-                            amount={amount}
+                            totalAmount={totalAmount}
                           />
                         )}
 
@@ -429,7 +465,7 @@ setCoupenHere(filterCop)
                           <Loader />
                         ) : showPaypal ? (
                           <PayPalButton
-                            amount={amount}
+                            amount={(totalAmount/75).toString()}
                             onSuccess={successPaymentHandler}
                           />
                         ) : (
