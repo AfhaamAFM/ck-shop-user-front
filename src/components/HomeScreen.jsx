@@ -38,7 +38,7 @@ dispatch(fetchProduct())
     <>
     <div className='carousel-container mb-5'>
 
-<Carousel variant="dark" slide fade interval={2000}>
+<Carousel variant="dark" slide touch interval={2000}>
   <Carousel.Item>
     <img
 
