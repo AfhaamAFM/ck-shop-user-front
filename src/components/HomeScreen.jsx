@@ -38,7 +38,7 @@ dispatch(fetchProduct())
     <>
     <div className='carousel-container mb-5'>
 
-<Carousel variant="dark">
+<Carousel variant="dark" slide fade interval={2000}>
   <Carousel.Item>
     <img
 
@@ -54,7 +54,7 @@ dispatch(fetchProduct())
   <Carousel.Item>
     <img
       className="d-block w-100"
-      src="https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/21/7d045fdc-9df6-462b-a45e-00d33aa9a2be1637513096176-DK-Main-Banner-1920_504.jpg"
+      src="https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/11/073805e4-f274-4d37-b5e3-8ef4766a19531639241779767-K_Winterwear_Dk.jpg"
       alt="Second slide"
     />
     {/* <Carousel.Caption>
@@ -65,7 +65,7 @@ dispatch(fetchProduct())
   <Carousel.Item>
     <img
       className="d-block w-100"
-      src="https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/21/7d045fdc-9df6-462b-a45e-00d33aa9a2be1637513096176-DK-Main-Banner-1920_504.jpg"
+      src="https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/11/b96ded76-646c-4baf-9422-7727cbf2b0a11639241779745-Kurtas_Dk.jpg"
       alt="Third slide"
     />
     {/* <Carousel.Caption>

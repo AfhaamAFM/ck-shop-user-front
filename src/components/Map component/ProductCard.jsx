@@ -25,7 +25,7 @@ const {Text} = Typography
     
     <Space direction='vertical'>
    <Card.Text as='div' className='priceHolder'>
-       ₹{product.offerPrice}
+       ₹{Math.round(product.offerPrice)}
        </Card.Text>
        <Space direction='horizontal'>
 
@@ -39,7 +39,7 @@ const {Text} = Typography
     :
     <Card.Text as='div' className='priceHolder'>
        
-    ₹{product.price}
+    ₹{ product.price}
        
     </Card.Text>}
 </Row>

@@ -473,7 +473,7 @@ setCoupenHere(filterCop)
                           <Loader />
                         ) : showPaypal ? (
                           <PayPalButton
-                            amount={(totalAmount/75).toString()}
+                            amount={(Math.round(totalAmount/75)).toString()}
                             onSuccess={successPaymentHandler}
                           />
                         ) : (
