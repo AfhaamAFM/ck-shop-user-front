@@ -1,13 +1,13 @@
-import React,{useState} from 'react'
+import React from 'react'
 import axios from 'axios';
-import {Button,ListGroup,Row} from 'react-bootstrap'
+import {Button,Row} from 'react-bootstrap'
 
 
 const loadRazorPay=(src)=>{
   return new Promise(resolve=>{
   const script = document.createElement('script')
   script.src=src
-  document.body. appendChild(script)
+  document.body.appendChild(script)
 
   script.onload=()=>{
     resolve(true)

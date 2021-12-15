@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { FreeMode } from 'swiper'
-import {Row,Col,Image,ListGroup,Card,Button, Container} from 'react-bootstrap'
+import {Row,Col, Container} from 'react-bootstrap'
 import { useSelector,useDispatch } from 'react-redux'
 
 import ProductCard from '../Map component/ProductCard'
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { filterProductBySubCategory } from '../../redux/filterProducts/filterProductAction'
 
 
 function SubcategoryProductScreen() {
 
     const dispatch = useDispatch()
-    const {products,error} =useSelector(state=>state.filterProduct)
+    const {products} =useSelector(state=>state.filterProduct)
     const { category,subCat } = useParams();
     const[warning,setWarning] =useState('')
 
@@ -22,6 +21,7 @@ console.log(category,subCat);
 setWarning(`No items  in ${category}`)
 
        }
+      // eslint-disable-next-line 
     },[category,dispatch])
   
 console.log(products);

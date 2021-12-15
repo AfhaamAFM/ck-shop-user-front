@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Container,Row,Tabs,Tab } from 'react-bootstrap'
 import UserHomeScreen from './UserHomeScreen'
-import {useSelector,useDispatch} from 'react-redux'
-import { userlogged } from '../../redux/userStore/userAction'
+import {useSelector} from 'react-redux'
 import UserAdressScreen from './UserAdressScreen'
 import MyordersScreen from './MyordersScreen'
 
@@ -18,11 +17,6 @@ function UserProfileScreen() {
 
 
 const {users}=useSelector((state)=>state.user)
-const dispatch =useDispatch()
-
-
-
-
 
 
     return (

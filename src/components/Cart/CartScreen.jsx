@@ -7,12 +7,12 @@ import {
   Button,
   Image,
   Placeholder,
-  Spinner,
+ 
 } from "react-bootstrap";
-import { Select, Typography, Space } from "antd";
+import { Typography, Space } from "antd";
 import AdressModal from "./CartModal/AdressModal";
 import { useSelector, useDispatch } from "react-redux";
-import { addAddress, userlogged } from "../../redux/userStore/userAction";
+import {  userlogged } from "../../redux/userStore/userAction";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import AddAddressModal from "./CartModal/AddAddressModal";
@@ -30,7 +30,6 @@ import Loader from "react-loader-spinner";
 import ProductCard from "../Map component/ProductCard";
 import { fetchProduct } from "../../redux/PRODUCTS/productAction";
 
-const { Option } = Select;
 const { Text, Title } = Typography;
 
 function CartScreen() {
@@ -63,7 +62,7 @@ function CartScreen() {
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
   // form error states
-
+// eslint-disable-next-line
   const [allAddress, setAllAddress] = useState();
   const [selectedAddressID, setSelectedAddressID] = useState("");
   // const[defaultAddress,setDefualtAddress]=useState('')
@@ -71,7 +70,7 @@ function CartScreen() {
   // Redux function
   const { userActive, users } = useSelector((state) => state.user);
   const { product } = useSelector((state) => state.product);
-
+// eslint-disable-next-line
   const { cartItems, loading: getCartLoading } = useSelector(
     (state) => state.cart
   );
@@ -264,6 +263,7 @@ function CartScreen() {
     users && setAllAddress(users.address);
     dispatch(fetchCart());
     dispatch(fetchProduct())
+    // eslint-disable-next-line
   }, [dispatch, selectedAddressID]);
 
   useEffect(() => {
@@ -272,6 +272,7 @@ function CartScreen() {
     setCartProducts(cartItems.cartProduct);
 
     setCartItem(cartItems.cartItem);
+    // eslint-disable-next-line
   }, [cartItems]);
 
   useEffect(() => {
@@ -297,7 +298,7 @@ setSubCatArray(subCategory)
     setTotalMrp(totalMrp);
     setTotalDiscount(totalDiscount);
 
-
+// eslint-disable-next-line
   }, [cartItem, dispatch]);
 
   useEffect(()=>{
@@ -311,7 +312,7 @@ setShowProducts(subProducts)
     
     dispatch({ type: ORDER_PAY_RESET_ALL });
 
-},[])
+},[dispatch])
 
 
   const showAddress = selectedAddressID ? (
@@ -379,7 +380,7 @@ setShowProducts(subProducts)
       /> :!userActive ?  (
             <Row>
               <Col className="cartPLace">
-                <h4>Please sign in &#128517;</h4>
+                <h4>Please sign in<span role="img" aria-label="smiiy"> &#128517;</span></h4>
                 <img
                   className="flipkartImage"
                   src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
@@ -443,7 +444,7 @@ setShowProducts(subProducts)
                 {!cartItems.cartItem? (
                   <Row>
               <Col className="cartPLace">
-                <h4>Please sign in &#128517;</h4>
+                <h4>Please sign in <span role="img" aria-label="smiiy">&#128517;</span></h4>
                 <img
                   className="flipkartImage"
                   src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import {Navbar,Container,Nav,NavDropdown,Form,FormControl,Button,InputGroup} from 'react-bootstrap'
 import {Link } from 'react-router-dom';
-import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
+import { fetchUserRequest,fetchUserError,userlogged } from '../redux/userStore/userAction';
 import swal from 'sweetalert';
 
 

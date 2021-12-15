@@ -4,18 +4,15 @@ import {
   Row,
   Card,
   Col,
-  Form,
+ 
   Button,
-  ListGroup,
+
 } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { userlogged } from "../redux/userStore/userAction";
 import Text from "antd/lib/typography/Text";
 import CheckoutStep from "./Map component/CheckoutStep";
 import { useNavigate } from "react-router-dom";
-import { addOrder } from "../redux/ORDERSTORE/orderAction";
-import axios from "axios";
-import { PayPalButton } from "react-paypal-button-v2";
 import { fetchCheckout } from "../redux/Checkout/checkoutAction";
 
 function CheckoutPaymentScreen() {
@@ -24,13 +21,11 @@ function CheckoutPaymentScreen() {
   const [totalDiscount, setTotalDiscount] = useState(0);
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
-  const [sdkReady, setSdkReady] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate(0);
   // const { amount, address } = useSelector((state) => state.checkout);
   const {
     cartItems,
-    loading: getCartLoading,
     address,
   } = useSelector((state) => state.checkout);
 
@@ -69,6 +64,7 @@ function CheckoutPaymentScreen() {
     dispatch(fetchCheckout());
 
     dispatch(userlogged());
+    // eslint-disable-next-line 
   }, [dispatch]);
 
   return (

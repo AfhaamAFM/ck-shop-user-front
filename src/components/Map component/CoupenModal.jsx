@@ -17,7 +17,7 @@ function CoupenModal({ setSelectedCoupen, coupenShow, coupenHandleClose,coupenHe
           <Row>
             <Col>
               <Form>
-              { coupenHere?<h4>Select Coupen</h4>:<h4>no coupen for this amount&#128514;</h4>}
+              { coupenHere?<h4>Select Coupen</h4>:<h4>no coupen for this amount<span role="img" aria-label="smiiy">&#128514;</span></h4>}
 
                 <Form.Group as={Row} className="mb-3">
                   {coupenHere.map((value, i) => (

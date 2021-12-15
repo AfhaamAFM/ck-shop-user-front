@@ -3,14 +3,14 @@ import { Form,Button } from 'react-bootstrap';
 import {Link,useNavigate} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux'
 import axios from 'axios'
-import { fetchUserRequest,fetchUserSuccess,fetchUserError,userVerify,userlogged } from '../redux/userStore/userAction';
+import { fetchUserRequest,fetchUserError,userlogged } from '../redux/userStore/userAction';
 import {Spinner} from 'react-bootstrap'
 
 
 
 function Signin() {
  const dispatch = useDispatch()
-const {error,users,userActive,loading}=useSelector(state=>state.user)
+const {users,loading}=useSelector(state=>state.user)
 const navigate= useNavigate()
 
 const[email,setEmail]=useState('')

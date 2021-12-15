@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { Card,Row,Col } from 'react-bootstrap'
+import React from 'react'
+import { Card,Row} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import Rating from './Rating';
+
 import {Space,Typography} from 'antd'
 function ProductCard({product}) {
   

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import {  useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Typography, Space } from 'antd';
 import { GlassMagnifier } from 'react-image-magnifiers'
 import { fetchProduct } from "../../redux/PRODUCTS/productAction";
-import Swal from 'sweetalert2'
+
 
 import {
     Row,
@@ -36,7 +36,7 @@ function ProductVIewPage() {
     const {userActive} = useSelector(state => state.user)
     const[showHereProducts,setShowHereProducts]=useState('')
 
-    const { loading: addLoading, addResponse } = useSelector(state => state.cart)
+    const { loading: addLoading} = useSelector(state => state.cart)
 
 
     // Add to bag handler
@@ -76,7 +76,7 @@ function ProductVIewPage() {
 subProducts=product.filter(value=>value.category===showProducts.category)
 
 setShowHereProducts(subProducts)
-
+// eslint-disable-next-line
   },[product])
 
 
@@ -98,8 +98,8 @@ setShowHereProducts(subProducts)
                                 <Col md={2}>
                                     <Row>
                                         <Image
-                                            className="short-image"
-                                            className="my-2"
+                                            className="short-image my-2"
+                                          
                                             as={Col}
                                             src={showProducts?.imageUrl[0].img}
                                             onMouseOver={(e) => {
@@ -115,32 +115,31 @@ setShowHereProducts(subProducts)
 
 
                                         <Image
-                                            className="short-image"
+                                            className="short-image my-2"
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
                                             }}
-                                            className="my-2"
+                                           
                                             as={Col}
                                             src={showProducts?.imageUrl[1].img}
-                                            alt="small product imge"
+                                            alt="smallproductimge"
                                         />
                                         <Image
                                             className="short-image"
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
                                             }}
-                                            className="my-2"
+                                           
                                             as={Col}
                                             src={showProducts?.imageUrl[2].img}
-                                            alt="small product imge"
+                                            alt="small product imge my-2"
                                             fluid
                                         />
                                         <Image
-                                            className="short-image"
+                                            className="short-image my-2"
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
                                             }}
-                                            className="my-2"
                                             as={Col}
                                             src={showProducts?.imageUrl[3].img}
                                             alt="small product imge"

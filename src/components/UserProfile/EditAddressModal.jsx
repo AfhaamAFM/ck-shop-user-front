@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
-import { Typography, space, Space } from 'antd'
+import { Typography } from 'antd'
 import validator from '../../simple-react-form-validation-helper/validationHelpers';
 
 
@@ -36,7 +36,7 @@ function EditAddressModal({
 }) {
 
 
-    const { Text, Title } = Typography;
+    const { Text} = Typography;
 
 
     //   validation handling states

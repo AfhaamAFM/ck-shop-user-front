@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { FreeMode } from 'swiper'
-import {Row,Col,Image,ListGroup,Card,Button, Container} from 'react-bootstrap'
+import {Row,Col, Container} from 'react-bootstrap'
 import { useSelector,useDispatch } from 'react-redux'
 
 import ProductCard from '../Map component/ProductCard'
-import { Link, useParams } from "react-router-dom";
-import { filterProductBycategory, searchProduct } from '../../redux/filterProducts/filterProductAction'
+import {  useParams } from "react-router-dom";
+import { searchProduct } from '../../redux/filterProducts/filterProductAction'
 
 
 function SearchProductScreen() {
 
     const dispatch = useDispatch()
-    const {products,error} =useSelector(state=>state.filterProduct)
+    const {products} =useSelector(state=>state.filterProduct)
     const { word } = useParams();
     const[warning,setWarning] =useState('')
 
@@ -22,6 +21,7 @@ function SearchProductScreen() {
 setWarning(`No items  in ${word}`)
 
        }
+       // eslint-disable-next-line
     },[word,dispatch])
   
 console.log(products);

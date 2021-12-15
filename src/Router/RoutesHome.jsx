@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
-import reactDom from 'react-dom'
+import { BrowserRouter as Router, Routes, Route,Navigate } from 'react-router-dom';
 import HomeScreen from '../components/HomeScreen';
 import Signin from '../components/Signin';
 import Signup from '../components/Signup';

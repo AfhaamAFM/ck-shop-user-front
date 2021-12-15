@@ -14,7 +14,7 @@ import validator from "../../simple-react-form-validation-helper/validationHelpe
 import Text from "antd/lib/typography/Text";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { userlogged } from "../../redux/userStore/userAction";
 import ImageEditModal from "./ImageEditModal";
 
@@ -48,7 +48,6 @@ function UserHomeScreen({ user }) {
   const [loading, setLoading] = useState(false);
   const [saveMode, setSaveMode] = useState(false);
 
-  const { users } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const getCropData = () => {
@@ -152,14 +151,16 @@ function UserHomeScreen({ user }) {
       ? setProfilePreview(user.image?.url)
       : setProfilePreview(
           "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png"
+          
         );
+        // eslint-disable-next-line
   }, []);
-  console.log(cropData);
+ 
   return (
     <>
       <Row>
         <Col md={6}>
-          <Row className="d-flex" className="">
+          <Row className="d-flex">
             <Space direction="horizontal">
               <h2 as={Col} md={8}>
                 User details
@@ -192,7 +193,7 @@ function UserHomeScreen({ user }) {
                 </ListGroup.Item>
                
                 <ListGroup.Item>
-                  {user.wallet>0 ? <p style={{color:'green',fontSize:'1rem',fontWeight:"bold"}} >₹{user.wallet}</p>: <span>no money in your wallet &#128534;</span>}
+                  {user.wallet>0 ? <p style={{color:'green',fontSize:'1rem',fontWeight:"bold"}} >₹{user.wallet}</p>: <span role="img" aria-label="smiiy">no money in your wallet <span>&#128534;</span></span>}
                 </ListGroup.Item>
               </>
             

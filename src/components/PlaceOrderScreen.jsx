@@ -31,7 +31,7 @@ import { fetchCart } from "../redux/CARTSTORE/cartAction";
 import Swal from "sweetalert2";
 import { fetchCheckout } from "../redux/Checkout/checkoutAction";
 import { fetchCoupen } from "../redux/OFFER/offerAction";
-import { Radio, Space } from 'antd';
+import {  Space } from 'antd';
 import CoupenModal from "./Map component/CoupenModal";
 
 function PlaceOrderScreen() {
@@ -56,7 +56,7 @@ const[coupenShow,setCoupenShow]=useState(false)
   const navigate = useNavigate();
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
-  const { userActive, users } = useSelector((state) => state.user);
+  const {  users } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -236,6 +236,7 @@ if(!coupen) return
 
 const filterCop= coupen.filter((value,i)=>value.minAmount< (totalMrp-totalDiscount))
 setCoupenHere(filterCop)
+// eslint-disable-next-line 
   }, [cartItem, dispatch,walletDiscount,coupenDiscount,coupen,totalAmount]);
 
   useEffect(() => {

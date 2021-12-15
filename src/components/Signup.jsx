@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { fetchUserRequest, fetchUserSuccess, fetchUserError, userVerify, userlogged } from '../redux/userStore/userAction';
+import { fetchUserRequest, fetchUserError, userlogged } from '../redux/userStore/userAction';
 
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 function Signup() {
   const dispatch = useDispatch()
-  const { users, error, loading, response } = useSelector(state => state.user)
+  const { users,  loading, response } = useSelector(state => state.user)
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')

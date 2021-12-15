@@ -1,11 +1,11 @@
-import React,{useState} from 'react'
-import {Modal,Button,Row,Col,Form,Card} from 'react-bootstrap'
-import   {Typography,space, Space} from 'antd'
+import React from 'react'
+import {Modal,Button,Row,Col,Form} from 'react-bootstrap'
+import   {Typography, Space} from 'antd'
 
 
 
 function AdressModal({changeAddressShow, addressHandleClose,address,setSelectedAddressID,addAddressHandleShow,modalAddButtonHandler}) {
-  const { Text,Title } = Typography;
+  const { Text} = Typography;
   
 
 
