@@ -4,7 +4,7 @@ import  store from './redux/store';
 import { Provider } from 'react-redux';
 import axios from 'axios'
 
-axios.defaults.baseURL='https://server.afhaam.tech'
+axios.defaults.baseURL='/api'
  axios.defaults.withCredentials=true
 
 
