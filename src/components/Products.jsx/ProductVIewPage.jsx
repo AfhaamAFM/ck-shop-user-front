@@ -99,13 +99,13 @@ setShowHereProducts(subProducts)
                                     <Row>
                                         <Image
                                             className="short-image my-2"
-                                          
+                                          sm={2} md={12}
                                             as={Col}
                                             src={showProducts?.imageUrl[0].img}
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
                                             }}
-                                            alt="small product imge"
+                                            alt="smallproductimge"
                                             fluid
                                         />
 
@@ -115,6 +115,7 @@ setShowHereProducts(subProducts)
 
 
                                         <Image
+                                         sm={2} md={12}
                                             className="short-image my-2"
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
@@ -125,6 +126,7 @@ setShowHereProducts(subProducts)
                                             alt="smallproductimge"
                                         />
                                         <Image
+                                         sm={2} md={12}
                                             className="short-image"
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
@@ -136,6 +138,7 @@ setShowHereProducts(subProducts)
                                             fluid
                                         />
                                         <Image
+                                         sm={2} md={12}
                                             className="short-image my-2"
                                             onMouseOver={(e) => {
                                                 sestPreviewSource(e.target.src);
@@ -174,14 +177,14 @@ setShowHereProducts(subProducts)
                                     </Card>
                                     <Row className='m-3 d-flex'>
 
-                                        <Col className='d-flex' >
+                                        
 
-                                            <Button disabled={showProducts.quantity === 0} variant='danger' className='mx-1' ><i className="fas fa-running  mx-2" ></i> Buy Now</Button>
+                                            {/* <Button disabled={showProducts.quantity === 0} variant='danger' className='mx-1' ><i className="fas fa-running  mx-2" ></i> Buy Now</Button> */}
 
 
                                             {addLoading ? <Spinner animation="grow" variant="warning" /> :
                                                 <Button disabled={showProducts.quantity === 0} variant='warning' className='mx-1' onClick={addToBagHandler}> <i className="fas fa-shopping-bag mx-2" ></i>  Add To Bag</Button>}
-                                        </Col >
+                                       
 
                                     </Row>
                                 </Col>

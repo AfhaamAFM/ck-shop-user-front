@@ -30,9 +30,10 @@ if(!name||!email||!phone||!password){
 if(name.length<4){
   return setWarning('atleast 4 characters in name')
 }
+if(referel){
 if(referel.length<8){
   return setWarning('atleast 8 characters in referel code')
-}
+}}
 if(phone.length<10){
   return setWarning('invalid phone number')
 }
