@@ -5,7 +5,7 @@ function CheckoutStep({step1,step2,step3,step4}) {
     return (
         <div>
             <Nav className='justify-content-center mb-4'>
-
+{/* 
 <Nav.Item>
 {
     step1?(
@@ -50,7 +50,7 @@ Payment
         </Nav.Link>
       
     ):(<Nav.Link disabled>Place Order</Nav.Link>)  }
-</Nav.Item>
+</Nav.Item> */}
             </Nav>
         </div>
     )
