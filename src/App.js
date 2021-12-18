@@ -4,7 +4,7 @@ import  store from './redux/store';
 import { Provider } from 'react-redux';
 import axios from 'axios'
 
-const production=false
+const production=true
 
 let url=production?'/api':'http://localhost:5000'
 axios.defaults.baseURL=url
