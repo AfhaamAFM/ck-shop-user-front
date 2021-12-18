@@ -97,7 +97,7 @@ function CartScreen() {
 
   async function quantityHandler(id, value) {
     await axios
-      .get(`http://localhost:5000/user/cart/changeQuantity/${id}/${value}`)
+      .get(`/user/cart/changeQuantity/${id}/${value}`)
       .then((res) => {
         if (res.data) {
           dispatch(fetchCart());
