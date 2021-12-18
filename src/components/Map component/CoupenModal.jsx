@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Row, Col, Form, Button } from "react-bootstrap";
 
-function CoupenModal({ setSelectedCoupen, coupenShow, coupenHandleClose,coupenHere, coupenDiscountHandler}) {
+function CoupenModal({ setSelectedCoupen,selectedCoupen, coupenShow, coupenHandleClose,coupenHere, coupenDiscountHandler}) {
   return (
     <>
       <Modal
@@ -43,7 +43,7 @@ function CoupenModal({ setSelectedCoupen, coupenShow, coupenHandleClose,coupenHe
           <Button variant="secondary" onClick={coupenHandleClose}>
             Close
           </Button>
-          <Button variant="secondary" onClick={coupenDiscountHandler}>
+          <Button variant="secondary" disabled={!selectedCoupen} onClick={coupenDiscountHandler}>
             Apply Coupen
           </Button>
         </Modal.Footer>

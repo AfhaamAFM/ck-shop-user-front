@@ -31,39 +31,38 @@ import { fetchCart } from "../redux/CARTSTORE/cartAction";
 import Swal from "sweetalert2";
 import { fetchCheckout } from "../redux/Checkout/checkoutAction";
 import { fetchCoupen } from "../redux/OFFER/offerAction";
-import {  Space } from 'antd';
+import { Space } from "antd";
 import CoupenModal from "./Map component/CoupenModal";
 
 function PlaceOrderScreen() {
   const [totalAmount, setTotalAmount] = useState(0);
-const[coupenDiscount,setCoupenDiscount]=useState(0)
-const[walletDiscount,setWalletDiscount]=useState(0)
-const[currentWalletMoney,setCurrentWalletMoney]=useState()
-const[coupenHere,setCoupenHere]=useState([])
-const[selectedCoupen,setSelectedCoupen]=useState('')
-const[coupenDetail,setCoupenDetail]=useState({
-  coupenName:'',
-  discount:''
-})
-const[coupenShow,setCoupenShow]=useState(false)
-
+  const [coupenDiscount, setCoupenDiscount] = useState(0);
+  const [walletDiscount, setWalletDiscount] = useState(0);
+  const [currentWalletMoney, setCurrentWalletMoney] = useState();
+  const [coupenHere, setCoupenHere] = useState([]);
+  const [selectedCoupen, setSelectedCoupen] = useState("");
+  const [coupenDetail, setCoupenDetail] = useState({
+    coupenName: "",
+    discount: "",
+  });
+  const [coupenShow, setCoupenShow] = useState(false);
 
   const [totalMrp, setTotalMrp] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [showPaypal, setShowPaypal] = useState(false);
   const [showRazor, setShowRazor] = useState(false);
   const [showCod, setShowCod] = useState(false);
+  const [showWallet, setWalletPay] = useState(false);
   const navigate = useNavigate();
   let [cartProducts, setCartProducts] = useState([]);
   let [cartItem, setCartItem] = useState([]);
-  const {  users } = useSelector((state) => state.user);
+  const { users } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
 
-
-
-  const{coupen,loading:coupenLoading}=useSelector((state)=>state.coupen)
-
+  const { coupen, loading: coupenLoading } = useSelector(
+    (state) => state.coupen
+  );
 
   const {
     success: successPay,
@@ -75,16 +74,16 @@ const[coupenShow,setCoupenShow]=useState(false)
     cartItems,
     loading: getCartLoading,
     address,
- 
   } = useSelector((state) => state.checkout);
-
 
   const [sdkReady, setSdkReady] = useState(false);
 
   const codPlaceHandler = () => {
     const orderStatus = "ordered";
 
-    dispatch(placeCOD(paymentMethod, orderStatus, totalAmount, address, cartItems));
+    dispatch(
+      placeCOD(paymentMethod, orderStatus, totalAmount, address, cartItems)
+    );
   };
 
   const successPaymentHandler = (paymentResult) => {
@@ -92,11 +91,9 @@ const[coupenShow,setCoupenShow]=useState(false)
     const orderStatus = "ordered";
     dispatch({ type: ORDER_PAY_REQUEST });
 
-
-if(walletDiscount){
-
-}
-const amount = totalAmount
+    if (walletDiscount) {
+    }
+    const amount = totalAmount;
     axios
       .post(`/order/user/placeOrder`, {
         amount,
@@ -106,8 +103,8 @@ const amount = totalAmount
         cartItems,
         paymentId,
       })
-      .then(async(res) => {
-        await axios.post('user/wallet',{currentWalletMoney})
+      .then(async (res) => {
+        await axios.post("user/wallet", { currentWalletMoney });
 
         if (res.data) {
           dispatch(fetchOrders());
@@ -123,46 +120,42 @@ const amount = totalAmount
       });
   };
 
-// ===================================Coupen and wallet discount handlers=============== START==========================
-function walletDiscountHandler(){
-  let disc=0
-if(setTotalAmount<currentWalletMoney){
-disc=currentWalletMoney-totalAmount
-  setWalletDiscount(currentWalletMoney)
-  setCurrentWalletMoney(disc)
-}else if(totalAmount>currentWalletMoney){
-  setWalletDiscount(currentWalletMoney)
-  setCurrentWalletMoney(0)
-}
-}
+  // ===================================Coupen and wallet discount handlers=============== START==========================
+  function walletDiscountHandler() {
+    let disc = 0;
+    if (setTotalAmount < currentWalletMoney) {
+      disc = currentWalletMoney - totalAmount;
+      setWalletDiscount(currentWalletMoney);
+      setCurrentWalletMoney(disc);
+    } else if (totalAmount > currentWalletMoney) {
+      setWalletDiscount(currentWalletMoney);
+      setCurrentWalletMoney(0);
+    }
+  }
 
-// coupen discount
-function coupenDiscountHandler(){
-const id = selectedCoupen
-const currentCoupen= coupen.find((value)=>value._id===id)
-const {name,percentage}=currentCoupen
-setCoupenDetail({
-  coupenName:name,
-  discount:percentage
-})
+  // coupen discount
+  function coupenDiscountHandler() {
+    const id = selectedCoupen;
+    const currentCoupen = coupen.find((value) => value._id === id);
+    const { name, percentage } = currentCoupen;
+    setCoupenDetail({
+      coupenName: name,
+      discount: percentage,
+    });
 
-const mrp= totalMrp-totalDiscount
-const coupDisc= mrp*(percentage/100)
-setCoupenDiscount(coupDisc)
-coupenHandleClose()
-}
+    const mrp = totalMrp - totalDiscount;
+    const coupDisc = mrp * (percentage / 100);
+    setCoupenDiscount(coupDisc);
+    coupenHandleClose();
+  }
 
-
-const coupenHandleClose=()=>{
-  
-  setCoupenShow(false)
-
-}
-const coupenHandleShow=()=>{setCoupenShow(true)}
-// ===================================Coupen and wallet discount handlers===================END======================
-
-
-
+  const coupenHandleClose = () => {
+    setCoupenShow(false);
+  };
+  const coupenHandleShow = () => {
+    setCoupenShow(true);
+  };
+  // ===================================Coupen and wallet discount handlers===================END======================
 
   useEffect(() => {
     // paypal start
@@ -196,12 +189,11 @@ const coupenHandleShow=()=>{setCoupenShow(true)}
     // paypal end
     //eslint-disable-next-line
     //
-if(!users){
-  return
-}
-setCurrentWalletMoney(users.wallet)
-
-  }, [dispatch, successPay,users]);
+    if (!users) {
+      return;
+    }
+    setCurrentWalletMoney(users.wallet);
+  }, [dispatch, successPay, users]);
 
   useEffect(() => {
     if (!cartItems) return;
@@ -229,22 +221,24 @@ setCurrentWalletMoney(users.wallet)
         : Math.round(cartProducts[index].price * value.quantity);
       totalMrp += value.price * value.quantity;
     });
-    setTotalAmount(totalAmount-(walletDiscount+coupenDiscount));
+    setTotalAmount(totalAmount - (walletDiscount + coupenDiscount));
     setTotalMrp(totalMrp);
     setTotalDiscount(totalDiscount);
-if(!coupen) return
+    if (!coupen) return;
 
-const filterCop= coupen.filter((value,i)=>value.minAmount< (totalMrp-totalDiscount))
-setCoupenHere(filterCop)
-// eslint-disable-next-line 
-  }, [cartItem, dispatch,walletDiscount,coupenDiscount,coupen,totalAmount]);
+    const filterCop = coupen.filter(
+      (value, i) => value.minAmount < totalMrp - totalDiscount
+    );
+    setCoupenHere(filterCop);
+    // eslint-disable-next-line
+  }, [cartItem, dispatch, walletDiscount, coupenDiscount, coupen, totalAmount]);
 
   useEffect(() => {
     dispatch(fetchCart());
     dispatch(fetchOrders());
     dispatch(userlogged());
     dispatch(fetchCheckout());
-    dispatch(fetchCoupen())
+    dispatch(fetchCoupen());
 
     // eslint-disable-next-line
   }, [dispatch]);
@@ -253,14 +247,14 @@ setCoupenHere(filterCop)
 
   return (
     <Container>
-
-<CoupenModal coupenShow={coupenShow}
- setSelectedCoupen={setSelectedCoupen}
- coupenHandleClose={coupenHandleClose}
- coupenHere={coupenHere}
- coupenDiscountHandler={coupenDiscountHandler}  />
-
-
+      <CoupenModal
+        coupenShow={coupenShow}
+        setSelectedCoupen={setSelectedCoupen}
+        coupenHandleClose={coupenHandleClose}
+        coupenHere={coupenHere}
+        selectedCoupen={selectedCoupen}
+        coupenDiscountHandler={coupenDiscountHandler}
+      />
 
       {getCartLoading ? (
         <Loader type="Puff" color="#00BFFF" height={100} width={100} />
@@ -307,12 +301,31 @@ setCoupenHere(filterCop)
 
                     <Form>
                       <Form.Group>
+                        {currentWalletMoney ? (
+                          <Form.Check
+                            name="paymentMethod"
+                            type="radio"
+                            value="Wallet"
+                            label="Pay with wallet Money"
+                            onChange={(e) => {
+                              setWalletPay(true);
+                              setShowCod(false);
+                              setShowRazor(false);
+                              setShowPaypal(false);
+
+                              setPaymentMethod(e.target.value);
+                            }}
+                          />
+                        ) : (
+                          <p>You have no money in your wallet !</p>
+                        )}
                         <Form.Check
                           name="paymentMethod"
                           type="radio"
                           value="COD"
                           label="Cash on Delivary"
                           onChange={(e) => {
+                            setWalletPay(false);
                             setShowCod(true);
                             setShowRazor(false);
                             setShowPaypal(false);
@@ -324,6 +337,7 @@ setCoupenHere(filterCop)
                         <Form.Check
                           name="paymentMethod"
                           onChange={(e) => {
+                            setWalletPay(false);
                             setShowPaypal(true);
                             setShowRazor(false);
                             setShowCod(false);
@@ -335,6 +349,8 @@ setCoupenHere(filterCop)
                         />
                         <Form.Check
                           onChange={(e) => {
+                            setWalletPay(false);
+
                             setShowRazor(true);
                             setShowPaypal(false);
                             setShowCod(false);
@@ -355,39 +371,77 @@ setCoupenHere(filterCop)
             </Col>
             {/* main div 2 */}
             <Col md={5}>
-              <Row className='mb-3'>
+              <Row className="mb-3">
                 <Col>
                   <Card>
                     <Col sm={12} className="p-4">
                       <Card.Title>Wallet </Card.Title>
-                      {walletDiscount&&<Badge onClick={()=>{setWalletDiscount(0)
-                      
-                      setCurrentWalletMoney(users.wallet)
-                      }}  bg="info">reset</Badge>}
+                      {/* {walletDiscount && (
+                        <Badge
+                          onClick={() => {
+                            setWalletDiscount(0);
+
+                            setCurrentWalletMoney(users.wallet);
+                          }}
+                          bg="info"
+                        >
+                          reset
+                        </Badge>
+                      )} */}
                       <hr />
                     </Col>
                     <Col>
-                  
                       <Card.Subtitle className='d-flex justify-content-center"'>
-                        <h4>₹{currentWalletMoney} {currentWalletMoney&&<Badge style={{cursor:'pointer'}} onClick={walletDiscountHandler}  bg="danger">Use Wallet</Badge>}</h4>
-                        
+                        <h4>
+                          ₹{currentWalletMoney}{" "}
+                          {/* {currentWalletMoney && (
+                            <Badge
+                              style={{ cursor: "pointer" }}
+                              onClick={walletDiscountHandler}
+                              bg="danger"
+                            >
+                              Use Wallet
+                            </Badge>
+                          )} */}
+                        </h4>
                       </Card.Subtitle>
                     </Col>
                   </Card>
                 </Col>
               </Row>
-              <Row className='mb-3'>
+              <Row className="mb-3">
                 <Col>
                   <Card>
                     <Col sm={12} className="p-1">
-                      <Card.Title className='px-3 pt-2'>Coupens {coupenLoading?<Spinner animation="grow" />:!coupen? <small style={{color:'red'}} >no coupen</small>:<Badge style={{cursor:'pointer'}} onClick={coupenHandleShow}  bg="success">Appy</Badge>}</Card.Title>
+                      <Card.Title className="px-3 pt-2">
+                        Coupens{" "}
+                        {coupenLoading ? (
+                          <Spinner animation="grow" />
+                        ) : !coupen ? (
+                          <small style={{ color: "red" }}>no coupen</small>
+                        ) : (
+                          <Badge
+                            style={{ cursor: "pointer" }}
+                            onClick={coupenHandleShow}
+                            bg="success"
+                          >
+                            Appy
+                          </Badge>
+                        )}
+                      </Card.Title>
                       <hr />
                     </Col>
-                    <Col className='mb-3 d-flex' >
-<Space direction='vertical'>
-{selectedCoupen?<><Text>Name:  {coupenDetail.coupenName}</Text>
-<Text>Discount:  {coupenDetail.discount}</Text></>: <Text>No coupen selected</Text> }
-</Space>
+                    <Col className="mb-3 d-flex">
+                      <Space direction="vertical">
+                        {selectedCoupen ? (
+                          <>
+                            <Text>Name: {coupenDetail.coupenName}</Text>
+                            <Text>Discount: {coupenDetail.discount}</Text>
+                          </>
+                        ) : (
+                          <Text>No coupen selected</Text>
+                        )}
+                      </Space>
                     </Col>
                   </Card>
                 </Col>
@@ -462,6 +516,16 @@ setCoupenHere(filterCop)
                             Proceed Cash on delivary
                           </Button>
                         )}
+
+                        {showWallet?totalAmount>currentWalletMoney? 'No enough Money': (
+                          <Button
+                            onClick={codPlaceHandler}
+                            className="mx-3"
+                            variant="danger"
+                          >
+                            Proceed with wallet Money ₹{currentWalletMoney}
+                          </Button>
+                        ):''}
                         {showRazor && (
                           <RazorPayComponent
                             successPaymentHandler={successPaymentHandler}
@@ -474,7 +538,7 @@ setCoupenHere(filterCop)
                           <Loader />
                         ) : showPaypal ? (
                           <PayPalButton
-                            amount={(Math.round(totalAmount/75)).toString()}
+                            amount={Math.round(totalAmount / 75).toString()}
                             onSuccess={successPaymentHandler}
                           />
                         ) : (
@@ -550,7 +614,11 @@ setCoupenHere(filterCop)
                     })}
 
                     <tr>
-                      <td colSpan="4 ">Total amount ({totalDiscount+(walletDiscount+coupenDiscount)}% off) </td>
+                      <td colSpan="4 ">
+                        Total amount (
+                        {totalDiscount + (walletDiscount + coupenDiscount)}%
+                        off){" "}
+                      </td>
 
                       <td>
                         {" "}

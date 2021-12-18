@@ -103,7 +103,7 @@ function EditAddressModal({
                                 <Form.Control
 value={number}
                                     type="text"
-                                    placeholder="Last name"
+                                    placeholder="Mobile Number"
 
 
 
@@ -142,7 +142,7 @@ value={pincode}
 
                             </Form.Group>
                             <Form.Group as={Col} md="12" className="mb-2" controlId="validationCustomUsername">
-                                <Form.Label>Address <Text disabled>(House No, Building)</Text></Form.Label>
+                                <Form.Label>Address <Text disabled>(resedential address)</Text></Form.Label>
                                 <InputGroup hasValidation>
                                     <InputGroup.Text id="inputGroupPrepend">&#127961;</InputGroup.Text>
                                     <Form.Control
@@ -227,7 +227,7 @@ value={district}
                             <Form.Group as={Col} md="6" controlId="validationCustom04">
                                 <Form.Label>State</Form.Label>
                                 <Form.Control type="text" placeholder="State" 
-value={state}
+                                     value={state}
 
                                     onChange={(e) => {
                                         setState(e.target.value)
